@@ -21,5 +21,10 @@
 2. People search
 3. Profile
 
+### Functionality about zodiak compatibility
+- Search people from your city that are compatible to you
+- Get astrological information about yourself
+- Search acquaintances and friends on this network in order to find out about your compabitibility in friendship/love/work
+
 
 ### [Link to draw.io](https://drive.google.com/file/d/1uJikM5Dfv21_T6cLYhd7LqHrN9Y5InzA/view?usp=sharing)
