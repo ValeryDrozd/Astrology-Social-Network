@@ -1,0 +1,34 @@
+{
+  "name": "astrology-social-network",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/ValeryDrozd/Astrology-Social-Network.git",
+  "author": "Michael Medvediev <misha.medvedev2001@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "=4",
+    "lint-staged": "^10.5.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn test-server"
+    }
+  },
+  "lint-staged": {
+    "server/**/*.{ts,tsx}": [
+      "yarn lint-server",
+      "git add"
+    ],
+    "client/**/*.{ts,tsx}": [
+      "yarn lint-client",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "lint-server": "cd server && yarn lint:write",
+    "test-server": "cd server && yarn test",
+    "lint-client": "cd client && yarn lint:write"
+
+  }
+}
