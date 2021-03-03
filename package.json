@@ -18,9 +18,14 @@
     "server/**/*.{ts,tsx}": [
       "yarn lint-server",
       "git add"
+    ],
+    "client/**/*.{ts,tsx}": [
+      "yarn lint-client",
+      "git add"
     ]
   },
   "scripts": {
-    "lint-server": "cd server && yarn lint:write"
+    "lint-server": "cd server && yarn lint:write",
+    "lint-client": "cd client && yarn lint:write"
   }
 }
