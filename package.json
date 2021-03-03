@@ -8,6 +8,11 @@
   "devDependencies": {
     "husky": "^5.1.3"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn precommit"
+    }
+  },
   "scripts": {
     "precommit": "yarn lint-server",
     "lint-server": "cd server && yarn lint-staged"
