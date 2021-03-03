@@ -11,7 +11,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn test-server"
     }
   },
   "lint-staged": {
@@ -21,6 +22,7 @@
     ]
   },
   "scripts": {
-    "lint-server": "cd server && yarn lint:write"
+    "lint-server": "cd server && yarn lint:write",
+    "test-server": "cd server && yarn test"
   }
 }
