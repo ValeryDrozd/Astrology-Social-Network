@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
+  "workspaces": {
+    "packages": [
+      "client",
+      "server"
+    ],
+    "nohoist": ["husky"]
+  },
   "repository": "https://github.com/ValeryDrozd/Astrology-Social-Network.git",
   "author": "Michael Medvediev <misha.medvedev2001@gmail.com>",
   "license": "MIT",
@@ -22,7 +25,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "yarn lint-staged",
       "pre-push": "yarn test:server"
     }
   },
