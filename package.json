@@ -44,6 +44,7 @@
     "lint:server": "cd server && yarn lint:write",
     "lint:client": "cd client && yarn lint:write",
     "lint:all": "yarn lint:server . && yarn lint:client .",
+    "lint": "cd server && yarn lint . && cd ../client && yarn lint .",
     "start:client": "cd client && yarn start",
     "start:server": "cd server && yarn start:dev"
   },
