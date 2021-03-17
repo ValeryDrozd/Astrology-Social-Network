@@ -4,7 +4,7 @@ function LoginPage(): JSX.Element {
   return (
     <div>
       <div>
-        <p>Login page1111</p>
+        <p>Login page</p>
       </div>
       <div></div>
     </div>
