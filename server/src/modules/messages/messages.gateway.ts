@@ -9,6 +9,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { generateJsonRpcNotification } from '../../helpers/json-rpc.utils';
+import broadcast from 'src/helpers/broadcast';
 
 @WebSocketGateway()
 export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -21,19 +22,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
 
   handleDisconnect(client: WebSocket): void {
     this.server.clients.delete(client);
-    this.broadcast('disconnect');
-  }
-
-  private broadcast(
-    event: string,
-    options?: { except?: WebSocket[]; params?: unknown[] },
-  ): void {
-    this.server.clients.forEach((client) => {
-      if (options?.except && !options.except.find((c) => c === client)) {
-        const message = generateJsonRpcNotification(event, options.params);
-        client.send(JSON.stringify(message));
-      }
-    });
+    broadcast(this.server, 'disconnect');
   }
 
   @SubscribeMessage('getNewMessages')
@@ -46,7 +35,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @MessageBody() data: Record<string, unknown>,
     @ConnectedSocket() socket: WebSocket,
   ): Promise<Record<string, unknown>> {
-    this.broadcast('newMessage', { except: [socket] });
+    broadcast(this.server, 'newMessage', { except: [socket] });
     return data;
   }
 }
