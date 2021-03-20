@@ -8,7 +8,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { generateJsonRpcNotification } from 'src/helpers/json-rpc.utils';
+import { generateJsonRpcNotification } from '../../helpers/json-rpc.utils';
 
 @WebSocketGateway()
 export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
