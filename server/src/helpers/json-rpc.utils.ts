@@ -4,16 +4,14 @@ export const generateJsonRpcResponse = (
   value: Record<string, unknown>,
   id: number,
 ): JsonRpcResponse => ({
-  jsonrpc: '2.0',
   result: value,
   id,
 });
 
 export const generateJsonRpcNotification = (
   notification: string,
-  params?: unknown[] | undefined,
+  params?: unknown,
 ): JsonRpcNotification => ({
-  jsonrpc: '2.0',
   notification,
-  params: params || [],
+  params,
 });

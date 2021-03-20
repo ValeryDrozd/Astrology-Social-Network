@@ -4,7 +4,7 @@ import { generateJsonRpcNotification } from './json-rpc.utils';
 export default function broadcast(
   server: Server,
   event: string,
-  options?: { except?: WebSocket[]; params?: unknown[] },
+  options?: { except?: WebSocket[]; params?: unknown },
 ): void {
   server.clients.forEach((client) => {
     if (options?.except && !options.except.find((c) => c === client)) {

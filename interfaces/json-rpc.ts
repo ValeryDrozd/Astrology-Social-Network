@@ -6,13 +6,11 @@ export interface JsonRpcRequest {
 }
 
 export interface JsonRpcResponse {
-  jsonrpc: "2.0";
   result: Record<string, unknown>;
   id: number;
 }
 
 export interface JsonRpcNotification {
-  jsonrpc: "2.0",
   notification: string,
-  params: unknown[]
+  params: unknown
 }
