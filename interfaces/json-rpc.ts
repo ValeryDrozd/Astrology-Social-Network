@@ -10,3 +10,9 @@ export interface JsonRpcResponse {
   result: Record<string, unknown>;
   id: number;
 }
+
+export interface JsonRpcNotification {
+  jsonrpc: "2.0",
+  notification: string,
+  params: unknown[]
+}

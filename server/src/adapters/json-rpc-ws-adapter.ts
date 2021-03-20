@@ -1,13 +1,11 @@
 import * as ws from 'ws';
 import { INestApplicationContext } from '@nestjs/common';
-import {
-  AbstractWsAdapter,
-  MessageMappingProperties,
-} from '@nestjs/websockets';
+import { AbstractWsAdapter, MessageMappingProperties } from '@nestjs/websockets';
 import { Observable, fromEvent, EMPTY } from 'rxjs';
 import { mergeMap, filter, map } from 'rxjs/operators';
 import { IncomingMessage } from 'node:http';
 import { JsonRpcRequest, JsonRpcResponse } from '../../../interfaces/json-rpc';
+import { generateJsonRpcResponse } from 'src/helpers/json-rpc.utils';
 
 export class JsonRpcWsAdapter extends AbstractWsAdapter {
   constructor(appOrHttpServer?: INestApplicationContext) {
@@ -49,9 +47,7 @@ export class JsonRpcWsAdapter extends AbstractWsAdapter {
   ): Observable<JsonRpcResponse> {
     const message: JsonRpcRequest = JSON.parse(buffer.data);
 
-    const messageHandler = handlers.find(
-      (handler) => handler.message === message.method,
-    );
+    const messageHandler = handlers.find((handler) => handler.message === message.method);
 
     if (!messageHandler) {
       return EMPTY;
@@ -59,11 +55,9 @@ export class JsonRpcWsAdapter extends AbstractWsAdapter {
     const res = process(messageHandler.callback(message.params));
 
     return res.pipe(
-      map<unknown, JsonRpcResponse>((value) => ({
-        jsonrpc: '2.0',
-        result: value as Record<string, unknown>,
-        id: message.id,
-      })),
+      map<unknown, JsonRpcResponse>((value) =>
+        generateJsonRpcResponse(value as Record<string, unknown>, message.id),
+      ),
     );
   }
 
