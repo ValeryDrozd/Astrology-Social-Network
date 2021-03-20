@@ -16,7 +16,6 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
   server!: Server;
 
   handleConnection(client: WebSocket): void {
-    console.log(client);
     this.server.clients.add(client);
   }
 
