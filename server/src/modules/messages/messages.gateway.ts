@@ -8,10 +8,17 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { generateJsonRpcNotification } from '../../helpers/json-rpc.utils';
 import broadcast from 'src/helpers/broadcast';
 import { MessagesService } from './messages.service';
 import Message from '../../../../interfaces/message.entity';
+import {
+  AddNewMessageFunction,
+  DeliveredEvent,
+  GetMessagesFunction,
+  GetMessagesFunctionResponse,
+  NewMessageNotification,
+  NewMessageNotificationParams,
+} from '../../../../interfaces/rpc-events';
 
 @WebSocketGateway()
 export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -29,21 +36,24 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     broadcast(this.server, 'disconnect');
   }
 
-  @SubscribeMessage('getMessages')
+  @SubscribeMessage(GetMessagesFunction)
   getMessages(
     @MessageBody() data: string,
     @ConnectedSocket() socket: WebSocket,
-  ): Message[] {
+  ): GetMessagesFunctionResponse {
     return this.messagesService.getMessages();
   }
 
-  @SubscribeMessage('addNewMessage')
+  @SubscribeMessage(AddNewMessageFunction)
   async save(
     @MessageBody() message: Message,
     @ConnectedSocket() socket: WebSocket,
-  ): Promise<{ ok: boolean }> {
+  ): Promise<DeliveredEvent> {
     this.messagesService.addNewMessage(message);
-    broadcast(this.server, 'newMessage', { except: [socket], params: message });
+    broadcast<NewMessageNotificationParams>(this.server, NewMessageNotification, {
+      except: [socket],
+      params: message,
+    });
     return { ok: true };
   }
 }
