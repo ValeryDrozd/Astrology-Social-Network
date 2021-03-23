@@ -4,6 +4,7 @@ import LoginPage from './pages/loginPage/loginPage';
 import ProfilePage from './pages/profilePage/profilePage';
 import RegistrationPage from './pages/registrationPage/registrationPage';
 import styled from 'styled-components';
+import ChatPage from './pages/chatPage/chatPage';
 
 function App(): JSX.Element {
   return (
@@ -12,6 +13,7 @@ function App(): JSX.Element {
         <Switch>
           <Route path="/" exact component={LoginPage}></Route>
           <Route path="/profile" component={ProfilePage}></Route>
+          <Route path="/chat" component={ChatPage}></Route>
           <Route path="/registration" component={RegistrationPage}></Route>
         </Switch>
       </Router>

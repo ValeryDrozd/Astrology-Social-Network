@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import broadcast from 'src/helpers/broadcast';
 import { MessagesService } from './messages.service';
-import Message from '../../../../interfaces/message.entity';
+import Message from '../../../../client/src/interfaces/message.entity';
 import {
   AddNewMessageFunction,
   DeliveredEvent,
@@ -18,7 +18,7 @@ import {
   GetMessagesFunctionResponse,
   NewMessageNotification,
   NewMessageNotificationParams,
-} from '../../../../interfaces/rpc-events';
+} from '../../../../client/src/interfaces/rpc-events';
 
 @WebSocketGateway()
 export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {

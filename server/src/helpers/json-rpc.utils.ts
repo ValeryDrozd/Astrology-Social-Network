@@ -1,4 +1,4 @@
-import { JsonRpcNotification, JsonRpcResponse } from '../../../interfaces/json-rpc';
+import { JsonRpcNotification, JsonRpcResponse } from '../../../client/src/interfaces/json-rpc';
 
 export const generateJsonRpcResponse = (
   value: Record<string, unknown>,

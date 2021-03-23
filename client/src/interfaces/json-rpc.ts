@@ -1,5 +1,5 @@
 export interface JsonRpcRequest {
-  jsonrpc: "2.0";
+  jsonrpc: '2.0';
   method: string;
   params: Record<string, unknown>;
   id: number;
@@ -11,6 +11,6 @@ export interface JsonRpcResponse {
 }
 
 export interface JsonRpcNotification {
-  notification: string,
-  params: unknown
+  notification: string;
+  params: unknown;
 }
