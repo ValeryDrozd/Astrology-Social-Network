@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { makeAutoObservable, observable } from 'mobx';
 import WebSocketClient, { createRpcConnection } from '../socket';
 import Chat from '../interfaces/chat';
 import { NewMessage } from '../interfaces/new-message';
@@ -13,15 +13,13 @@ export default class ChatStore {
   @observable number = 1;
   private socket: WebSocketClient | undefined;
 
-  // constructor() {}s
-
-  async init(): Promise<void> {
+  constructor() {
+    makeAutoObservable(this);
     createRpcConnection().then(async (socket: WebSocketClient) => {
       this.socket = socket;
       const chats = await socket.call<GetMessagesFunctionResponse>(
         GetMessagesFunction,
       );
-      console.log(chats);
       this.chats = [...chats];
       setTimeout(() => {
         this.number = 2;

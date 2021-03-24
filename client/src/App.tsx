@@ -7,10 +7,8 @@ import styled from 'styled-components';
 import ChatPage from './pages/chatPage/chatPage';
 import ChatStore from './stores/store';
 import React from 'react';
-import { Provider } from 'mobx-react';
 
 const chatStore = new ChatStore();
-chatStore.init();
 
 // const ChatPageWithStore = (): JSX.Element => <ChatPage store={chatStore} />;
 
