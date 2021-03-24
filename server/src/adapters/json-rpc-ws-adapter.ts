@@ -4,7 +4,7 @@ import { AbstractWsAdapter, MessageMappingProperties } from '@nestjs/websockets'
 import { Observable, fromEvent, EMPTY } from 'rxjs';
 import { mergeMap, filter, map } from 'rxjs/operators';
 import { IncomingMessage } from 'node:http';
-import { JsonRpcRequest, JsonRpcResponse } from '../../../interfaces/json-rpc';
+import { JsonRpcRequest, JsonRpcResponse } from '../../../client/src/interfaces/json-rpc';
 import { generateJsonRpcResponse } from '../helpers/json-rpc.utils';
 
 export class JsonRpcWsAdapter extends AbstractWsAdapter {

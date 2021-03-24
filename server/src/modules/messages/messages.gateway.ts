@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import broadcast from 'src/helpers/broadcast';
 import { MessagesService } from './messages.service';
-import Message from '../../../../interfaces/message.entity';
+import Message from '../../../../client/src/interfaces/message';
 import {
   AddNewMessageFunction,
   DeliveredEvent,
@@ -18,9 +18,10 @@ import {
   GetMessagesFunctionResponse,
   NewMessageNotification,
   NewMessageNotificationParams,
-} from '../../../../interfaces/rpc-events';
+} from '../../../../client/src/interfaces/rpc-events';
 import { IncomingMessage } from 'http';
 import * as cookie from 'cookie';
+
 
 interface MessagesSession {
   socket: WebSocket;
@@ -66,7 +67,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @MessageBody() data: string,
     @ConnectedSocket() socket: WebSocket,
   ): GetMessagesFunctionResponse {
-    return this.messagesService.getMessages();
+    return this.messagesService.getChats();
   }
 
   @SubscribeMessage(AddNewMessageFunction)
@@ -74,6 +75,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @MessageBody() message: Message,
     @ConnectedSocket() socket: WebSocket,
   ): Promise<DeliveredEvent> {
+    //message
     this.messagesService.addNewMessage(message);
     broadcast<NewMessageNotificationParams>(this.server, NewMessageNotification, {
       except: [socket],
