@@ -28,7 +28,7 @@ interface MessagesSession {
   token: string;
 }
 
-@WebSocketGateway({ path: '/messages' })
+@WebSocketGateway()
 export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
