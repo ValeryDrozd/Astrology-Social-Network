@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import broadcast from 'src/helpers/broadcast';
 import { MessagesService } from './messages.service';
-import Message from '../../../../client/src/interfaces/message.entity';
+import Message from '../../../../client/src/interfaces/message';
 import {
   AddNewMessageFunction,
   DeliveredEvent,
@@ -41,7 +41,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @MessageBody() data: string,
     @ConnectedSocket() socket: WebSocket,
   ): GetMessagesFunctionResponse {
-    return this.messagesService.getMessages();
+    return this.messagesService.getChats();
   }
 
   @SubscribeMessage(AddNewMessageFunction)
@@ -49,6 +49,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @MessageBody() message: Message,
     @ConnectedSocket() socket: WebSocket,
   ): Promise<DeliveredEvent> {
+    //message
     this.messagesService.addNewMessage(message);
     broadcast<NewMessageNotificationParams>(this.server, NewMessageNotification, {
       except: [socket],

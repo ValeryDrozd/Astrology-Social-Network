@@ -1,7 +1,8 @@
-import Message from './message.entity';
+import Chat from './chat';
+import Message from './message';
 
 export const GetMessagesFunction = 'getMessages';
-export type GetMessagesFunctionResponse = Message[];
+export type GetMessagesFunctionResponse = Chat[];
 
 export const AddNewMessageFunction = 'addNewMessage';
 export interface AddNewMessageParams {
