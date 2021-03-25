@@ -25,7 +25,6 @@ class ChatPage extends React.Component {
           ) => <p key={index}>{m.text}</p>,
         )
       : [];
-
     return (
       <div>
         <div>

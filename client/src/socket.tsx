@@ -1,5 +1,6 @@
 import { Client } from 'rpc-websockets';
 import { IWSRequestParams } from 'rpc-websockets/dist/lib/client';
+import 'dotenv/config';
 
 export async function createRpcConnection(): Promise<WebSocketClient> {
   const socket = new WebSocketClient();
@@ -9,7 +10,7 @@ export async function createRpcConnection(): Promise<WebSocketClient> {
 
 class WebSocketClient {
   //Server
-  private socket = new Client('ws://localhost:3001');
+  private socket = new Client(process.env.REACT_APP_ADDR_NAME);
   //Save call functions
   private listeners: string[] = [];
 
