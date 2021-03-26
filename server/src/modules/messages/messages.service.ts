@@ -6,6 +6,13 @@ import Chat from '../../../../client/src/interfaces/chat';
 export class MessagesService {
   private messages: Message[] = [
     {
+      text: 'string4',
+      time: new Date(),
+      id: 5,
+      isSent: true,
+      senderId: 5,
+    },
+    {
       text: 'string',
       time: new Date(),
       id: 1,
@@ -30,6 +37,13 @@ export class MessagesService {
       text: 'string1',
       time: new Date(),
       id: 4,
+      isSent: true,
+      senderId: 1,
+    },
+    {
+      text: 'string228',
+      time: new Date(),
+      id: 9,
       isSent: true,
       senderId: 1,
     },

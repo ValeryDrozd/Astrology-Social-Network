@@ -2,26 +2,11 @@ import { Client } from 'rpc-websockets';
 import { IWSRequestParams } from 'rpc-websockets/dist/lib/client';
 import 'dotenv/config';
 
-export async function createRpcConnection(): Promise<WebSocketClient> {
-  const socket = new WebSocketClient();
-  await socket.initSocket();
-  return socket;
-}
-
 class WebSocketClient {
   //Server
   private socket = new Client(process.env.REACT_APP_ADDR_NAME);
   //Save call functions
   private listeners: string[] = [];
-
-  //Create socket
-  async initSocket(): Promise<null> {
-    return new Promise((resolve, reject) => {
-      this.socket.on('open', () => {
-        resolve(null);
-      });
-    });
-  }
 
   //Get listener list
   getListeners(): string[] {
