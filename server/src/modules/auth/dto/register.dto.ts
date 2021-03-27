@@ -1,9 +1,11 @@
-export default interface RegisterDTO {
-  email: string;
-  password?: string;
-  fingerprint: string;
-  firstName: string;
-  lastName: string;
+import { IsString } from 'class-validator';
+import AuthDTO from './auth.dto';
+
+export default class RegisterDTO extends AuthDTO {
+  @IsString()
+  firstName!: string;
+  @IsString()
+  lastName!: string;
 }
 
 export interface RegisterData {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
-import AuthProviderDTO from './dto/auth-provider.dto';
+import AuthProviderDTO, { AuthProviderName } from './dto/auth-provider.dto';
 
 @Injectable()
 export class AuthProvidersService {
@@ -9,5 +9,12 @@ export class AuthProvidersService {
 
   async saveProvider(provider: AuthProviderDTO): Promise<void> {
     await this.pgService.create({ values: [provider], tableName: this.tableName });
+  }
+
+  async findOne(userID: string, authName: AuthProviderName): Promise<AuthProviderDTO> {
+    return await this.pgService.findOne({
+      tableName: this.tableName,
+      where: { userID, authName },
+    });
   }
 }
