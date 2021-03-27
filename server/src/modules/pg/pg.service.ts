@@ -23,6 +23,10 @@ export class PgService {
       .map((key) => `"${key}"`)
       .join(',');
 
+    let counter = 1;
+
+    const requestValues = values.map((value) => Object.values(value)).flat(1);
+
     const request =
       'INSERT INTO "' +
       tableName +
@@ -34,14 +38,14 @@ export class PgService {
           (value) =>
             '(' +
             Object.values(value)
-              .map((item) => (typeof item === 'number' ? item : `'${item}'`))
+              .map(() => `$${counter++}`)
               .join(',') +
             ')',
         )
         .join(',') +
       (returning ? `RETURNING "${returning}"` : '');
     try {
-      return await this.pool.query(request);
+      return await this.pool.query(request, requestValues);
     } catch (error) {
       return error;
     }

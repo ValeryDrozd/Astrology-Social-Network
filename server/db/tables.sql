@@ -34,7 +34,6 @@ CREATE TABLE "RefreshSessions" (
     "refreshToken" UUID NOT NULL,
     "userAgent" VARCHAR(200) NOT NULL,
     "fingerprint" VARCHAR(200) NOT NULL,
-    "ip" VARCHAR(15) NOT NULL,
     "expiresIn" BIGINT NOT NULL,
     "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
