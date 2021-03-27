@@ -1,8 +1,5 @@
 import { observer } from 'mobx-react';
-import { makeAutoObservable } from 'mobx';
-import { send } from 'node:process';
 import React from 'react';
-import { createRpcConnection } from '../../socket';
 import chatStore from '../../stores/store';
 
 class ChatPage extends React.Component {

@@ -1,4 +1,4 @@
-import { makeAutoObservable, observable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import WebSocketClient, { createRpcConnection } from '../socket';
 import Chat from '../interfaces/chat';
 import { NewMessage } from '../interfaces/new-message';
@@ -50,7 +50,7 @@ class ChatStore {
   }
 
   sendMessages(): void {
-    const i = 0;
+    //const i = 0;
   }
 
   saveQueue(): void {
