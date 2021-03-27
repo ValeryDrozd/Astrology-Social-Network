@@ -7,14 +7,13 @@ import {
   GetMessagesFunctionResponse,
 } from '../interfaces/rpc-events';
 
-export default class ChatStore {
-  @observable messagesQueue: NewMessage[] = [];
-  @observable chats: Chat[] = [];
-  @observable number = 1;
+class ChatStore {
+  messagesQueue: NewMessage[] = [];
+  chats: Chat[] = [];
+  number = 1;
   private socket: WebSocketClient | undefined;
 
   constructor() {
-    makeAutoObservable(this);
     createRpcConnection().then(async (socket: WebSocketClient) => {
       this.socket = socket;
       const chats = await socket.call<GetMessagesFunctionResponse>(
@@ -58,7 +57,7 @@ export default class ChatStore {
     localStorage.setItem('queue', JSON.stringify(this.messagesQueue));
   }
 
-  // sendMessage(): void {}
-
   // addNewChat(): void {}
 }
+
+export default makeAutoObservable(new ChatStore());

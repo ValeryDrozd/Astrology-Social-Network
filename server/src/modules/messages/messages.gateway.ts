@@ -22,7 +22,6 @@ import {
 import { IncomingMessage } from 'http';
 import * as cookie from 'cookie';
 
-
 interface MessagesSession {
   socket: WebSocket;
   token: string;
@@ -58,7 +57,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       this.clients.findIndex((c) => c.socket === client),
       1,
     );
-    console.log(this.clients)
+    console.log(this.clients);
     broadcast(this.server, 'disconnect');
   }
 

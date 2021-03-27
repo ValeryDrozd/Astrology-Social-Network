@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dotenv": "^8.2.0",
     "mobx": "^6.1.8",
     "mobx-react": "^7.1.0",
     "mobx-state-tree": "3.6.0",
