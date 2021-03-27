@@ -18,6 +18,13 @@ export class RefreshSessionsService {
     });
   }
 
+  async find(userID: string): Promise<Session[]> {
+    return await this.pgService.find({
+      tableName: this.tableName,
+      where: { userID },
+    });
+  }
+
   async delete(refreshToken: string): Promise<void> {
     await this.pgService.delete({ tableName: this.tableName, where: { refreshToken } });
   }

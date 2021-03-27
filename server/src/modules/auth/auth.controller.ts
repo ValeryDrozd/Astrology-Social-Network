@@ -7,12 +7,17 @@ import {
   Res,
   Req,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
+import sendTokensPair from 'src/helpers/send-tokens-pair';
 import { AuthService } from './auth.service';
 import AuthDTO from './dto/auth.dto';
 import RegisterDTO from './dto/register.dto';
+import axios from 'axios';
+import GoogleResponse from './dto/google-response';
 
+const userAgentName = 'user-agent';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -22,21 +27,12 @@ export class AuthController {
   async register(
     @Body() registerDTO: RegisterDTO,
     @Res({ passthrough: true }) response: Response,
-    @Req() request: Request,
+    @Req() { headers }: Request,
   ): Promise<void> {
-    const userAgent = request.headers['user-agent'];
-    const { refreshToken, accessToken } = await this.authService.register(
-      registerDTO,
-      userAgent ? userAgent : '',
-      'local',
-    );
+    const userAgent = String(headers[userAgentName]);
+    const pair = await this.authService.register(registerDTO, userAgent, 'local');
 
-    response.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 5.184e9,
-      path: '/auth',
-    });
-    response.send({ accessToken });
+    sendTokensPair(response, pair);
   }
 
   @Post('login')
@@ -44,21 +40,12 @@ export class AuthController {
   async login(
     @Body() authDTO: AuthDTO,
     @Res({ passthrough: true }) response: Response,
-    @Req() request: Request,
+    @Req() { headers }: Request,
   ): Promise<void> {
-    const userAgent = request.headers['user-agent'];
-    const { refreshToken, accessToken } = await this.authService.login(
-      authDTO,
-      userAgent ? userAgent : '',
-      'local',
-    );
+    const userAgent = String(headers[userAgentName]);
+    const pair = await this.authService.login(authDTO, userAgent, 'local');
 
-    response.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 5.184e9,
-      path: '/auth',
-    });
-    response.send({ accessToken });
+    sendTokensPair(response, pair);
   }
 
   @Post('refresh-tokens')
@@ -69,15 +56,27 @@ export class AuthController {
   ): Promise<void> {
     const { refreshToken: oldToken } = request.cookies;
     if (!oldToken) throw new UnauthorizedException('No refresh token');
-    const { refreshToken, accessToken } = await this.authService.refreshTokens(
-      oldToken,
-      fingerprint,
-    );
-    response.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 5.184e9,
-      path: '/auth',
-    });
-    response.send({ accessToken });
+    const pair = await this.authService.refreshTokens(oldToken, fingerprint);
+    sendTokensPair(response, pair);
+  }
+
+  @Post('google')
+  async googleAuth(
+    @Body() body: { accessToken: string; tokenId: string; fingerprint: string },
+    @Req() { headers }: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
+    const userData = (
+      await axios.get(
+        'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + body.tokenId,
+      )
+    ).data as GoogleResponse;
+    if (!userData.email_verified) {
+      throw new BadRequestException('Not confirmed google account!');
+    }
+    const userAgent = String(headers[userAgentName]);
+
+    const pair = await this.authService.googleAuth(userData, userAgent, body.fingerprint);
+    sendTokensPair(response, pair);
   }
 }

@@ -10,9 +10,11 @@ import AuthDTO from './dto/auth.dto';
 import { RefreshSessionDTO } from '../refresh-sessions/dto/refresh-session.dto';
 import { JwtService } from '@nestjs/jwt';
 import AuthTokensPair from './dto/tokens-pair.dto';
+import GoogleResponse from './dto/google-response';
 
 @Injectable()
 export class AuthService {
+  private maxNumberOfSessions = 10;
   constructor(
     private scryptService: ScryptService,
     private jwtService: JwtService,
@@ -29,17 +31,17 @@ export class AuthService {
     const password = pass ? await this.scryptService.hash(pass) : undefined;
     const userID = uuid();
 
-    const { accessToken, refreshToken } = await this.createNewRefreshSession({
-      userID,
-      userAgent,
-      fingerprint,
-    });
-
     await this.usersService.registerUser({
       email,
       firstName,
       lastName,
       userID,
+    });
+
+    const { accessToken, refreshToken } = await this.createNewRefreshSession({
+      userID,
+      userAgent,
+      fingerprint,
     });
 
     await this.refreshSessionsService.saveSession({
@@ -111,6 +113,14 @@ export class AuthService {
   }: RefreshSessionDTO): Promise<AuthTokensPair> {
     const accessToken = this.jwtService.sign({ userID: userID });
     const refreshToken = uuid();
+
+    const sessions = (await this.refreshSessionsService.find(userID)).sort(
+      (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+    );
+
+    if (sessions.length > this.maxNumberOfSessions - 1) {
+      await this.refreshSessionsService.delete(sessions[0].refreshToken);
+    }
     await this.refreshSessionsService.saveSession({
       refreshToken,
       userID,
@@ -120,5 +130,39 @@ export class AuthService {
       userAgent,
     });
     return { accessToken, refreshToken };
+  }
+
+  async googleAuth(
+    userData: GoogleResponse,
+    userAgent: string,
+    fingerprint: string,
+  ): Promise<AuthTokensPair> {
+    const oldUser = await this.usersService.findByEmail(userData.email);
+    if (!oldUser) {
+      return await this.register(
+        {
+          email: userData.email,
+          firstName: userData.given_name,
+          lastName: userData.family_name,
+          fingerprint,
+        },
+        userAgent ? userAgent : '',
+        'google',
+      );
+    } else {
+      const provider = await this.authProvidersService.findOne(oldUser.userID, 'google');
+      if (!provider) {
+        throw new BadRequestException('No such auth provider!');
+      }
+
+      return await this.login(
+        {
+          email: userData.email,
+          fingerprint: fingerprint,
+        },
+        userAgent ? userAgent : '',
+        'google',
+      );
+    }
   }
 }

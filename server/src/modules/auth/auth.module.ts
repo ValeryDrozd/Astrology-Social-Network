@@ -28,5 +28,14 @@ import { AuthProvidersService } from '../auth-providers/auth-providers.service';
     AuthProvidersService,
   ],
   controllers: [AuthController],
+  exports: [
+    AuthService,
+    ScryptService,
+    UsersService,
+    PgService,
+    JwtStrategy,
+    RefreshSessionsService,
+    AuthProvidersService,
+  ],
 })
 export class AuthModule {}
