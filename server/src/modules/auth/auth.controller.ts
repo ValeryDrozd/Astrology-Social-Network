@@ -16,10 +16,10 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  @UsePipes(new ValidationPipe({ transform: true }))
+  // @UsePipes(new ValidationPipe({ transform: true }))
   async register(
     @Body() registerDTO: RegisterDTO,
-    @Res() response: Response,
+    @Res({ passthrough: true }) response: Response,
     @Req() request: Request,
   ): Promise<void> {
     const { refreshToken, accessToken } = await this.authService.register(
@@ -28,10 +28,10 @@ export class AuthController {
       'local',
     );
 
-    response
-      .set({
-        'Set-Cookie': `refreshToken='${refreshToken}'; HttpOnly; Max-Age=`,
-      })
-      .send({ accessToken });
+    response.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 5.184e9,
+    });
+    response.send({ accessToken });
   }
 }

@@ -47,6 +47,7 @@ export class PgService {
     try {
       return await this.pool.query(request, requestValues);
     } catch (error) {
+      console.log(error);
       return error;
     }
   }

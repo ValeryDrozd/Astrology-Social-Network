@@ -2,7 +2,6 @@ export default interface RegisterDTO {
   email: string;
   password?: string;
   fingerprint: string;
-  userID: string;
   firstName: string;
   lastName: string;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ScryptService } from '../scrypt/scrypt.service';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import RegisterDTO from './dto/register.dto';
