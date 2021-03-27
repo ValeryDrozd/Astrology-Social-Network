@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import WebSocketClient, { createRpcConnection } from '../socket';
+import WebSocketClient from '../socket';
 import Chat from '../interfaces/chat';
 import { NewMessage } from '../interfaces/new-message';
 import {
@@ -11,19 +11,23 @@ class ChatStore {
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
   number = 1;
-  private socket: WebSocketClient | undefined;
+  online = false;
+  private socket = new WebSocketClient();
 
   constructor() {
-    createRpcConnection().then(async (socket: WebSocketClient) => {
-      this.socket = socket;
-      const chats = await socket.call<GetMessagesFunctionResponse>(
-        GetMessagesFunction,
-      );
-      this.chats = [...chats];
-      setTimeout(() => {
-        this.number = 2;
-      }, 1000);
+    this.socket.listenTo('open', () => {
+      this.online = true;
+      this.getMessages();
     });
+    this.socket.listenTo('close', () => {
+      this.online = false;
+    });
+  }
+
+  async getMessages(): Promise<void> {
+    this.chats = await this.socket.call<GetMessagesFunctionResponse>(
+      GetMessagesFunction,
+    );
   }
 
   addMessage(chatId: number, text: string, time: Date, senderId: number): void {
