@@ -8,7 +8,12 @@ export default function sendTokensPair(
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     maxAge: 5.184e9,
-    path: '/',
+    path: '/auth',
+  });
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    maxAge: 30 * 60000,
+    path: '/chating',
   });
   res.send({ accessToken });
 }

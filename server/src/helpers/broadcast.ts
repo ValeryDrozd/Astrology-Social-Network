@@ -4,11 +4,12 @@ import { generateJsonRpcNotification } from './json-rpc.utils';
 export default function broadcast<T>(
   server: Server,
   event: string,
-  options?: { except?: WebSocket[]; params?: T },
+  includes: WebSocket[],
+  params?: T,
 ): void {
   server.clients.forEach((client) => {
-    if (options?.except && !options.except.find((c) => c === client)) {
-      const message = generateJsonRpcNotification(event, options.params);
+    if (includes.find((c) => c === client)) {
+      const message = generateJsonRpcNotification(event, params);
       client.send(JSON.stringify(message));
     }
   });

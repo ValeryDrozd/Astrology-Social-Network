@@ -1,83 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import Message from '../../../../client/src/interfaces/message';
-import Chat from '../../../../client/src/interfaces/chat';
+import { ServerMessage } from '../../../../client/src/interfaces/message';
+import { NewMessage } from '../../../../client/src/interfaces/new-message';
+import { PgService } from '../pg/pg.service';
 
 @Injectable()
 export class MessagesService {
-  private messages: Message[] = [
-    {
-      text: 'string4',
-      time: new Date(),
-      id: '5',
-      isSent: true,
-      senderId: 2,
-    },
-    {
-      text: 'string22',
-      time: new Date(),
-      id: '1',
-      isSent: true,
-      senderId: 1,
-    },
-    {
-      text: 'string2',
-      time: new Date(),
-      id: '2',
-      isSent: true,
-      senderId: 1,
-    },
-    {
-      text: 'string2',
-      time: new Date(),
-      id: '3',
-      isSent: true,
-      senderId: 1,
-    },
-    {
-      text: 'string1',
-      time: new Date(),
-      id: '4',
-      isSent: true,
-      senderId: 1,
-    },
-    {
-      text: 'string22asq8',
-      time: new Date(),
-      id: '9',
-      isSent: true,
-      senderId: 1,
-    },
-  ];
+  private tableName = 'Messages';
+  constructor(private pgService: PgService) {}
 
-  chats: Chat[] = [
-    {
-      messageList: this.messages,
-      chatId: '1',
-      senderInfo: {
-        nameUser: 'Michael',
-        userID: 2,
-      },
-    },
-    {
-      messageList: [],
-      chatId: '2',
-      senderInfo: {
-        nameUser: 'Mishanya',
-        userID: 3,
-      },
-    },
-  ];
-
-  getChats(): Chat[] {
-    return this.chats;
+  async getMessagesOfChat(chatID: string, limit?: number): Promise<ServerMessage[]> {
+    return await this.pgService.find<ServerMessage>(
+      { tableName: this.tableName, where: { chatID } },
+      limit,
+    );
   }
 
-  getMessages(): Message[] {
-    console.log('Getting messages');
-    return this.messages;
-  }
-  //Add to parametes message: Message
-  addNewMessage(message: Message): void {
-    this.messages.push(message);
+  async addNewMessage(message: NewMessage): Promise<void> {
+    await this.pgService.create({
+      tableName: this.tableName,
+      values: [{ ...message, time: new Date(Date.now()).toISOString() }],
+    });
   }
 }

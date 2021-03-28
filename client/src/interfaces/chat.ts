@@ -1,8 +1,13 @@
 import Message from './message';
-import User from './user';
+
+interface SenderInfo {
+  firstName: string;
+  lastName: string;
+  senderID: string;
+}
 
 export default interface Chat {
   messageList: Message[];
-  chatId: string;
-  senderInfo: User;
+  chatID: string;
+  senderInfo: SenderInfo;
 }

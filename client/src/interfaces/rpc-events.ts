@@ -1,5 +1,5 @@
 import Chat from './chat';
-import Message from './message';
+import Message, { ServerMessage } from './message';
 
 export const GetMessagesFunction = 'getMessages';
 export type GetMessagesFunctionResponse = Chat[];
@@ -10,7 +10,7 @@ export interface AddNewMessageParams {
 }
 
 export const NewMessageNotification = 'newMessage';
-export type NewMessageNotificationParams = Message;
+export type NewMessageNotificationParams = ServerMessage;
 
 export interface DeliveredEvent {
   ok: true;

@@ -1,4 +1,7 @@
 export default interface User {
-  nameUser: string;
-  userID: number;
+  userID: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  birthDate: Date;
 }

@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-
 import 'dotenv/config';
 import { JsonRpcWsAdapter } from './adapters/json-rpc-ws-adapter';
 import * as cookieParser from 'cookie-parser';

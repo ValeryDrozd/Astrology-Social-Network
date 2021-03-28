@@ -129,7 +129,7 @@ export class PgService {
     }
   }
 
-  useQuery(request: string, values = undefined): Promise<QueryResult> {
+  useQuery(request: string, values?: unknown[]): Promise<QueryResult> {
     return this.pool.query(request, values);
   }
 }

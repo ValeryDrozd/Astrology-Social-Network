@@ -9,13 +9,14 @@ import {
   GetMessagesFunctionResponse,
   NewMessageNotification,
 } from '../interfaces/rpc-events';
+import Message, { ServerMessage } from '../interfaces/message';
 
 class ChatStore {
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
   number = 1;
   online = false;
-  myID = 1;
+  myID = '1';
   private socket = new WebSocketClient();
 
   constructor() {
@@ -26,7 +27,7 @@ class ChatStore {
     this.socket.listenTo(NewMessageNotification, () => {
       alert('New messages');
     });
-    this.socket.listenTo('close', () => {
+    this.socket.listenTo('close', (res) => {
       this.online = false;
     });
   }
@@ -37,18 +38,19 @@ class ChatStore {
     );
   }
 
-  addMessage(chatId: number, text: string, senderId: number): void {
+  addMessage(chatID: string, text: string, senderID: string): void {
     const id = uuid();
-    const message: NewMessage = {
-      id,
-      chatId: chatId,
-      senderId: senderId,
+    const message: ServerMessage = {
+      messageID: id,
+      senderID,
       time: new Date(),
-      isSent: false,
       text: text,
     };
-    this.messagesQueue = [...this.messagesQueue, message];
-    this.sendMessages();
+    this.messagesQueue = [...this.messagesQueue, { ...message, chatID }];
+    this.chats
+      .find((chat) => chat.chatID === chatID)
+      ?.messageList.push({ ...message, isSent: false });
+    this.sendOneMessage({ ...message, chatID });
   }
 
   removeMessage(): void {

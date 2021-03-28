@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import User from '../../../../client/src/interfaces/user';
 import { RegisterData } from '../auth/dto/register.dto';
 import { PgService } from '../pg/pg.service';
-import User from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
