@@ -1,18 +1,21 @@
 import { observer } from 'mobx-react';
 import React, { useState } from 'react';
-import chatStore from '../../../../stores/store';
+import chatStore from '../../stores/store';
 import {
   ChatBlockView,
   ChatItem,
   ChatList,
+  Button,
+  Input,
   MessageItem,
   MessageList,
+  MessagesBlock,
   MessageView,
 } from './styles';
 
 const ChatBlock = (): JSX.Element => {
   const [currentChatId, setCurrentChatId] = useState<string>();
-
+  const [newMessageText, setNewMessageText] = useState<string>('');
   const handlerChatClick = (chatId: string): void => {
     setCurrentChatId(chatId);
   };
@@ -24,7 +27,7 @@ const ChatBlock = (): JSX.Element => {
   ));
 
   const currentChat = chatStore.chats.find(
-    (chat) => chat.chatId == currentChatId,
+    (chat) => chat.chatId === currentChatId,
   );
   const messagesViews = currentChat
     ? currentChat?.messageList.map((message) => (
@@ -35,22 +38,34 @@ const ChatBlock = (): JSX.Element => {
         </MessageItem>
       ))
     : [];
+
   const handlerButtonClick = (): void => {
-    // chatStore.addMessage()
+    chatStore.addMessage('1', newMessageText, 1);
+    setNewMessageText('');
   };
 
   return (
     <ChatBlockView>
       <ChatList>{chatViews}</ChatList>
-      <MessageList>{messagesViews}</MessageList>
-      <form>
-        <input
-          type="text"
-          className="inputMessage"
-          placeholder="type your message"
-        />
-        <button onClick={handlerButtonClick}></button>
-      </form>
+      <MessagesBlock>
+        <MessageList>{messagesViews}</MessageList>
+        {currentChatId ? (
+          <div>
+            <Input
+              type="text"
+              placeholder="type your message"
+              value={newMessageText}
+              onChange={({ target }): void => setNewMessageText(target.value)}
+            />
+            <Button
+              className="button"
+              onClick={(): void => handlerButtonClick()}
+            >
+              Send
+            </Button>
+          </div>
+        ) : null}
+      </MessagesBlock>
     </ChatBlockView>
   );
 };

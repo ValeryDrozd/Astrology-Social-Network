@@ -34,4 +34,5 @@ const AppView = styled.div`
   min-width: none;
   height: 100vh;
   color: #fff;
+  overflow: hidden;
 `;

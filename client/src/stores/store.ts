@@ -37,7 +37,8 @@ class ChatStore {
     );
   }
 
-  addMessage(chatId: number, text: string, senderId: number): void {
+  addMessage(chatId: string, text: string, senderId: number): void {
+    console.log(text);
     const id = uuid();
     const message: NewMessage = {
       id,
@@ -48,7 +49,10 @@ class ChatStore {
       text: text,
     };
     this.messagesQueue = [...this.messagesQueue, message];
-    this.sendMessages();
+    this.chats
+      .find((chat) => chat.chatId === chatId)
+      ?.messageList.push(message);
+    // this.sendMessages();
   }
 
   removeMessage(): void {
@@ -62,13 +66,11 @@ class ChatStore {
   }
 
   sendOneMessage(msg: NewMessage): void {
-    //debugger;
     console.log('OneMsg', msg);
     this.socket.call(AddNewMessageFunction, msg);
   }
 
   sendMessages(): void {
-    // debugger;
     this.messagesQueue.forEach((message: NewMessage) => {
       this.sendOneMessage(message);
       this.messagesQueue.shift();
@@ -84,8 +86,3 @@ class ChatStore {
 }
 
 export default makeAutoObservable(new ChatStore());
-/*
-function JsonRpcNotification(JsonRpcNotification: any, arg1: () => void) {
-  throw new Error('Function not implemented.');
-}
-*/
