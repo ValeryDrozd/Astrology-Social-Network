@@ -1,5 +1,5 @@
 export default interface Message {
-  id: number;
+  id: string;
   text: string;
   time: Date;
   isSent: boolean;

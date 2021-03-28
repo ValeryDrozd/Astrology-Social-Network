@@ -3,6 +3,6 @@ import User from './user';
 
 export default interface Chat {
   messageList: Message[];
-  chatId: number;
+  chatId: string;
   senderInfo: User;
 }

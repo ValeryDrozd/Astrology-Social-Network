@@ -8,42 +8,42 @@ export class MessagesService {
     {
       text: 'string4',
       time: new Date(),
-      id: 5,
+      id: '5',
       isSent: true,
       senderId: 2,
     },
     {
       text: 'string22',
       time: new Date(),
-      id: 1,
+      id: '1',
       isSent: true,
       senderId: 1,
     },
     {
       text: 'string2',
       time: new Date(),
-      id: 2,
+      id: '2',
       isSent: true,
       senderId: 1,
     },
     {
       text: 'string2',
       time: new Date(),
-      id: 3,
+      id: '3',
       isSent: true,
       senderId: 1,
     },
     {
       text: 'string1',
       time: new Date(),
-      id: 4,
+      id: '4',
       isSent: true,
       senderId: 1,
     },
     {
       text: 'string22asq8',
       time: new Date(),
-      id: 9,
+      id: '9',
       isSent: true,
       senderId: 1,
     },
@@ -52,7 +52,7 @@ export class MessagesService {
   chats: Chat[] = [
     {
       messageList: this.messages,
-      chatId: 1,
+      chatId: '1',
       senderInfo: {
         nameUser: 'Michael',
         userID: 2,
@@ -60,13 +60,12 @@ export class MessagesService {
     },
     {
       messageList: [],
-      chatId: 2,
+      chatId: '2',
       senderInfo: {
         nameUser: 'Mishanya',
         userID: 3,
       },
     },
-    
   ];
 
   getChats(): Chat[] {
@@ -79,10 +78,6 @@ export class MessagesService {
   }
   //Add to parametes message: Message
   addNewMessage(message: Message): void {
-    console.log('Old message', message);
-    message.id = this.messages.length + 10;
     this.messages.push(message);
-    console.log('This.messageList ', this.messages);
-    console.log('Last message', message);
   }
 }

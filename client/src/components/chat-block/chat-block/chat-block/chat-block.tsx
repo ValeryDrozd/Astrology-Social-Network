@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import React, { useState } from 'react';
-import chatStore from '../../stores/store';
+import chatStore from '../../../../stores/store';
 import {
   ChatBlockView,
   ChatItem,
@@ -11,9 +11,9 @@ import {
 } from './styles';
 
 const ChatBlock = (): JSX.Element => {
-  const [currentChatId, setCurrentChatId] = useState<number>();
+  const [currentChatId, setCurrentChatId] = useState<string>();
 
-  const handlerChatClick = (chatId: number): void => {
+  const handlerChatClick = (chatId: string): void => {
     setCurrentChatId(chatId);
   };
 
@@ -35,10 +35,22 @@ const ChatBlock = (): JSX.Element => {
         </MessageItem>
       ))
     : [];
+  const handlerButtonClick = (): void => {
+    // chatStore.addMessage()
+  };
+
   return (
     <ChatBlockView>
       <ChatList>{chatViews}</ChatList>
       <MessageList>{messagesViews}</MessageList>
+      <form>
+        <input
+          type="text"
+          className="inputMessage"
+          placeholder="type your message"
+        />
+        <button onClick={handlerButtonClick}></button>
+      </form>
     </ChatBlockView>
   );
 };

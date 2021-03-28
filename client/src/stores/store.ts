@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import WebSocketClient from '../socket';
 import Chat from '../interfaces/chat';
 import { NewMessage } from '../interfaces/new-message';
+import { v4 as uuid } from 'uuid';
 import {
   AddNewMessageFunction,
   GetMessagesFunction,
@@ -36,13 +37,13 @@ class ChatStore {
     );
   }
 
-  addMessage(chatId: number, text: string, time: Date, senderId: number): void {
-    // debugger;
+  addMessage(chatId: number, text: string, senderId: number): void {
+    const id = uuid();
     const message: NewMessage = {
-      id: 1,
+      id,
       chatId: chatId,
       senderId: senderId,
-      time: time,
+      time: new Date(),
       isSent: false,
       text: text,
     };
