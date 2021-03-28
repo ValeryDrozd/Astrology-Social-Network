@@ -6,30 +6,44 @@ import Chat from '../../../../client/src/interfaces/chat';
 export class MessagesService {
   private messages: Message[] = [
     {
-      text: 'string',
+      text: 'string4',
       time: new Date(),
-      id: 1,
+      id: '5',
+      isSent: true,
+      senderId: 2,
+    },
+    {
+      text: 'string22',
+      time: new Date(),
+      id: '1',
       isSent: true,
       senderId: 1,
     },
     {
       text: 'string2',
       time: new Date(),
-      id: 2,
+      id: '2',
       isSent: true,
       senderId: 1,
     },
     {
       text: 'string2',
       time: new Date(),
-      id: 3,
+      id: '3',
       isSent: true,
       senderId: 1,
     },
     {
       text: 'string1',
       time: new Date(),
-      id: 4,
+      id: '4',
+      isSent: true,
+      senderId: 1,
+    },
+    {
+      text: 'string22asq8',
+      time: new Date(),
+      id: '9',
       isSent: true,
       senderId: 1,
     },
@@ -38,17 +52,19 @@ export class MessagesService {
   chats: Chat[] = [
     {
       messageList: this.messages,
-      chatId: 1,
-      senderInfo: [
-        {
-          nameUser: 'Valery',
-          userID: 1,
-        },
-        {
-          nameUser: 'Michael',
-          userID: 2,
-        },
-      ],
+      chatId: '1',
+      senderInfo: {
+        nameUser: 'Michael',
+        userID: 2,
+      },
+    },
+    {
+      messageList: [],
+      chatId: '2',
+      senderInfo: {
+        nameUser: 'Mishanya',
+        userID: 3,
+      },
     },
   ];
 
@@ -57,11 +73,11 @@ export class MessagesService {
   }
 
   getMessages(): Message[] {
+    console.log('Getting messages');
     return this.messages;
   }
   //Add to parametes message: Message
   addNewMessage(message: Message): void {
     this.messages.push(message);
-    //console.log('Pushed');
   }
 }

@@ -1,37 +1,49 @@
-import { makeAutoObservable, observable } from 'mobx';
-import WebSocketClient, { createRpcConnection } from '../socket';
+import { makeAutoObservable } from 'mobx';
+import WebSocketClient from '../socket';
 import Chat from '../interfaces/chat';
 import { NewMessage } from '../interfaces/new-message';
+import { v4 as uuid } from 'uuid';
 import {
+  AddNewMessageFunction,
   GetMessagesFunction,
   GetMessagesFunctionResponse,
+  NewMessageNotification,
 } from '../interfaces/rpc-events';
 
 class ChatStore {
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
   number = 1;
-  private socket: WebSocketClient | undefined;
+  online = false;
+  myID = 1;
+  private socket = new WebSocketClient();
 
   constructor() {
-    createRpcConnection().then(async (socket: WebSocketClient) => {
-      this.socket = socket;
-      const chats = await socket.call<GetMessagesFunctionResponse>(
-        GetMessagesFunction,
-      );
-      this.chats = [...chats];
-      setTimeout(() => {
-        this.number = 2;
-      }, 1000);
+    this.socket.listenTo('open', () => {
+      this.online = true;
+      this.getMessages();
+    });
+    this.socket.listenTo(NewMessageNotification, () => {
+      alert('New messages');
+    });
+    this.socket.listenTo('close', () => {
+      this.online = false;
     });
   }
 
-  addMessage(chatId: number, text: string, time: Date, senderId: number): void {
+  async getMessages(): Promise<void> {
+    this.chats = await this.socket.call<GetMessagesFunctionResponse>(
+      GetMessagesFunction,
+    );
+  }
+
+  addMessage(chatId: number, text: string, senderId: number): void {
+    const id = uuid();
     const message: NewMessage = {
-      id: 1,
+      id,
       chatId: chatId,
       senderId: senderId,
-      time: time,
+      time: new Date(),
       isSent: false,
       text: text,
     };
@@ -49,8 +61,19 @@ class ChatStore {
     this.sendMessages();
   }
 
+  sendOneMessage(msg: NewMessage): void {
+    //debugger;
+    console.log('OneMsg', msg);
+    this.socket.call(AddNewMessageFunction, msg);
+  }
+
   sendMessages(): void {
-    const i = 0;
+    // debugger;
+    this.messagesQueue.forEach((message: NewMessage) => {
+      this.sendOneMessage(message);
+      this.messagesQueue.shift();
+    });
+    console.log('SenderMessage');
   }
 
   saveQueue(): void {
@@ -61,3 +84,8 @@ class ChatStore {
 }
 
 export default makeAutoObservable(new ChatStore());
+/*
+function JsonRpcNotification(JsonRpcNotification: any, arg1: () => void) {
+  throw new Error('Function not implemented.');
+}
+*/
