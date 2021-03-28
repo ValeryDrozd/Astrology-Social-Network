@@ -3,8 +3,10 @@ import WebSocketClient from '../socket';
 import Chat from '../interfaces/chat';
 import { NewMessage } from '../interfaces/new-message';
 import {
+  AddNewMessageFunction,
   GetMessagesFunction,
   GetMessagesFunctionResponse,
+  NewMessageNotification,
 } from '../interfaces/rpc-events';
 
 class ChatStore {
@@ -12,12 +14,16 @@ class ChatStore {
   chats: Chat[] = [];
   number = 1;
   online = false;
+  myID = 1;
   private socket = new WebSocketClient();
 
   constructor() {
     this.socket.listenTo('open', () => {
       this.online = true;
       this.getMessages();
+    });
+    this.socket.listenTo(NewMessageNotification, () => {
+      alert('New messages');
     });
     this.socket.listenTo('close', () => {
       this.online = false;
@@ -31,6 +37,7 @@ class ChatStore {
   }
 
   addMessage(chatId: number, text: string, time: Date, senderId: number): void {
+    // debugger;
     const message: NewMessage = {
       id: 1,
       chatId: chatId,
@@ -53,8 +60,19 @@ class ChatStore {
     this.sendMessages();
   }
 
+  sendOneMessage(msg: NewMessage): void {
+    //debugger;
+    console.log('OneMsg', msg);
+    this.socket.call(AddNewMessageFunction, msg);
+  }
+
   sendMessages(): void {
-    //const i = 0;
+    // debugger;
+    this.messagesQueue.forEach((message: NewMessage) => {
+      this.sendOneMessage(message);
+      this.messagesQueue.shift();
+    });
+    console.log('SenderMessage');
   }
 
   saveQueue(): void {
@@ -65,3 +83,8 @@ class ChatStore {
 }
 
 export default makeAutoObservable(new ChatStore());
+/*
+function JsonRpcNotification(JsonRpcNotification: any, arg1: () => void) {
+  throw new Error('Function not implemented.');
+}
+*/

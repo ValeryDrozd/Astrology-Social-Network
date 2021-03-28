@@ -37,15 +37,15 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
   constructor(private messagesService: MessagesService) {}
 
   handleConnection(client: WebSocket, request: IncomingMessage): void {
-    const { cookie: requestCookie } = request.headers;
-    const token = cookie.parse(requestCookie ? requestCookie : '').token;
+    // const { cookie: requestCookie } = request.headers;
+    // const token = cookie.parse(requestCookie ? requestCookie : '').token;
 
-    if (!requestCookie || !token) {
-      return client.close(1014);
-    }
+    // if (!requestCookie || !token) {
+    //   return client.close(1014);
+    // }
 
     const session: MessagesSession = {
-      token,
+      token: 'token',
       socket: client,
     };
 
