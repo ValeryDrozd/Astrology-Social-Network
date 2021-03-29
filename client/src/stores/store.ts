@@ -5,6 +5,8 @@ import { NewMessage } from '../interfaces/new-message';
 import { v4 as uuid } from 'uuid';
 import {
   AddNewMessageFunction,
+  ConnectionStatusNotification,
+  ConnectionStatusNotificationPayload,
   GetMessagesFunction,
   GetMessagesFunctionResponse,
   NewMessageNotification,
@@ -22,7 +24,16 @@ class ChatStore {
   constructor() {
     this.socket.listenTo('open', () => {
       this.online = true;
-      this.getMessages();
+      this.socket
+        .listenOnce<ConnectionStatusNotificationPayload>(
+          ConnectionStatusNotification,
+        )
+        .then((res) => {
+          if (!res.ok) {
+            return; // TODO refresh tokens before connecting
+          }
+          this.getMessages();
+        });
     });
     this.socket.listenTo(NewMessageNotification, () => {
       alert('New messages');
@@ -30,12 +41,20 @@ class ChatStore {
     this.socket.listenTo('close', (res) => {
       this.online = false;
     });
+    this.socket.listenTo('error', (err) => {
+      console.log(err);
+    });
   }
 
   async getMessages(): Promise<void> {
-    this.chats = await this.socket.call<GetMessagesFunctionResponse>(
-      GetMessagesFunction,
-    );
+    try {
+      const res = await this.socket.call<GetMessagesFunctionResponse>(
+        GetMessagesFunction,
+      );
+      this.chats = res;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   addMessage(chatID: string, text: string, senderID: string): void {

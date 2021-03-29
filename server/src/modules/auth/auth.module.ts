@@ -15,7 +15,7 @@ import { AuthProvidersService } from '../auth-providers/auth-providers.service';
     UsersModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1m' },
+      signOptions: { expiresIn: '30m' },
     }),
   ],
   providers: [

@@ -13,6 +13,14 @@ class WebSocketClient {
     return this.listeners;
   }
 
+  listenOnce<T>(event: string): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this.socket.once(event, (res: T) => {
+        resolve(res);
+      });
+    });
+  }
+
   //Call function on the server
   call<T>(method: string, data?: IWSRequestParams): Promise<T> {
     return this.socket.call(method, data) as Promise<T>;

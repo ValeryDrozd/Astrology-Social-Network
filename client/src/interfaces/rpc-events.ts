@@ -14,5 +14,16 @@ export type NewMessageNotificationParams = ServerMessage;
 
 export interface DeliveredEvent {
   ok: boolean;
-  err?: string;
+  error?: string;
+}
+
+interface RpcError {
+  errorDescription: string;
+}
+
+export const ConnectionStatusNotification = 'connection-status';
+export interface ConnectionStatusNotificationPayload {
+  ok: boolean;
+  code?: number;
+  message?: string;
 }

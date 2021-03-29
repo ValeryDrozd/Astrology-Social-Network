@@ -4,8 +4,16 @@ import { AbstractWsAdapter, MessageMappingProperties } from '@nestjs/websockets'
 import { Observable, fromEvent, EMPTY } from 'rxjs';
 import { mergeMap, filter, map } from 'rxjs/operators';
 import { IncomingMessage } from 'node:http';
-import { JsonRpcRequest, JsonRpcResponse } from '../../../client/src/interfaces/json-rpc';
-import { generateJsonRpcResponse } from '../helpers/json-rpc.utils';
+import {
+  JsonRpcError,
+  JsonRpcRequest,
+  JsonRpcResponse,
+} from '../../../client/src/interfaces/json-rpc';
+import {
+  generateJsonRpcError,
+  generateJsonRpcFromValue,
+  generateJsonRpcResponse,
+} from '../helpers/json-rpc.utils';
 
 export class JsonRpcWsAdapter extends AbstractWsAdapter {
   constructor(appOrHttpServer?: INestApplicationContext) {
@@ -44,7 +52,7 @@ export class JsonRpcWsAdapter extends AbstractWsAdapter {
     buffer: MessageEvent,
     handlers: MessageMappingProperties[],
     process: (data: unknown) => Observable<unknown>,
-  ): Observable<JsonRpcResponse> {
+  ): Observable<JsonRpcResponse | JsonRpcError> {
     const message: JsonRpcRequest = JSON.parse(buffer.data);
 
     const messageHandler = handlers.find((handler) => handler.message === message.method);
@@ -55,8 +63,8 @@ export class JsonRpcWsAdapter extends AbstractWsAdapter {
     const res = process(messageHandler.callback(message.params));
 
     return res.pipe(
-      map<unknown, JsonRpcResponse>((value) =>
-        generateJsonRpcResponse(value as Record<string, unknown>, message.id),
+      map<unknown, JsonRpcResponse | JsonRpcError>((value) =>
+        generateJsonRpcFromValue(value as Record<string, unknown>, message.id),
       ),
     );
   }

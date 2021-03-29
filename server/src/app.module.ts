@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './modules/users/users.module';
-import { ChatingsModule } from './modules/chatings/chatings.module';
+import { ChattingsModule } from './modules/chattings/chattings.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ScryptService } from './modules/scrypt/scrypt.service';
 import { RefreshSessionsModule } from './modules/refresh-sessions/refresh-sessions.module';
@@ -11,7 +11,7 @@ import { MessagesService } from './modules/messages/messages.service';
 @Module({
   imports: [
     UsersModule,
-    ChatingsModule,
+    ChattingsModule,
     AuthModule,
     RefreshSessionsModule,
     AuthProvidersModule,

@@ -118,6 +118,11 @@ export class AuthService {
       (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
     );
 
+    const oldSameSession = sessions.find((s) => s.fingerprint === fingerprint);
+    if (oldSameSession) {
+      await this.refreshSessionsService.delete(oldSameSession.refreshToken);
+    }
+
     if (sessions.length > this.maxNumberOfSessions - 1) {
       await this.refreshSessionsService.delete(sessions[0].refreshToken);
     }
