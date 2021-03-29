@@ -50,15 +50,16 @@ export const MessageView = styled.div`
   padding: 0.5rem;
 `;
 
-// export const inputMessage = styled.input`
-//   border: #bf99d8 1px solid;
-//   border-radius: 0.25rem;
-//   display: flex;
-//   text-align: center;
-// `;
+export const InputArea = styled.div`
+  display: flex;
+`;
 
 export const Button = styled.button`
-  width: 68px;
+  display: flex;
+  flex-grow: 2;
+  align-items: center;
+  flex-direction: column;
+  margin: auto;
   font-size: 20px;
   padding: 1px 2px;
   color: white;
@@ -67,6 +68,9 @@ export const Button = styled.button`
 `;
 
 export const Input = styled.input`
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
   width: 90%;
   font-size: 20px;
   border: 1px solid white;

@@ -11,6 +11,7 @@ import {
   MessageList,
   MessagesBlock,
   MessageView,
+  InputArea,
 } from './styles';
 
 const ChatBlock = (): JSX.Element => {
@@ -40,8 +41,10 @@ const ChatBlock = (): JSX.Element => {
     : [];
 
   const handlerButtonClick = (): void => {
-    chatStore.addMessage('1', newMessageText, 1);
-    setNewMessageText('');
+    if (newMessageText !== undefined && newMessageText !== '') {
+      chatStore.addMessage('1', newMessageText, 1);
+      setNewMessageText('');
+    }
   };
 
   return (
@@ -50,7 +53,7 @@ const ChatBlock = (): JSX.Element => {
       <MessagesBlock>
         <MessageList>{messagesViews}</MessageList>
         {currentChatId ? (
-          <div>
+          <InputArea>
             <Input
               type="text"
               placeholder="type your message"
@@ -63,7 +66,7 @@ const ChatBlock = (): JSX.Element => {
             >
               Send
             </Button>
-          </div>
+          </InputArea>
         ) : null}
       </MessagesBlock>
     </ChatBlockView>

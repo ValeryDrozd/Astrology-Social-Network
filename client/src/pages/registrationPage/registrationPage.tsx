@@ -1,12 +1,10 @@
-import './registrationPage.css';
+import React from 'react';
+import RegistrationBlock from '../../components/registration-block/registration-block';
 
 function RegistrationPage(): JSX.Element {
   return (
     <div>
-      <div>
-        <p>Registration page</p>
-      </div>
-      <div></div>
+      <RegistrationBlock />
     </div>
   );
 }

@@ -24,7 +24,7 @@ class ChatStore {
       this.getMessages();
     });
     this.socket.listenTo(NewMessageNotification, () => {
-      alert('New messages');
+      // alert('New messages');
     });
     this.socket.listenTo('close', () => {
       this.online = false;
@@ -54,6 +54,17 @@ class ChatStore {
       ?.messageList.push(message);
     // this.sendMessages();
   }
+
+  // addChat(senderInfo:):void {
+  //   const chatId = uuid();
+  //   const chat: Chat = {
+  //     chatId,
+  //     senderInfo: {
+
+  //     }
+
+  //   };
+  // }
 
   removeMessage(): void {
     const localStorageValue =
