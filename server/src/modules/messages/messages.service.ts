@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ServerMessage } from '../../../../client/src/interfaces/message';
-import { NewMessage } from '../../../../client/src/interfaces/new-message';
+import { ServerMessage } from '@interfaces/message';
+import { NewMessage } from '@interfaces/new-message';
 import { PgService } from '../pg/pg.service';
 
 @Injectable()

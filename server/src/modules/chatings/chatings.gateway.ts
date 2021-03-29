@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import broadcast from 'src/helpers/broadcast';
 import { ChatingsService } from './chatings.service';
-import { NewMessage } from '../../../../client/src/interfaces/new-message';
+import { NewMessage } from '@interfaces/new-message';
 import {
   AddNewMessageFunction,
   DeliveredEvent,
@@ -18,7 +18,7 @@ import {
   GetMessagesFunctionResponse,
   NewMessageNotification,
   NewMessageNotificationParams,
-} from '../../../../client/src/interfaces/rpc-events';
+} from '@interfaces/rpc-events';
 import { IncomingMessage } from 'http';
 import * as cookie from 'cookie';
 import { JwtService } from '@nestjs/jwt';

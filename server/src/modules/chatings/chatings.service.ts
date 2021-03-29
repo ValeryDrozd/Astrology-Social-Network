@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import Message, { ServerMessage } from '../../../../client/src/interfaces/message';
-import Chat from '../../../../client/src/interfaces/chat';
+import Message from '@interfaces/message';
+import Chat from '@interfaces/chat';
 import { ChatsService } from '../chats/chats.service';
-import { NewMessage } from '../../../../client/src/interfaces/new-message';
+import { NewMessage } from '@interfaces/new-message';
 import { MessagesService } from '../messages/messages.service';
 
 @Injectable()

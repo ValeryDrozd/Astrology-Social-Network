@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import React, { useState } from 'react';
-import chatStore from '../../../../stores/store';
+import chatStore from '../../stores/store';
 import {
   ChatBlockView,
   ChatItem,
@@ -14,7 +14,7 @@ import GoogleLogin, {
   GoogleLoginResponseOffline,
 } from 'react-google-login';
 import axios from 'axios';
-import getFingerprint from '../../../../helpers/get-fingerprint';
+import getFingerprint from '../../helpers/get-fingerprint';
 
 const ChatBlock = (): JSX.Element => {
   const [currentChatId, setCurrentChatId] = useState<string>();

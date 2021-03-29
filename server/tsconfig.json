@@ -11,6 +11,9 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "rootDir": "../",
+    "paths": {
+      "@interfaces/*": ["../client/src/interfaces/*"],
+    },
     "strict": true,
     "incremental": true
   }

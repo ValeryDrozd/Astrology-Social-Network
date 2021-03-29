@@ -1,7 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { chat } from 'googleapis/build/src/apis/chat';
-import Chat from '../../../../client/src/interfaces/chat';
-import { ServerMessage } from '../../../../client/src/interfaces/message';
+import Chat from '@interfaces/chat';
 import { MessagesService } from '../messages/messages.service';
 import { PgService } from '../pg/pg.service';
 import ChatDTO from './dto/chat.dto';

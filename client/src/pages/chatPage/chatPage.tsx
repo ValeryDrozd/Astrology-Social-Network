@@ -5,7 +5,7 @@ import Message from '../../interfaces/message';
 import { throws } from 'node:assert';
 import { myMessages, otherMessages } from './styles';
 import Chat from '../../interfaces/chat';
-import ChatBlock from '../../components/chat-block/chat-block/chat-block/chat-block';
+import ChatBlock from '../../components/chat-block/chat-block';
 
 class ChatPage extends React.Component {
   private message = ''; //useState('');

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from '../auth/auth.module';
 import { ChatsService } from '../chats/chats.service';
 import { MessagesService } from '../messages/messages.service';
