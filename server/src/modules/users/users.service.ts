@@ -18,4 +18,11 @@ export class UsersService {
       where: { email },
     });
   }
+
+  async findById(userID: string): Promise<User> {
+    return await this.pgService.findOne<User>({
+      tableName: this.tableName,
+      where: { userID },
+    });
+  }
 }

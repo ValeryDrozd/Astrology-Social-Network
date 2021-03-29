@@ -13,5 +13,6 @@ export const NewMessageNotification = 'newMessage';
 export type NewMessageNotificationParams = ServerMessage;
 
 export interface DeliveredEvent {
-  ok: true;
+  ok: boolean;
+  err?: string;
 }

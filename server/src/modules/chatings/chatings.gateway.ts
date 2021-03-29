@@ -23,6 +23,7 @@ import { IncomingMessage } from 'http';
 import * as cookie from 'cookie';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
+import { ChatsService } from '../chats/chats.service';
 
 interface ChatingSession {
   socket: WebSocket;
@@ -37,7 +38,11 @@ export class ChatingsGateway implements OnGatewayConnection, OnGatewayDisconnect
 
   private clients: ChatingSession[] = [];
 
-  constructor(private chatingsService: ChatingsService, private jwtService: JwtService) {}
+  constructor(
+    private chatingsService: ChatingsService,
+    private jwtService: JwtService,
+    private chatsService: ChatsService,
+  ) {}
 
   handleConnection(client: WebSocket, request: IncomingMessage): void {
     const accessToken = cookie.parse(request.headers.cookie ? request.headers.cookie : '')
@@ -89,16 +94,20 @@ export class ChatingsGateway implements OnGatewayConnection, OnGatewayDisconnect
   ): Promise<DeliveredEvent> {
     const session = this.clients.find((client) => client.socket === socket);
     if (!session) {
-      throw new UnauthorizedException('INVALID TOKEN!');
+      return { ok: false, err: 'INVALID TOKEN!' };
     }
-    this.jwtService.verify(session.token);
 
+    this.jwtService.verify(session.token);
     await this.chatingsService.addNewMessage(message);
-    // this.clients.filter(client => )
-    // broadcast<NewMessageNotificationParams>(this.server, NewMessageNotification, {
-    //   except: [socket],
-    //   params: message,
-    // });
+
+    const userIDs = (await this.chatsService.findUsersOfChat(message.chatID)).map(
+      ({ userID }) => userID,
+    );
+
+    const recievers = this.clients
+      .filter((client) => userIDs.includes(client.userID))
+      .map(({ socket }) => socket);
+    broadcast<NewMessageNotificationParams>(NewMessageNotification, recievers, message);
     return { ok: true };
   }
 }
