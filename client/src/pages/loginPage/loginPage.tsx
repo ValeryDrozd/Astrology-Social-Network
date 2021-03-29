@@ -1,16 +1,14 @@
-import {
-  LoginForm,
-  LoginDiv,
-  ButtonBox,
-  LoginInput,
-  StyledButton,
-  Title,
-} from './styles';
+import React from 'react';
+import { useHistory } from 'react-router';
+import { StyledButton } from '../../components/styled/styled-button';
+import { LoginForm, LoginDiv, ButtonBox, LoginInput, Title } from './styles';
 
 export default function LoginPage(): JSX.Element {
+  const history = useHistory();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
   };
+
   return (
     <LoginDiv>
       <Title>Login</Title>
@@ -21,10 +19,15 @@ export default function LoginPage(): JSX.Element {
         <LoginInput type="password" id="password" />
         <ButtonBox>
           <StyledButton>Sign in</StyledButton>
-          <StyledButton>Sign in with GOOGLE</StyledButton>
+          {/* <OnRegistrationPageButton /> */}
+          <StyledButton className="GoogleButton">
+            Sign in with GOOGLE
+          </StyledButton>
         </ButtonBox>
       </LoginForm>
-      <StyledButton>Sign up</StyledButton>
+      <StyledButton onClick={(): void => history.push('/registration')}>
+        Sign up
+      </StyledButton>
     </LoginDiv>
   );
 }

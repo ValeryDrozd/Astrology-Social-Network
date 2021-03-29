@@ -1,26 +1,40 @@
+import axios from 'axios';
 import { observer } from 'mobx-react';
 import React, { useState } from 'react';
+import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
+import getFingerprint from '../../helpers/get-fingerprint';
 import chatStore from '../../stores/store';
 import {
   ChatBlockView,
   ChatItem,
   ChatList,
+  Button,
+  Input,
   MessageItem,
   MessageList,
+  MessagesBlock,
   MessageView,
+  InputArea,
 } from './styles';
-import GoogleLogin, {
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from 'react-google-login';
-import axios from 'axios';
-import getFingerprint from '../../helpers/get-fingerprint';
 
 const ChatBlock = (): JSX.Element => {
-  const [currentChatId, setCurrentChatId] = useState<string>();
-
+  const [currentChatId, setCurrentChatId] = useState<string>('');
+  const [newMessageText, setNewMessageText] = useState<string>('');
   const handlerChatClick = (chatId: string): void => {
     setCurrentChatId(chatId);
+  };
+
+  const responseGoogle = async (res: GoogleLoginResponse): Promise<void> => {
+    const result = await axios.post(
+      'http://localhost:3001/auth/google',
+      {
+        accessToken: res.accessToken,
+        tokenId: res.tokenId,
+        fingerprint: await getFingerprint(),
+      },
+      { withCredentials: true },
+    );
+    console.log(result);
   };
 
   const chatViews = chatStore.chats.map((chat) => (
@@ -41,27 +55,16 @@ const ChatBlock = (): JSX.Element => {
         </MessageItem>
       ))
     : [];
+
   const handlerButtonClick = (): void => {
-    if (currentChatId) {
+    if (newMessageText !== undefined && newMessageText !== '') {
       chatStore.addMessage(
         currentChatId,
-        'Kuku',
-        '775c614f-6ea7-40e5-913c-0b5213822229',
-      );
+        newMessageText,
+        '05b47a75-2e21-4f05-aa31-3bed5e1f43e4',
+      ); //TODO remove hardcode
+      setNewMessageText('');
     }
-  };
-
-  const responseGoogle = async (res: GoogleLoginResponse): Promise<void> => {
-    const result = await axios.post(
-      'http://localhost:3001/auth/google',
-      {
-        accessToken: res.accessToken,
-        tokenId: res.tokenId,
-        fingerprint: await getFingerprint(),
-      },
-      { withCredentials: true },
-    );
-    console.log(result);
   };
 
   return (
@@ -76,20 +79,25 @@ const ChatBlock = (): JSX.Element => {
         cookiePolicy={'single_host_origin'}
       />
       <ChatList>{chatViews}</ChatList>
-      <MessageList>{messagesViews}</MessageList>
-      <form>
-        <input
-          type="text"
-          className="inputMessage"
-          placeholder="type your message"
-        />
-        <button
-          onClick={(ev): void => {
-            ev.preventDefault();
-            handlerButtonClick();
-          }}
-        ></button>
-      </form>
+      <MessagesBlock>
+        <MessageList>{messagesViews}</MessageList>
+        {currentChatId ? (
+          <InputArea>
+            <Input
+              type="text"
+              placeholder="type your message"
+              value={newMessageText}
+              onChange={({ target }): void => setNewMessageText(target.value)}
+            />
+            <Button
+              className="button"
+              onClick={(): void => handlerButtonClick()}
+            >
+              Send
+            </Button>
+          </InputArea>
+        ) : null}
+      </MessagesBlock>
     </ChatBlockView>
   );
 };

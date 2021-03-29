@@ -18,7 +18,7 @@ class ChatStore {
   chats: Chat[] = [];
   number = 1;
   online = false;
-  myID = '1';
+  myID = '05b47a75-2e21-4f05-aa31-3bed5e1f43e4';
   private socket = new WebSocketClient();
 
   constructor() {
@@ -36,7 +36,7 @@ class ChatStore {
         });
     });
     this.socket.listenTo(NewMessageNotification, () => {
-      alert('New messages');
+      // alert('New messages');
     });
     this.socket.listenTo('close', (res) => {
       this.online = false;
@@ -72,6 +72,17 @@ class ChatStore {
     this.sendOneMessage({ ...message, chatID });
   }
 
+  // addChat(senderInfo:):void {
+  //   const chatId = uuid();
+  //   const chat: Chat = {
+  //     chatId,
+  //     senderInfo: {
+
+  //     }
+
+  //   };
+  // }
+
   removeMessage(): void {
     const localStorageValue =
       localStorage.getItem('queue') == null
@@ -83,13 +94,11 @@ class ChatStore {
   }
 
   sendOneMessage(msg: NewMessage): void {
-    //debugger;
     console.log('OneMsg', msg);
     this.socket.call(AddNewMessageFunction, msg);
   }
 
   sendMessages(): void {
-    // debugger;
     this.messagesQueue.forEach((message: NewMessage) => {
       this.sendOneMessage(message);
       this.messagesQueue.shift();
@@ -105,8 +114,3 @@ class ChatStore {
 }
 
 export default makeAutoObservable(new ChatStore());
-/*
-function JsonRpcNotification(JsonRpcNotification: any, arg1: () => void) {
-  throw new Error('Function not implemented.');
-}
-*/
