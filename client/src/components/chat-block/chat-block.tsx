@@ -67,7 +67,7 @@ const ChatBlock = (): JSX.Element => {
   return (
     <ChatBlockView>
       <GoogleLogin
-        clientId="816087707667-a8lht42hlk4qja2tfrlfiequj1phm68m.apps.googleusercontent.com"
+        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}
         buttonText="Login"
         onSuccess={(res): Promise<void> =>
           responseGoogle(res as GoogleLoginResponse)
