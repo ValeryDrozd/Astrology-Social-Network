@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { register } from '../../services/auth.service';
 import { StyledButton } from '../styled/styled-button';
 import {
@@ -14,12 +15,25 @@ const RegistrationBlock = (): JSX.Element => {
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const history = useHistory();
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
     await register(firstName, lastName, email, password);
+  };
+
+  const handleSignIn = (): void => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (
+      re.test(email.toLowerCase()) &&
+      password.length >= 8 &&
+      firstName !== '' &&
+      lastName !== ''
+    ) {
+      history.push('/chat');
+    }
   };
 
   return (
@@ -54,7 +68,9 @@ const RegistrationBlock = (): JSX.Element => {
           type="password"
           id="password"
         />
-        <StyledButton className="mrg-1">Register now</StyledButton>
+        <StyledButton onClick={(): void => handleSignIn()} className="mrg-1">
+          Register now
+        </StyledButton>
       </RegistrationForm>
     </RegistrationDiv>
   );

@@ -98,11 +98,12 @@ class ChatStore {
 
   addMessage(chatID: string, text: string): void {
     const id = uuid();
+    console.log(this.myID);
     const message: ServerMessage = {
       messageID: id,
       senderID: this.myID,
       time: new Date(),
-      text: text,
+      text,
     };
     this.messagesQueue = [...this.messagesQueue, { ...message, chatID }];
     this.chats

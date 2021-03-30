@@ -44,7 +44,6 @@ export class AuthController {
   ): Promise<void> {
     const userAgent = String(headers[userAgentName]);
     const pair = await this.authService.login(authDTO, userAgent, 'local');
-
     sendTokensPair(response, pair);
   }
 
@@ -66,11 +65,9 @@ export class AuthController {
     @Req() { headers }: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
-    const userData = (
-      await axios.get(
-        'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + body.tokenId,
-      )
-    ).data as GoogleResponse;
+    const userData = (await axios.get(process.env.GOOGLE_RESOURCE_ID + body.tokenId))
+      .data as GoogleResponse;
+
     if (!userData.email_verified) {
       throw new BadRequestException('Not confirmed google account!');
     }

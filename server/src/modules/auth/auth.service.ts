@@ -28,6 +28,10 @@ export class AuthService {
     userAgent: string,
     authName: AuthProviderName,
   ): Promise<{ accessToken: string; refreshToken: string }> {
+    const oldUser = await this.usersService.findByEmail(email);
+    if (oldUser) {
+      throw new BadRequestException('User with such email exists already');
+    }
     const password = pass ? await this.scryptService.hash(pass) : undefined;
     const userID = uuid();
 
@@ -44,15 +48,6 @@ export class AuthService {
       fingerprint,
     });
 
-    await this.refreshSessionsService.saveSession({
-      refreshToken,
-      userID,
-      fingerprint,
-      expiresIn: 5.184e9,
-      createdAt: new Date(),
-      userAgent,
-    });
-
     await this.authProvidersService.saveProvider({ userID, authName, password });
     return { accessToken, refreshToken };
   }
@@ -62,8 +57,16 @@ export class AuthService {
     userAgent: string,
     authName: AuthProviderName,
   ): Promise<AuthTokensPair> {
-    const { userID } = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    const { userID } = user;
     const provider = await this.authProvidersService.findOne(userID, authName);
+    if (!provider) {
+      throw new BadRequestException();
+    }
     const isValid =
       authName === 'local'
         ? await this.scryptService.verify(password as string, provider.password as string)
@@ -157,7 +160,7 @@ export class AuthService {
     } else {
       const provider = await this.authProvidersService.findOne(oldUser.userID, 'google');
       if (!provider) {
-        throw new BadRequestException('No such auth provider!');
+        throw new BadRequestException();
       }
 
       return await this.login(
