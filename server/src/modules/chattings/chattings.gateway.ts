@@ -34,7 +34,7 @@ import {
 import { ErrorType } from '@interfaces/json-rpc';
 const invalidTokenError = { error: { code: -32600, message: 'INVALID TOKEN!' } };
 
-@WebSocketGateway({ path: '/chating' })
+@WebSocketGateway({ path: '/chattings' })
 export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
@@ -119,7 +119,9 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
 
       const recievers = this.chatingsService
         .getSessions()
-        .filter((client) => userIDs.includes(client.userID))
+        .filter(
+          (client) => userIDs.includes(client.userID) && client.token !== session.token,
+        )
         .map(({ socket }) => socket);
       broadcast<NewMessageNotificationParams>(NewMessageNotification, recievers, message);
       return { ok: true };

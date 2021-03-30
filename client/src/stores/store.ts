@@ -17,12 +17,11 @@ import { refresh } from '../services/auth.service';
 
 class ChatStore {
   private accessToken!: string;
-  private userID!: string;
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
   number = 1;
   online = false;
-  myID = '05b47a75-2e21-4f05-aa31-3bed5e1f43e4';
+  myID!: string;
   private socket!: WebSocketClient;
 
   constructor() {
@@ -61,7 +60,7 @@ class ChatStore {
     this.accessToken = accessToken;
     const res = this.checkToken();
     if (res) {
-      this.userID = res.userID;
+      this.myID = res.userID;
       this.initSocket();
       console.log(res);
     }
@@ -87,13 +86,14 @@ class ChatStore {
     }
   }
 
-  addMessage(chatID: string, text: string, senderID: string): void {
+  addMessage(chatID: string, text: string): void {
     const id = uuid();
+    console.log(this.myID);
     const message: ServerMessage = {
       messageID: id,
-      senderID,
+      senderID: this.myID,
       time: new Date(),
-      text: text,
+      text,
     };
     this.messagesQueue = [...this.messagesQueue, { ...message, chatID }];
     this.chats

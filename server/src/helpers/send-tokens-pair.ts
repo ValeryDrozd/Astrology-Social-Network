@@ -14,7 +14,7 @@ export default function sendTokensPair(
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
     maxAge: 30 * 60000,
-    path: '/chatting',
+    path: '/chattings',
   });
   const newToken: NewToken = { accessToken };
   res.send(newToken);

@@ -58,11 +58,7 @@ const ChatBlock = (): JSX.Element => {
 
   const handlerButtonClick = (): void => {
     if (newMessageText !== undefined && newMessageText !== '') {
-      chatStore.addMessage(
-        currentChatId,
-        newMessageText,
-        '05b47a75-2e21-4f05-aa31-3bed5e1f43e4',
-      ); //TODO remove hardcode
+      chatStore.addMessage(currentChatId, newMessageText);
       setNewMessageText('');
     }
   };
