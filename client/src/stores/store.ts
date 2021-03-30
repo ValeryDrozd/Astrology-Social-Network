@@ -3,6 +3,7 @@ import WebSocketClient from '../socket';
 import Chat from '../interfaces/chat';
 import { NewMessage } from '../interfaces/new-message';
 import { v4 as uuid } from 'uuid';
+import jwt from 'jsonwebtoken';
 import {
   AddNewMessageFunction,
   ConnectionStatusNotification,
@@ -12,16 +13,26 @@ import {
   NewMessageNotification,
 } from '../interfaces/rpc-events';
 import Message, { ServerMessage } from '../interfaces/message';
+import { refresh } from '../services/auth.service';
 
 class ChatStore {
+  private accessToken!: string;
+  private userID!: string;
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
   number = 1;
   online = false;
   myID = '05b47a75-2e21-4f05-aa31-3bed5e1f43e4';
-  private socket = new WebSocketClient();
+  private socket!: WebSocketClient;
 
   constructor() {
+    refresh().then(({ accessToken }): void => {
+      this.setAccessToken(accessToken);
+    });
+  }
+
+  initSocket(): void {
+    this.socket = new WebSocketClient();
     this.socket.listenTo('open', () => {
       this.online = true;
       this.socket
@@ -44,6 +55,25 @@ class ChatStore {
     this.socket.listenTo('error', (err) => {
       console.log(err);
     });
+  }
+
+  setAccessToken(accessToken: string): void {
+    this.accessToken = accessToken;
+    const res = this.checkToken();
+    if (res) {
+      this.userID = res.userID;
+      this.initSocket();
+      console.log(res);
+    }
+  }
+
+  checkToken(): { userID: string } | undefined {
+    try {
+      return jwt.verify(
+        this.accessToken,
+        process.env.REACT_APP_JWT_SECRET as string,
+      ) as { userID: string };
+    } catch (error) {}
   }
 
   async getMessages(): Promise<void> {

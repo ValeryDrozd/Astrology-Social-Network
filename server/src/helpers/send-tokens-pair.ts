@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import AuthTokensPair from 'src/modules/auth/dto/tokens-pair.dto';
+import { NewToken } from '@interfaces/new-token';
 
 export default function sendTokensPair(
   res: Response,
@@ -13,7 +14,8 @@ export default function sendTokensPair(
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
     maxAge: 30 * 60000,
-    path: '/chating',
+    path: '/chatting',
   });
-  res.send({ accessToken });
+  const newToken: NewToken = { accessToken };
+  res.send(newToken);
 }

@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import React, { useState } from 'react';
+import { register } from '../../services/auth.service';
 import { StyledButton } from '../styled/styled-button';
 import {
   RegistrationDiv,
@@ -14,9 +15,13 @@ const RegistrationBlock = (): JSX.Element => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     event.preventDefault();
+    await register(firstName, lastName, email, password);
   };
+
   return (
     <RegistrationDiv>
       <Title>User Registration</Title>
@@ -49,8 +54,8 @@ const RegistrationBlock = (): JSX.Element => {
           type="password"
           id="password"
         />
+        <StyledButton className="mrg-1">Register now</StyledButton>
       </RegistrationForm>
-      <StyledButton className="mrg-1">Register now</StyledButton>
     </RegistrationDiv>
   );
 };
