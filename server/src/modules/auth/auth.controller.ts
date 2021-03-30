@@ -54,7 +54,6 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
-    console.log(request.cookies);
     const { refreshToken: oldToken } = request.cookies;
     if (!oldToken) throw new UnauthorizedException('No refresh token');
     const pair = await this.authService.refreshTokens(oldToken, fingerprint);

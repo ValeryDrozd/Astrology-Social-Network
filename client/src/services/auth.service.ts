@@ -7,11 +7,17 @@ export async function login(
   password: string,
 ): Promise<NewToken> {
   const fingerprint = await getFingerprint();
-  const res = await axios.post('http://localhost:3001/auth/login', {
-    email,
-    password,
-    fingerprint,
-  });
+  const res = await axios.post(
+    'http://localhost:3001/auth/login',
+    {
+      email,
+      password,
+      fingerprint,
+    },
+    {
+      withCredentials: true,
+    },
+  );
 
   console.log(res.data);
   return res.data;
@@ -24,22 +30,34 @@ export async function register(
   password: string,
 ): Promise<NewToken> {
   const fingerprint = await getFingerprint();
-  const res = await axios.post('http://localhost:3001/auth/register', {
-    firstName,
-    lastName,
-    email,
-    password,
-    fingerprint,
-  });
+  const res = await axios.post(
+    'http://localhost:3001/auth/register',
+    {
+      firstName,
+      lastName,
+      email,
+      password,
+      fingerprint,
+    },
+    {
+      withCredentials: true,
+    },
+  );
 
   return res.data;
 }
 
 export async function refresh(): Promise<NewToken> {
   const fingerprint = await getFingerprint();
-  const res = await axios.post('http://localhost:3001/auth/refresh-tokens', {
-    fingerprint,
-  });
+  const res = await axios.post(
+    'http://localhost:3001/auth/refresh-tokens',
+    {
+      fingerprint,
+    },
+    {
+      withCredentials: true,
+    },
+  );
 
   return res.data;
 }

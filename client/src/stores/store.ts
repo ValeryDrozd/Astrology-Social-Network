@@ -11,18 +11,18 @@ import {
   GetMessagesFunction,
   GetMessagesFunctionResponse,
   NewMessageNotification,
+  NewMessageNotificationParams,
 } from '../interfaces/rpc-events';
 import Message, { ServerMessage } from '../interfaces/message';
 import { refresh } from '../services/auth.service';
 
 class ChatStore {
   private accessToken!: string;
-  private userID!: string;
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
   number = 1;
   online = false;
-  myID = '05b47a75-2e21-4f05-aa31-3bed5e1f43e4';
+  myID!: string;
   private socket!: WebSocketClient;
 
   constructor() {
@@ -55,24 +55,33 @@ class ChatStore {
     this.socket.listenTo('error', (err) => {
       console.log(err);
     });
+
+    this.socket.listenTo(
+      NewMessageNotification,
+      (message: NewMessageNotificationParams) => {
+        this.chats
+          .find((chat) => chat.chatID === message.chatID)
+          ?.messageList.push({ ...message, isSent: false });
+      },
+    );
   }
 
   setAccessToken(accessToken: string): void {
     this.accessToken = accessToken;
     const res = this.checkToken();
     if (res) {
-      this.userID = res.userID;
+      this.myID = res.userID;
       this.initSocket();
       console.log(res);
     }
   }
 
-  checkToken(): { userID: string } | undefined {
+  checkToken(): { userID: string; exp: number; iat: number } | undefined {
     try {
       return jwt.verify(
         this.accessToken,
         process.env.REACT_APP_JWT_SECRET as string,
-      ) as { userID: string };
+      ) as { userID: string; exp: number; iat: number };
     } catch (error) {}
   }
 
@@ -87,11 +96,11 @@ class ChatStore {
     }
   }
 
-  addMessage(chatID: string, text: string, senderID: string): void {
+  addMessage(chatID: string, text: string): void {
     const id = uuid();
     const message: ServerMessage = {
       messageID: id,
-      senderID,
+      senderID: this.myID,
       time: new Date(),
       text: text,
     };
