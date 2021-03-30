@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { observer } from 'mobx-react';
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
 import getFingerprint from '../../helpers/get-fingerprint';
 import chatStore from '../../stores/store';
 import {
+  ChatForm,
   ChatBlockView,
   ChatItem,
   ChatList,
@@ -20,26 +21,27 @@ import {
 const ChatBlock = (): JSX.Element => {
   const [currentChatId, setCurrentChatId] = useState<string>('');
   const [newMessageText, setNewMessageText] = useState<string>('');
+  const [flag, setFlag] = useState(false);
+  const ref = useRef() as React.MutableRefObject<HTMLDivElement>;
+
+  useEffect((): void => {
+    if (flag) {
+      ref.current?.scrollIntoView();
+      setFlag(false);
+    }
+  }, [flag]);
+
   const handlerChatClick = (chatId: string): void => {
     setCurrentChatId(chatId);
+    setFlag(true);
   };
 
-  const responseGoogle = async (res: GoogleLoginResponse): Promise<void> => {
-    const result = await axios.post(
-      'http://localhost:3001/auth/google',
-      {
-        accessToken: res.accessToken,
-        tokenId: res.tokenId,
-        fingerprint: await getFingerprint(),
-      },
-      { withCredentials: true },
-    );
-    console.log(result);
-  };
-
-  const chatViews = chatStore.chats.map((chat) => (
-    <ChatItem onClick={(): void => handlerChatClick(chat.chatID)}>
-      {chat.senderInfo.lastName + chat.senderInfo.firstName}
+  const chatViews = chatStore.chats.map((chat, index) => (
+    <ChatItem
+      key={`chat-${index + 1}`}
+      onClick={(): void => handlerChatClick(chat.chatID)}
+    >
+      {chat.senderInfo.lastName + ' ' + chat.senderInfo.firstName}
     </ChatItem>
   ));
 
@@ -47,8 +49,10 @@ const ChatBlock = (): JSX.Element => {
     (chat) => chat.chatID === currentChatId,
   );
   const messagesViews = currentChat
-    ? currentChat?.messageList.map((message) => (
+    ? currentChat?.messageList.map((message, index) => (
         <MessageItem
+          ref={index === currentChat?.messageList.length - 1 ? ref : null}
+          key={`message-${currentChatId}-${index + 1}`}
           className={chatStore.myID === message.senderID ? 'my' : ''}
         >
           <MessageView>{message.text}</MessageView>
@@ -56,41 +60,34 @@ const ChatBlock = (): JSX.Element => {
       ))
     : [];
 
-  const handlerButtonClick = (): void => {
+  const handleSubmit = (ev: React.FormEvent<HTMLFormElement>): void => {
+    ev.preventDefault();
     if (newMessageText !== undefined && newMessageText !== '') {
       chatStore.addMessage(currentChatId, newMessageText);
       setNewMessageText('');
+      setFlag(true);
     }
   };
 
   return (
     <ChatBlockView>
-      <GoogleLogin
-        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}
-        buttonText="Login"
-        onSuccess={(res): Promise<void> =>
-          responseGoogle(res as GoogleLoginResponse)
-        }
-        onFailure={responseGoogle}
-        cookiePolicy={'single_host_origin'}
-      />
       <ChatList>{chatViews}</ChatList>
       <MessagesBlock>
-        <MessageList>{messagesViews}</MessageList>
+        <MessageList ref={ref}>
+          {messagesViews}
+          <div ref={ref} />
+        </MessageList>
         {currentChatId ? (
           <InputArea>
-            <Input
-              type="text"
-              placeholder="type your message"
-              value={newMessageText}
-              onChange={({ target }): void => setNewMessageText(target.value)}
-            />
-            <Button
-              className="button"
-              onClick={(): void => handlerButtonClick()}
-            >
-              Send
-            </Button>
+            <ChatForm onSubmit={(ev): void => handleSubmit(ev)}>
+              <Input
+                type="text"
+                placeholder="type your message"
+                value={newMessageText}
+                onChange={({ target }): void => setNewMessageText(target.value)}
+              />
+              <Button className="button">Send</Button>
+            </ChatForm>
           </InputArea>
         ) : null}
       </MessagesBlock>

@@ -2,6 +2,7 @@ import { observer } from 'mobx-react';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { register } from '../../services/auth.service';
+import { ErrorValidation } from '../styled/error-validation';
 import { StyledButton } from '../styled/styled-button';
 import {
   RegistrationDiv,
@@ -9,30 +10,31 @@ import {
   RegistrationInput,
   Title,
 } from './styles';
+import chatStore from '../../stores/store';
 
 const RegistrationBlock = (): JSX.Element => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [showError, setShowError] = useState<boolean>(false);
   const history = useHistory();
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
-    await register(firstName, lastName, email, password);
-  };
-
-  const handleSignIn = (): void => {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (
-      re.test(email.toLowerCase()) &&
-      password.length >= 8 &&
-      firstName !== '' &&
-      lastName !== ''
-    ) {
+    try {
+      const { accessToken } = await register(
+        firstName,
+        lastName,
+        email,
+        password,
+      );
+      chatStore.setAccessToken(accessToken);
       history.push('/chat');
+    } catch (error) {
+      setShowError(true);
     }
   };
 
@@ -68,9 +70,8 @@ const RegistrationBlock = (): JSX.Element => {
           type="password"
           id="password"
         />
-        <StyledButton onClick={(): void => handleSignIn()} className="mrg-1">
-          Register now
-        </StyledButton>
+        {showError ? <ErrorValidation>ERROR!</ErrorValidation> : null}
+        <StyledButton className="mrg-1">Register now</StyledButton>
       </RegistrationForm>
     </RegistrationDiv>
   );

@@ -22,7 +22,7 @@ export class ChatsService {
       .rows as ChatDTO[];
 
     const promises = chats.map((chat) =>
-      this.messagesService.getMessagesOfChat(chat.chatID, 5),
+      this.messagesService.getMessagesOfChat(chat.chatID),
     );
     const messages = await Promise.all(promises);
     return chats.map<Chat>(({ chatID, userID, firstName, lastName }, index) => ({

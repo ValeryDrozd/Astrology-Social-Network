@@ -11,7 +11,7 @@ export const ChatList = styled.div`
   display: flex;
   flex-direction: column;
   border: #fff 1px solid;
-  width: 10rem;
+  width: 15rem;
 `;
 
 export const ChatItem = styled.div`
@@ -82,4 +82,12 @@ export const MessagesBlock = styled.div`
   display: flex;
   flex-grow: 3;
   flex-direction: column;
+`;
+
+export const ChatForm = styled.form`
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
 `;

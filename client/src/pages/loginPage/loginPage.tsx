@@ -12,29 +12,35 @@ import { ButtonBox, LoginDiv, LoginForm, LoginInput, Title } from './styles';
 export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isCorrectLogin, setCorrectLogin] = useState<boolean>(true);
-  const [isCorrectPassword, setCorrectPassword] = useState<boolean>(true);
+  const [showError, setShowError] = useState<boolean>(false);
+  // const [isCorrectPassword, setCorrectPassword] = useState<boolean>(true);
 
   const history = useHistory();
 
   const responseGoogle = async (res: GoogleLoginResponse): Promise<void> => {
-    const result = await axios.post(
-      'http://localhost:3001/auth/google',
-      {
-        accessToken: res.accessToken,
-        tokenId: res.tokenId,
-        fingerprint: await getFingerprint(),
-      },
-      { withCredentials: true },
-    );
-    console.log(result);
+    try {
+      const result = await axios.post(
+        'http://localhost:3001/auth/google',
+        {
+          accessToken: res.accessToken,
+          tokenId: res.tokenId,
+          fingerprint: await getFingerprint(),
+        },
+        { withCredentials: true },
+      );
+      console.log(result);
+      history.push('/chat');
+    } catch (error) {}
   };
 
   const setToken = async (): Promise<void> => {
     try {
       const { accessToken } = await login(email, password);
       chatStore.setAccessToken(accessToken);
-    } catch (error) {}
+      history.push('/chat');
+    } catch (error) {
+      setShowError(true);
+    }
   };
 
   const handleSubmit = async (
@@ -42,14 +48,6 @@ export default function LoginPage(): JSX.Element {
   ): Promise<void> => {
     event.preventDefault();
     await setToken();
-  };
-
-  const handleSignIn = async (): Promise<void> => {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (re.test(email.toLowerCase()) && password.length >= 8) {
-      await setToken();
-      history.push('/chat');
-    }
   };
 
   return (
@@ -63,7 +61,7 @@ export default function LoginPage(): JSX.Element {
           value={email}
           onChange={(ev): void => setEmail(ev.target.value)}
         />
-        <ErrorValidation> </ErrorValidation>
+
         <label htmlFor="password">Password</label>
         <LoginInput
           type="password"
@@ -71,19 +69,15 @@ export default function LoginPage(): JSX.Element {
           value={password}
           onChange={(ev): void => setPassword(ev.target.value)}
         />
-        <div></div>
+        {showError ? <ErrorValidation>ERROR!</ErrorValidation> : null}
         <ButtonBox>
-          <StyledButton onClick={(): Promise<void> => handleSignIn()}>
-            Sign in
-          </StyledButton>
+          <StyledButton>Sign in</StyledButton>
           <GoogleLogin
             clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}
             buttonText="Login"
-            onSuccess={
-              (res): Promise<void> => responseGoogle(res as GoogleLoginResponse)
-              // history.push('/chat')
+            onSuccess={(res): Promise<void> =>
+              responseGoogle(res as GoogleLoginResponse)
             }
-            onFailure={responseGoogle}
             cookiePolicy={'single_host_origin'}
           />
         </ButtonBox>
