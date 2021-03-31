@@ -16,6 +16,8 @@ import {
   MessagesBlock,
   MessageView,
   InputArea,
+  ChatLastMessage,
+  ChatName,
 } from './styles';
 
 const ChatBlock = (): JSX.Element => {
@@ -36,18 +38,10 @@ const ChatBlock = (): JSX.Element => {
     setFlag(true);
   };
 
-  const chatViews = chatStore.chats.map((chat, index) => (
-    <ChatItem
-      key={`chat-${index + 1}`}
-      onClick={(): void => handlerChatClick(chat.chatID)}
-    >
-      {chat.senderInfo.lastName + ' ' + chat.senderInfo.firstName}
-    </ChatItem>
-  ));
-
   const currentChat = chatStore.chats.find(
     (chat) => chat.chatID === currentChatId,
   );
+
   const messagesViews = currentChat
     ? currentChat?.messageList.map((message, index) => (
         <MessageItem
@@ -68,6 +62,21 @@ const ChatBlock = (): JSX.Element => {
       setFlag(true);
     }
   };
+
+  const chatViews = chatStore.chats.map((chat, index) => (
+    <ChatItem
+      key={`chat-${index + 1}`}
+      onClick={(): void => handlerChatClick(chat.chatID)}
+    >
+      <ChatName>
+        {chat.senderInfo.lastName + ' ' + chat.senderInfo.firstName}
+      </ChatName>
+      <ChatLastMessage>
+        {chat.messageList[chat.messageList.length - 1].text.slice(0, 30) +
+          '...'}
+      </ChatLastMessage>
+    </ChatItem>
+  ));
 
   return (
     <ChatBlockView>

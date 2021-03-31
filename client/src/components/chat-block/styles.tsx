@@ -11,7 +11,7 @@ export const ChatList = styled.div`
   display: flex;
   flex-direction: column;
   border: #fff 1px solid;
-  width: 15rem;
+  width: 35vw;
 `;
 
 export const ChatItem = styled.div`
@@ -23,6 +23,15 @@ export const ChatItem = styled.div`
   &:hover {
     background-color: #5f3292;
   }
+`;
+
+export const ChatName = styled.h4`
+  margin: 0;
+  font-size: x-large;
+`;
+
+export const ChatLastMessage = styled.span`
+  font-size: x-small;
 `;
 
 export const MessageList = styled.div`
@@ -38,6 +47,7 @@ export const MessageItem = styled.div`
   padding: 0.75rem;
   margin: 0.25rem;
   display: flex;
+  max-width: 30vw;
   &.my {
     margin-left: auto;
   }
