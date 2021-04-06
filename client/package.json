@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "fingerprintjs2": "^2.1.4",
     "jsonwebtoken": "^8.5.1",

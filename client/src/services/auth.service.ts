@@ -1,26 +1,32 @@
-import axios from 'axios';
 import getFingerprint from '../helpers/get-fingerprint';
 import { NewToken } from '../interfaces/new-token';
+
+const post = async (
+  path: string,
+  body: Record<string, unknown>,
+): Promise<unknown> => {
+  const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+    credentials: 'include',
+  });
+  return await res.json();
+};
 
 export async function login(
   email: string,
   password: string,
 ): Promise<NewToken> {
   const fingerprint = await getFingerprint();
-  const res = await axios.post(
-    'http://localhost:3001/auth/login',
-    {
-      email,
-      password,
-      fingerprint,
-    },
-    {
-      withCredentials: true,
-    },
-  );
-
-  console.log(res.data);
-  return res.data;
+  return (await post('/auth/login', {
+    email,
+    password,
+    fingerprint,
+  })) as NewToken;
 }
 
 export async function register(
@@ -30,34 +36,16 @@ export async function register(
   password: string,
 ): Promise<NewToken> {
   const fingerprint = await getFingerprint();
-  const res = await axios.post(
-    'http://localhost:3001/auth/register',
-    {
-      firstName,
-      lastName,
-      email,
-      password,
-      fingerprint,
-    },
-    {
-      withCredentials: true,
-    },
-  );
-
-  return res.data;
+  return (await post('/auth/register', {
+    firstName,
+    lastName,
+    email,
+    password,
+    fingerprint,
+  })) as NewToken;
 }
 
 export async function refresh(): Promise<NewToken> {
   const fingerprint = await getFingerprint();
-  const res = await axios.post(
-    'http://localhost:3001/auth/refresh-tokens',
-    {
-      fingerprint,
-    },
-    {
-      withCredentials: true,
-    },
-  );
-
-  return res.data;
+  return (await post('/auth/refresh-tokens', { fingerprint })) as NewToken;
 }
