@@ -1,8 +1,5 @@
-import axios from 'axios';
 import { observer } from 'mobx-react';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
-import getFingerprint from '../../helpers/get-fingerprint';
 import chatStore from '../../stores/store';
 import {
   ChatForm,
