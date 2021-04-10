@@ -1,13 +1,13 @@
 CREATE TABLE "ZodiacSigns" (
 	"zodiacID" SERIAL PRIMARY KEY,
 	"name" VARCHAR(255),
-	"sex" VARCHAR(1) CHECK ("sex" IN ('F','M'))
+	"sex" BOOLEAN -- f - false, m - true
 );
 
 CREATE TABLE "ZodiacCompatibility" (
 	"zodiacID1" INT REFERENCES "ZodiacSigns",
 	"zodiacID2" INT REFERENCES "ZodiacSigns",
-	"compatibility" REAL,
+	"compatibility" INT,
 	PRIMARY KEY ("zodiacID1", "zodiacID2")
 );
 
@@ -24,7 +24,7 @@ CREATE TABLE "AuthProviders"(
 	"authID" SERIAL PRIMARY KEY,
 	"userID" UUID REFERENCES "Users" ON DELETE CASCADE,
 	"authName" VARCHAR (100) NOT NULL,
-	"password" VARCHAR (255)
+	"password" TEXT
 );
 
 

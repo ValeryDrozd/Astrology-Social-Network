@@ -7,7 +7,6 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsException,
 } from '@nestjs/websockets';
 import broadcast from 'src/helpers/broadcast';
 import { ChattingSession, ChattingsService } from './chattings.service';
@@ -25,14 +24,13 @@ import {
 import { IncomingMessage } from 'http';
 import * as cookie from 'cookie';
 import { JwtService } from '@nestjs/jwt';
-import { UnauthorizedException, UseFilters, WsExceptionFilter } from '@nestjs/common';
 import { ChatsService } from '../chats/chats.service';
-import {
-  generateJsonRpcError,
-  generateJsonRpcNotification,
-} from 'src/helpers/json-rpc.utils';
-import { ErrorType } from '@interfaces/json-rpc';
-const invalidTokenError = { error: { code: -32600, message: 'INVALID TOKEN!' } };
+import { generateJsonRpcNotification } from 'src/helpers/json-rpc.utils';
+import { ErrorType, JsonRpcErrorCodes } from '@interfaces/json-rpc';
+
+const invalidTokenError = {
+  error: { code: JsonRpcErrorCodes.INVALID_REQUEST, message: 'INVALID TOKEN!' },
+};
 
 @WebSocketGateway({ path: '/chattings' })
 export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnect {

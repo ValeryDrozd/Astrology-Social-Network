@@ -9,13 +9,13 @@ import {
   UnauthorizedException,
   BadRequestException,
 } from '@nestjs/common';
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 import sendTokensPair from 'src/helpers/send-tokens-pair';
 import { AuthService } from './auth.service';
 import AuthDTO from './dto/auth.dto';
 import RegisterDTO from './dto/register.dto';
-import axios from 'axios';
 import GoogleResponse from './dto/google-response';
+import fetch from 'node-fetch';
 
 const userAgentName = 'user-agent';
 @Controller('auth')
@@ -65,8 +65,9 @@ export class AuthController {
     @Req() { headers }: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
-    const userData = (await axios.get(process.env.GOOGLE_RESOURCE_ID + body.tokenId))
-      .data as GoogleResponse;
+    const userData = (await fetch(
+      process.env.GOOGLE_RESOURCE_ID + body.tokenId,
+    ).then((res) => res.json())) as GoogleResponse;
 
     if (!userData.email_verified) {
       throw new BadRequestException('Not confirmed google account!');
