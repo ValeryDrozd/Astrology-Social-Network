@@ -2,15 +2,14 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { ScryptService } from '../scrypt/scrypt.service';
 import { v4 as uuid } from 'uuid';
 import { UsersService } from '../users/users.service';
-import RegisterDTO from './dto/register.dto';
 import { RefreshSessionsService } from '../refresh-sessions/refresh-sessions.service';
 import { AuthProvidersService } from '../auth-providers/auth-providers.service';
 import { AuthProviderName } from '../auth-providers/dto/auth-provider.dto';
-import AuthDTO from './dto/auth.dto';
 import { RefreshSessionDTO } from '../refresh-sessions/dto/refresh-session.dto';
 import { JwtService } from '@nestjs/jwt';
 import AuthTokensPair from './dto/tokens-pair.dto';
 import GoogleResponse from './dto/google-response';
+import { LoginParams, RegisterParams } from '@interfaces/routes/auth-routes';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +23,7 @@ export class AuthService {
   ) {}
 
   async register(
-    { password: pass, email, firstName, lastName, fingerprint }: RegisterDTO,
+    { password: pass, email, firstName, lastName, fingerprint }: RegisterParams,
     userAgent: string,
     authName: AuthProviderName,
   ): Promise<{ accessToken: string; refreshToken: string }> {
@@ -53,7 +52,7 @@ export class AuthService {
   }
 
   async login(
-    { email, password, fingerprint }: AuthDTO,
+    { email, password, fingerprint }: LoginParams,
     userAgent: string,
     authName: AuthProviderName,
   ): Promise<AuthTokensPair> {

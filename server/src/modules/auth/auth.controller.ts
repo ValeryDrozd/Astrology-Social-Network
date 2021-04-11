@@ -12,20 +12,29 @@ import {
 import { Request, Response } from 'express';
 import sendTokensPair from 'src/helpers/send-tokens-pair';
 import { AuthService } from './auth.service';
-import AuthDTO from './dto/auth.dto';
-import RegisterDTO from './dto/register.dto';
 import GoogleResponse from './dto/google-response';
 import fetch from 'node-fetch';
+import {
+  AuthRoute,
+  GoogleParams,
+  GoogleRoute,
+  LoginParams,
+  LoginRoute,
+  RefreshTokensParams,
+  RefreshTokensRoute,
+  RegisterParams,
+  RegisterRoute,
+} from '@interfaces/routes/auth-routes';
 
 const userAgentName = 'user-agent';
-@Controller('auth')
+@Controller(AuthRoute)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('register')
+  @Post(RegisterRoute)
   @UsePipes(new ValidationPipe({ transform: true }))
   async register(
-    @Body() registerDTO: RegisterDTO,
+    @Body() registerDTO: RegisterParams,
     @Res({ passthrough: true }) response: Response,
     @Req() { headers }: Request,
   ): Promise<void> {
@@ -35,21 +44,22 @@ export class AuthController {
     sendTokensPair(response, pair);
   }
 
-  @Post('login')
+  @Post(LoginRoute)
   @UsePipes(new ValidationPipe({ transform: true }))
   async login(
-    @Body() authDTO: AuthDTO,
+    @Body() authDTO: LoginParams,
     @Res({ passthrough: true }) response: Response,
     @Req() { headers }: Request,
   ): Promise<void> {
     const userAgent = String(headers[userAgentName]);
+    console.log(authDTO);
     const pair = await this.authService.login(authDTO, userAgent, 'local');
     sendTokensPair(response, pair);
   }
 
-  @Post('refresh-tokens')
+  @Post(RefreshTokensRoute)
   async refreshTokens(
-    @Body('fingerprint') fingerprint: string,
+    @Body() { fingerprint }: RefreshTokensParams,
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
@@ -59,9 +69,9 @@ export class AuthController {
     sendTokensPair(response, pair);
   }
 
-  @Post('google')
+  @Post(GoogleRoute)
   async googleAuth(
-    @Body() body: { accessToken: string; tokenId: string; fingerprint: string },
+    @Body() body: GoogleParams,
     @Req() { headers }: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
