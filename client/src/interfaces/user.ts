@@ -5,6 +5,7 @@ export default interface User {
   email: string;
   birthDate: Date;
   sex: boolean;
+  zodiacSign: string;
 }
 
 export interface UserUpdates {

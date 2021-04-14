@@ -9,6 +9,7 @@ import { UsersModule } from '../users/users.module';
 import { PgService } from '../pg/pg.service';
 import { RefreshSessionsService } from '../refresh-sessions/refresh-sessions.service';
 import { AuthProvidersService } from '../auth-providers/auth-providers.service';
+import { ZodiacSignsService } from '../zodiac-signs/zodiac-signs.service';
 
 @Module({
   imports: [
@@ -26,10 +27,12 @@ import { AuthProvidersService } from '../auth-providers/auth-providers.service';
     JwtStrategy,
     RefreshSessionsService,
     AuthProvidersService,
+    ZodiacSignsService,
   ],
   controllers: [AuthController],
   exports: [
     AuthService,
+    ZodiacSignsService,
     ScryptService,
     UsersService,
     PgService,

@@ -7,6 +7,7 @@ import { RefreshSessionsModule } from './modules/refresh-sessions/refresh-sessio
 import { AuthProvidersModule } from './modules/auth-providers/auth-providers.module';
 import { ChatsService } from './modules/chats/chats.service';
 import { MessagesService } from './modules/messages/messages.service';
+import { ZodiacSignsService } from './modules/zodiac-signs/zodiac-signs.service';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { MessagesService } from './modules/messages/messages.service';
     AuthProvidersModule,
   ],
   controllers: [],
-  providers: [ScryptService, ChatsService, MessagesService],
+  providers: [ScryptService, ChatsService, MessagesService, ZodiacSignsService],
 })
 export class AppModule {}
