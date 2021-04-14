@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import User from '@interfaces/user';
+import User, { UserUpdates } from '@interfaces/user';
 import { RegisterData } from '../auth/dto/register.dto';
 import { PgService } from '../pg/pg.service';
 
@@ -22,6 +22,14 @@ export class UsersService {
   async findById(userID: string): Promise<User> {
     return await this.pgService.findOne<User>({
       tableName: this.tableName,
+      where: { userID },
+    });
+  }
+
+  async patchUser(userID: string, updates: UserUpdates): Promise<void> {
+    await this.pgService.update<UserUpdates>({
+      tableName: this.tableName,
+      updates: updates as Record<string, unknown>,
       where: { userID },
     });
   }

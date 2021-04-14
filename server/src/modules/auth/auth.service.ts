@@ -5,7 +5,7 @@ import { UsersService } from '../users/users.service';
 import { RefreshSessionsService } from '../refresh-sessions/refresh-sessions.service';
 import { AuthProvidersService } from '../auth-providers/auth-providers.service';
 import { AuthProviderName } from '../auth-providers/dto/auth-provider.dto';
-import { RefreshSessionDTO } from '../refresh-sessions/dto/refresh-session.dto';
+import Session, { RefreshSessionDTO } from '../refresh-sessions/dto/refresh-session.dto';
 import { JwtService } from '@nestjs/jwt';
 import AuthTokensPair from './dto/tokens-pair.dto';
 import GoogleResponse from './dto/google-response';
@@ -80,19 +80,13 @@ export class AuthService {
     });
   }
 
-  async refreshTokens(
-    refreshToken: string,
-    fingerprint: string,
-  ): Promise<AuthTokensPair> {
+  async checkSession(refreshToken: string, fingerprint: string): Promise<Session> {
     const session = await this.refreshSessionsService.findOne(refreshToken);
-    if (!session) throw new UnauthorizedException('INVALID_TOKEN');
-    const {
-      userID,
-      fingerprint: oldFingerprint,
-      createdAt,
-      expiresIn,
-      userAgent,
-    } = session;
+    if (!session) {
+      throw new UnauthorizedException('INVALID_TOKEN');
+    }
+
+    const { fingerprint: oldFingerprint, createdAt, expiresIn } = session;
     await this.refreshSessionsService.delete(refreshToken);
 
     const expiredDate = new Date(createdAt.getTime() + +expiresIn);
@@ -100,6 +94,16 @@ export class AuthService {
     if (expiredDate.getTime() <= now.getTime() || oldFingerprint !== fingerprint) {
       throw new UnauthorizedException('INVALID_REFRESH_SESSION');
     }
+
+    return session;
+  }
+
+  async refreshTokens(
+    refreshToken: string,
+    fingerprint: string,
+  ): Promise<AuthTokensPair> {
+    const session = await this.checkSession(refreshToken, fingerprint);
+    const { userID, userAgent } = session;
 
     return await this.createNewRefreshSession({
       userID,

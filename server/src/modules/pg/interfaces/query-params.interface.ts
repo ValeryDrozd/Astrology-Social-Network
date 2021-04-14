@@ -19,6 +19,6 @@ export interface DeleteParams extends RequestParams {
 
 export interface UpdateParams<UpdateType> extends RequestParams {
   where: Record<string, unknown>;
-  updates: UpdateType;
+  updates: UpdateType & Record<string, unknown>;
   returning?: string;
 }
