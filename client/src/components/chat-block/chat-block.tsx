@@ -1,6 +1,8 @@
 import { observer } from 'mobx-react';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Message from '../../interfaces/message';
 import chatStore from '../../stores/store';
+import ScrollList from '../scroll-list/scroll-list';
 import {
   ChatForm,
   ChatBlockView,
@@ -15,6 +17,7 @@ import {
   InputArea,
   ChatLastMessage,
   ChatName,
+  MessagesArea,
 } from './styles';
 
 const ChatBlock = (): JSX.Element => {
@@ -39,21 +42,9 @@ const ChatBlock = (): JSX.Element => {
     (chat) => chat.chatID === currentChatId,
   );
 
-  const messagesViews = currentChat
-    ? currentChat?.messageList.map((message, index) => (
-        <MessageItem
-          ref={index === currentChat?.messageList.length - 1 ? ref : null}
-          key={`message-${currentChatId}-${index + 1}`}
-          className={chatStore.myID === message.senderID ? 'my' : ''}
-        >
-          <MessageView>{message.text}</MessageView>
-        </MessageItem>
-      ))
-    : [];
-
   const handleSubmit = (ev: React.FormEvent<HTMLFormElement>): void => {
     ev.preventDefault();
-    if (newMessageText !== undefined && newMessageText !== '') {
+    if (newMessageText) {
       chatStore.addMessage(currentChatId, newMessageText);
       setNewMessageText('');
       setFlag(true);
@@ -75,14 +66,41 @@ const ChatBlock = (): JSX.Element => {
     </ChatItem>
   ));
 
+  const renderMessage = (
+    message: Message,
+    index: number,
+    array: Message[],
+  ): JSX.Element => (
+    <MessageItem
+      key={`message-${currentChatId}-${index + 1}`}
+      className={chatStore.myID === message.senderID ? 'my' : ''}
+    >
+      <MessageView>{message.text}</MessageView>
+    </MessageItem>
+  );
+
+  const wrapMessagesList = (
+    list: JSX.Element[],
+    onWheel: (i: React.WheelEvent<HTMLUListElement>) => void,
+  ): JSX.Element => (
+    <MessagesArea>
+      <MessageList onWheel={onWheel}>{list}</MessageList>
+    </MessagesArea>
+  );
+
   return (
     <ChatBlockView>
       <ChatList>{chatViews}</ChatList>
       <MessagesBlock>
-        <MessageList ref={ref}>
-          {messagesViews}
-          <div ref={ref} />
-        </MessageList>
+        <ScrollList
+          startBottom
+          numberOfVisibleItems={9}
+          wrap={wrapMessagesList}
+          renderItem={(message, index, array): JSX.Element =>
+            renderMessage(message as Message, index, array as Message[])
+          }
+          list={currentChat ? currentChat.messageList : []}
+        ></ScrollList>
         {currentChatId ? (
           <InputArea>
             <ChatForm onSubmit={(ev): void => handleSubmit(ev)}>

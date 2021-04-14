@@ -5,6 +5,8 @@ export const ChatBlockView = styled.div`
   margin: 0 1rem;
   padding-top: 1rem;
   height: 95vh;
+  position: relative;
+  z-index: 1;
 `;
 
 export const ChatList = styled.div`
@@ -20,6 +22,7 @@ export const ChatItem = styled.div`
   margin: 0.25rem;
   border-radius: 0.25rem;
   transition: background 0.3s ease;
+
   &:hover {
     background-color: #5f3292;
   }
@@ -34,20 +37,41 @@ export const ChatLastMessage = styled.span`
   font-size: x-small;
 `;
 
-export const MessageList = styled.div`
+export const MessagesArea = styled.div`
+  overflow-y: hidden;
+  z-index: 10;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
   border: #fff 1px solid;
-  overflow-y: auto;
+  overflow-x: hidden;
   height: 90vh;
+`;
+
+export const MessageList = styled.ul`
+  position: absolute;
+  width: 100%;
+
+  /* top: -10vh; */
+  left: 0;
+  padding: 0;
+  margin: auto;
+  overflow-y: hidden;
+  z-index: -1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  height: 100%;
 `;
 
 export const MessageItem = styled.div`
   padding: 0.75rem;
+  overflow-y: hidden;
   margin: 0.25rem;
   display: flex;
-  max-width: 30vw;
+  max-width: 60vw;
+
   &.my {
     margin-left: auto;
   }

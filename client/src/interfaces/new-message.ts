@@ -1,4 +1,4 @@
-import Message, { ServerMessage } from './message';
+import { ServerMessage } from './message';
 
 export interface NewMessage extends ServerMessage {
   chatID: string;

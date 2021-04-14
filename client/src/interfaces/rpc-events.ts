@@ -1,5 +1,5 @@
 import Chat from './chat';
-import Message, { ServerMessage } from './message';
+import Message from './message';
 import { NewMessage } from './new-message';
 
 export const GetMessagesFunction = 'getMessages';
@@ -16,10 +16,6 @@ export type NewMessageNotificationParams = NewMessage;
 export interface DeliveredEvent {
   ok: boolean;
   error?: string;
-}
-
-interface RpcError {
-  errorDescription: string;
 }
 
 export const ConnectionStatusNotification = 'connection-status';

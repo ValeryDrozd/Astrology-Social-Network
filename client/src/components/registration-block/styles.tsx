@@ -19,22 +19,26 @@ export const RegistrationInput = styled.input`
 `;
 
 export const ButtonBox = styled.div`
+  min-width: 375px;
+  max-width: 2560 px;
+  height: auto;
   width: 100%;
   display: flex;
   margin: 0.5rem 0;
+
   & button {
     width: 100%;
   }
 `;
 
-export const StyledButton = styled.button`
-  background: #570e88;
-  color: #fff;
-  border-radius: 0.5rem;
-  border: 1px #9e38e2 solid;
-  padding: 0.5rem;
-  margin: 1rem;
-`;
+// export const StyledButton = styled.button`
+//   background: #570e88;
+//   color: #fff;
+//   border-radius: 0.5rem;
+//   border: 1px #9e38e2 solid;
+//   padding: 0.5rem;
+//   margin: 1rem;
+// `;
 
 export const Title = styled.h1`
   text-align: center;

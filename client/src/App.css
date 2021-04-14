@@ -1,5 +1,12 @@
 .App {
   text-align: center;
   background: #282c34;
-  min-width: none;height: 100vh;
+  min-width: none;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  overflow: hidden;
+  z-index: 10;
 }

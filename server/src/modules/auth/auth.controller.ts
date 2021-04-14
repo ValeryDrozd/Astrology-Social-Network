@@ -61,7 +61,7 @@ export class AuthController {
 
   @Post('google')
   async googleAuth(
-    @Body() body: { accessToken: string; tokenId: string; fingerprint: string },
+    @Body() body: { tokenId: string; fingerprint: string },
     @Req() { headers }: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {

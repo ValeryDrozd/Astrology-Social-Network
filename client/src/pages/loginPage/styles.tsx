@@ -19,6 +19,9 @@ export const LoginInput = styled.input`
 `;
 
 export const ButtonBox = styled.div`
+  min-width: 375px;
+  max-width: 2560 px;
+  height: auto;
   width: 100%;
   display: flex;
   justify-content: space-between;

@@ -13,22 +13,24 @@ import {
   NewMessageNotification,
   NewMessageNotificationParams,
 } from '../interfaces/rpc-events';
-import Message, { ServerMessage } from '../interfaces/message';
+import { ServerMessage } from '../interfaces/message';
 import { refresh } from '../services/auth.service';
 
 class ChatStore {
   private accessToken!: string;
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
-  number = 1;
   online = false;
   myID!: string;
+  private exp = 0;
   private socket!: WebSocketClient;
 
   constructor() {
-    refresh().then(({ accessToken }): void => {
-      this.setAccessToken(accessToken);
-    });
+    refresh()
+      .then(({ accessToken }): void => {
+        this.setAccessToken(accessToken);
+      })
+      .catch(() => (this.online = false));
   }
 
   initSocket(): void {
@@ -39,16 +41,15 @@ class ChatStore {
         .listenOnce<ConnectionStatusNotificationPayload>(
           ConnectionStatusNotification,
         )
-        .then((res) => {
+        .then(async (res) => {
           if (!res.ok) {
-            return; // TODO refresh tokens before connecting
+            await this.checkValidToken();
           }
-          this.getMessages();
+
+          await this.getMessages();
         });
     });
-    this.socket.listenTo(NewMessageNotification, () => {
-      // alert('New messages');
-    });
+
     this.socket.listenTo('close', (res) => {
       this.online = false;
     });
@@ -61,7 +62,7 @@ class ChatStore {
       (message: NewMessageNotificationParams) => {
         this.chats
           .find((chat) => chat.chatID === message.chatID)
-          ?.messageList.push({ ...message, isSent: false });
+          ?.messageList.push({ ...message, isSent: true });
       },
     );
   }
@@ -71,6 +72,7 @@ class ChatStore {
     const res = this.checkToken();
     if (res) {
       this.myID = res.userID;
+      this.exp = res.exp;
       this.initSocket();
       console.log(res);
     }
@@ -85,20 +87,25 @@ class ChatStore {
     } catch (error) {}
   }
 
+  private async checkValidToken(): Promise<void> {
+    if (Date.now() >= this.exp * 1000) {
+      const { accessToken } = await refresh();
+      this.accessToken = accessToken;
+    }
+  }
+
   async getMessages(): Promise<void> {
     try {
+      await this.checkValidToken();
       const res = await this.socket.call<GetMessagesFunctionResponse>(
         GetMessagesFunction,
       );
       this.chats = res;
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   addMessage(chatID: string, text: string): void {
     const id = uuid();
-    console.log(this.myID);
     const message: ServerMessage = {
       messageID: id,
       senderID: this.myID,
@@ -112,30 +119,34 @@ class ChatStore {
     this.sendOneMessage({ ...message, chatID });
   }
 
-  // addChat(senderInfo:):void {
-  //   const chatId = uuid();
-  //   const chat: Chat = {
-  //     chatId,
-  //     senderInfo: {
-
-  //     }
-
-  //   };
-  // }
-
   removeMessage(): void {
-    const localStorageValue =
-      localStorage.getItem('queue') == null
-        ? '[]'
-        : (localStorage.getItem('queue') as string);
-    this.messagesQueue = JSON.parse(localStorageValue);
-    localStorage.removeItem('queue');
-    this.sendMessages();
+    try {
+      const localStorageValue =
+        localStorage.getItem('queue') == null
+          ? '[]'
+          : (localStorage.getItem('queue') as string);
+      this.messagesQueue = JSON.parse(localStorageValue);
+      localStorage.removeItem('queue');
+      this.sendMessages();
+    } catch (error) {}
   }
 
-  sendOneMessage(msg: NewMessage): void {
-    console.log('OneMsg', msg);
-    this.socket.call(AddNewMessageFunction, msg);
+  async sendOneMessage(msg: NewMessage): Promise<void> {
+    await this.checkValidToken();
+
+    const res: { ok: boolean } = await this.socket.call(
+      AddNewMessageFunction,
+      msg,
+    );
+    if (res.ok) {
+      const currentChat = this.chats.find((chat) => chat.chatID === msg.chatID);
+      const currentIndex = currentChat?.messageList.findIndex(
+        (message) => message.messageID === msg.messageID,
+      );
+      if (currentChat && currentIndex) {
+        currentChat.messageList[currentIndex].isSent = true;
+      }
+    }
   }
 
   sendMessages(): void {

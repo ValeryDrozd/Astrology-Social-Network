@@ -1,9 +1,7 @@
-import axios from 'axios';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { StyledButton } from '../../components/styled/styled-button';
-import getFingerprint from '../../helpers/get-fingerprint';
-import { login } from '../../services/auth.service';
+import { login, responseGoogle } from '../../services/auth.service';
 import chatStore from '../../stores/store';
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
 import { ErrorValidation } from '../../components/styled/error-validation';
@@ -17,20 +15,14 @@ export default function LoginPage(): JSX.Element {
 
   const history = useHistory();
 
-  const responseGoogle = async (res: GoogleLoginResponse): Promise<void> => {
+  const handleGoogleClick = async (res: GoogleLoginResponse): Promise<void> => {
     try {
-      const result = await axios.post(
-        'http://localhost:3001/auth/google',
-        {
-          accessToken: res.accessToken,
-          tokenId: res.tokenId,
-          fingerprint: await getFingerprint(),
-        },
-        { withCredentials: true },
-      );
-      console.log(result);
+      const { accessToken } = await responseGoogle(res);
+      chatStore.setAccessToken(accessToken);
       history.push('/chat');
-    } catch (error) {}
+    } catch (error) {
+      setShowError(true);
+    }
   };
 
   const setToken = async (): Promise<void> => {
@@ -54,18 +46,16 @@ export default function LoginPage(): JSX.Element {
     <LoginDiv>
       <Title>Login</Title>
       <LoginForm onSubmit={handleSubmit}>
-        <label htmlFor="email">Email</label>
+        <label>Email</label>
         <LoginInput
           type="email"
-          id="email"
           value={email}
           onChange={(ev): void => setEmail(ev.target.value)}
         />
 
-        <label htmlFor="password">Password</label>
+        <label>Password</label>
         <LoginInput
           type="password"
-          id="password"
           value={password}
           onChange={(ev): void => setPassword(ev.target.value)}
         />
@@ -76,7 +66,7 @@ export default function LoginPage(): JSX.Element {
             clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}
             buttonText="Login"
             onSuccess={(res): Promise<void> =>
-              responseGoogle(res as GoogleLoginResponse)
+              handleGoogleClick(res as GoogleLoginResponse)
             }
             cookiePolicy={'single_host_origin'}
           />

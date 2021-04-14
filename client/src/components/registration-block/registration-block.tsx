@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { register } from '../../services/auth.service';
 import { ErrorValidation } from '../styled/error-validation';
@@ -42,33 +42,29 @@ const RegistrationBlock = (): JSX.Element => {
     <RegistrationDiv>
       <Title>User Registration</Title>
       <RegistrationForm onSubmit={handleSubmit}>
-        <label htmlFor="firstName">First Name</label>
+        <label>First Name</label>
         <RegistrationInput
           value={firstName}
           onChange={(ev): void => setFirstName(ev.target.value)}
           type="text"
-          id="firstName"
         />
-        <label htmlFor="lastName">Last Name</label>
+        <label>Last Name</label>
         <RegistrationInput
           value={lastName}
           onChange={(ev): void => setLastName(ev.target.value)}
           type="text"
-          id="lastName"
         />
-        <label htmlFor="email">Email</label>
+        <label>Email</label>
         <RegistrationInput
           value={email}
           onChange={(ev): void => setEmail(ev.target.value)}
           type="email"
-          id="email"
         />
-        <label htmlFor="password">Password</label>
+        <label>Password</label>
         <RegistrationInput
           value={password}
           onChange={(ev): void => setPassword(ev.target.value)}
           type="password"
-          id="password"
         />
         {showError ? <ErrorValidation>ERROR!</ErrorValidation> : null}
         <StyledButton className="mrg-1">Register now</StyledButton>
