@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import Chat from '@interfaces/chat';
 import { MessagesService } from '../messages/messages.service';
 import { PgService } from '../pg/pg.service';

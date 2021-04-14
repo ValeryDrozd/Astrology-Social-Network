@@ -4,7 +4,9 @@ import 'dotenv/config';
 
 class WebSocketClient {
   //Server
-  private socket = new Client(process.env.REACT_APP_ADDR_NAME);
+  private socket = new Client(process.env.REACT_APP_ADDR_NAME, {
+    max_reconnects: 0,
+  });
   //Save call functions
   private listeners: string[] = [];
 
