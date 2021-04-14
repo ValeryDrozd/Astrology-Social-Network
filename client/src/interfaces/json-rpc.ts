@@ -23,3 +23,12 @@ export interface JsonRpcNotification extends JsonRpcAbstractRequest {
   notification: string;
   params: unknown;
 }
+
+export enum JsonRpcErrorCodes {
+  PARSE_ERROR = -32700,
+  INVALID_REQUEST = -32600,
+  METHOD_NOT_FOUND = -32601,
+  INVALID_PARAMS = -32602,
+  INTERNAL_ERROR = -32603,
+  SERVER_ERROR = -32000,
+}

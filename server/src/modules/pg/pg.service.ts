@@ -107,6 +107,7 @@ export class PgService {
   }: UpdateParams<T>): Promise<QueryResult> {
     let counter = 1;
     const sets = Object.keys(updates)
+      .filter((key) => updates[key] !== undefined)
       .map((key) => `"${key}"=$${counter++}`)
       .join(',');
 
