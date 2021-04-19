@@ -15,13 +15,17 @@ import {
 } from '../interfaces/rpc-events';
 import { ServerMessage } from '../interfaces/message';
 import { refresh } from '../services/auth.service';
+import { getMyProfile } from '../services/users.service';
+import User from '../interfaces/user';
 
 class ChatStore {
-  private accessToken!: string;
+  accessToken!: string;
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
   online = false;
   myID!: string;
+  user!: User;
+  initialized = false;
   private exp = 0;
   private socket!: WebSocketClient;
 
@@ -29,6 +33,7 @@ class ChatStore {
     refresh()
       .then(({ accessToken }): void => {
         this.setAccessToken(accessToken);
+        this.setMyProfile();
       })
       .catch(() => (this.online = false));
   }
@@ -120,11 +125,12 @@ class ChatStore {
   }
 
   removeMessage(): void {
+    const localStorageValue =
+      localStorage.getItem('queue') == null
+        ? '[]'
+        : (localStorage.getItem('queue') as string);
+
     try {
-      const localStorageValue =
-        localStorage.getItem('queue') == null
-          ? '[]'
-          : (localStorage.getItem('queue') as string);
       this.messagesQueue = JSON.parse(localStorageValue);
       localStorage.removeItem('queue');
       this.sendMessages();
@@ -159,6 +165,16 @@ class ChatStore {
 
   saveQueue(): void {
     localStorage.setItem('queue', JSON.stringify(this.messagesQueue));
+  }
+
+  async setMyProfile(): Promise<void> {
+    try {
+      const user = await getMyProfile(this.accessToken);
+      this.user = user;
+    } catch (err) {
+    } finally {
+      this.initialized = true;
+    }
   }
 
   // addNewChat(): void {}

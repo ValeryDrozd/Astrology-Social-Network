@@ -19,8 +19,10 @@ export class UsersController {
 
   @Get(MyProfileRoute)
   async getMyProfile(
-    @Body() { accessToken }: StandardAccessProps,
+    @Query() { accessToken }: StandardAccessProps,
   ): Promise<MyProfileRouteResponse> {
+    console.log(accessToken);
+    console.log('Kuku');
     const { userID } = this.jwtService.verify<{ userID: string }>(accessToken);
     return await this.usersService.findById(userID);
   }

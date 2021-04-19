@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Message from '../../interfaces/message';
 import chatStore from '../../stores/store';
 import ScrollList from '../scroll-list/scroll-list';
@@ -23,19 +23,9 @@ import {
 const ChatBlock = (): JSX.Element => {
   const [currentChatId, setCurrentChatId] = useState<string>('');
   const [newMessageText, setNewMessageText] = useState<string>('');
-  const [flag, setFlag] = useState(false);
-  const ref = useRef() as React.MutableRefObject<HTMLDivElement>;
-
-  useEffect((): void => {
-    if (flag) {
-      ref.current?.scrollIntoView();
-      setFlag(false);
-    }
-  }, [flag]);
 
   const handlerChatClick = (chatId: string): void => {
     setCurrentChatId(chatId);
-    setFlag(true);
   };
 
   const currentChat = chatStore.chats.find(
@@ -47,7 +37,6 @@ const ChatBlock = (): JSX.Element => {
     if (newMessageText) {
       chatStore.addMessage(currentChatId, newMessageText);
       setNewMessageText('');
-      setFlag(true);
     }
   };
 

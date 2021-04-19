@@ -13,4 +13,5 @@ export interface UserUpdates {
   lastName?: string;
   birthDate?: Date;
   sex?: boolean;
+  zodiacSign?: string;
 }

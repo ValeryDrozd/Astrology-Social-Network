@@ -31,15 +31,6 @@ export const ButtonBox = styled.div`
   }
 `;
 
-// export const StyledButton = styled.button`
-//   background: #570e88;
-//   color: #fff;
-//   border-radius: 0.5rem;
-//   border: 1px #9e38e2 solid;
-//   padding: 0.5rem;
-//   margin: 1rem;
-// `;
-
 export const Title = styled.h1`
   text-align: center;
   font-size: calc(3vw + 2rem);

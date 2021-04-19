@@ -1,16 +1,16 @@
 import './App.css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import LoginPage from './pages/loginPage/loginPage';
 import ProfilePage from './pages/profilePage/profilePage';
 import RegistrationPage from './pages/registrationPage/registrationPage';
 import styled from 'styled-components';
 import ChatPage from './pages/chatPage/chatPage';
-//import chatStore from './stores/store';
-import React from 'react';
-
-//const chatStore = new ChatStore();
-
-// const ChatPageWithStore = (): JSX.Element => <ChatPage store={chatStore} />;
+import ExtraInfoPage from './pages/extraInfoPage/extraInfoPage';
 
 function App(): JSX.Element {
   return (
@@ -21,6 +21,8 @@ function App(): JSX.Element {
           <Route path="/profile" component={ProfilePage}></Route>
           <Route path="/chat" component={ChatPage}></Route>
           <Route path="/registration" component={RegistrationPage}></Route>
+          <Route path="/extra-page" component={ExtraInfoPage}></Route>
+          <Redirect from="/" to="/" />
         </Switch>
       </Router>
     </AppView>

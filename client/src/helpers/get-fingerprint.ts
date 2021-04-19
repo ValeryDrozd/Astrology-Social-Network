@@ -2,6 +2,10 @@ import Fingerprint2 from 'fingerprintjs2';
 import UAParser from 'ua-parser-js';
 
 export default function getFingerprint(): Promise<string> {
+  const fingerPrint = sessionStorage.getItem('fingerprint');
+  if (fingerPrint) {
+    return Promise.resolve(fingerPrint);
+  }
   return new Promise(async (resolve, reject) => {
     async function getHash(): Promise<string> {
       const options = {
@@ -37,7 +41,8 @@ export default function getFingerprint(): Promise<string> {
         return '';
       }
     }
-
-    resolve(await getHash());
+    const hash = await getHash();
+    sessionStorage.setItem('fingerprint', hash);
+    resolve(hash);
   });
 }
