@@ -52,7 +52,7 @@ export const InputDiv = styled.div`
   margin: 0 auto;
 `;
 
-export const SelectSexName = styled.h3`
+export const SelectSexName = styled.label`
   text-align: center;
   font-size: 20px;
   margin: 0;

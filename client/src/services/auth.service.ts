@@ -61,6 +61,6 @@ export async function responseGoogle(
 ): Promise<NewToken> {
   return (await post('/auth/google', {
     tokenId: res.tokenId,
-    fingerprint: await getFingerprint(),
+    astrologicalToken: await getFingerprint(),
   })) as NewToken;
 }

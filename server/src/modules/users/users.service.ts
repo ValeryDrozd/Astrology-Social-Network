@@ -17,18 +17,13 @@ export class UsersService {
     await this.pgService.create({ values: [registerData], tableName: this.tableName });
   }
 
-  async findByEmail(email: string): Promise<User> {
-    const {
-      firstName,
-      lastName,
-      userID,
-      birthDate,
-      sex,
-      zodiacSignID: zodiacID,
-    } = await this.pgService.findOne<UserEntity>({
+  async findByEmail(email: string): Promise<User | undefined> {
+    const user = await this.pgService.findOne<UserEntity>({
       tableName: this.tableName,
       where: { email },
     });
+    if (!user) return;
+    const { firstName, lastName, userID, birthDate, sex, zodiacSignID: zodiacID } = user;
 
     const zodiacSign = await this.zodiacSignsService.getZodiacName(zodiacID);
     return { userID, firstName, lastName, email, birthDate, sex, zodiacSign };

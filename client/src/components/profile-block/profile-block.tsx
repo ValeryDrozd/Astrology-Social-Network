@@ -1,14 +1,18 @@
 import { observer } from 'mobx-react';
-import { Title } from './styles';
+import { Title, AvatarImage, ProfileBlockView, Name } from './styles';
 import chatStore from '../../stores/store';
 
 export default observer(function ProfileBlock(): JSX.Element {
   const user = chatStore.user;
 
+  console.log(user?.sex);
   return (
-    <div>
+    <ProfileBlockView>
       <Title>Profile</Title>
-      <p>{user?.firstName}</p>
-    </div>
+      <AvatarImage src={user?.sex ? '/man.jpg' : 'women.jpg'} />
+      <Name>
+        {user?.lastName} {user?.firstName}
+      </Name>
+    </ProfileBlockView>
   );
 });

@@ -27,10 +27,10 @@ export class AuthService {
     authName: AuthProviderName,
     userAgent = '',
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const oldUser = await this.usersService.findByEmail(email);
-    if (oldUser) {
-      throw new BadRequestException('User with such email exists already');
-    }
+      const oldUser = await this.usersService.findByEmail(email);
+      if (oldUser) {
+        throw new BadRequestException('User with such email exists already');
+      }
     const password =
       authName === 'local' ? await this.scryptService.hash(pass as string) : undefined;
     const userID = uuid();
