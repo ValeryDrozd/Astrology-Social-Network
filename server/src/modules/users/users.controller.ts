@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Patch, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
 import {
@@ -27,7 +36,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get(UserByIDRoute)
-  async getUserGyID(@Query('userID') userID: string): Promise<UserByIDRouteResponse> {
+  async getUserGyID(@Param('id') userID: string): Promise<UserByIDRouteResponse> {
     return await this.usersService.findById(userID);
   }
 
