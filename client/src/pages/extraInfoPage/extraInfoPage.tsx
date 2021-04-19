@@ -8,7 +8,7 @@ import {
   ZodiacSelect,
   CalendarDiv,
   StyledDiv,
-  SelectSexTitle,
+  TitleName,
   SelectSexName,
 } from './styles';
 import chatStore from '../../stores/store';
@@ -61,14 +61,15 @@ export default observer(function ExtraInfoPage(): JSX.Element {
   return (
     <ExtraInfoDiv>
       <ExtraForm onSubmit={handleSubmit}>
+        <Title>Enter more information</Title>
         <CalendarDiv>
-          <Title>Enter more information</Title>
+          <TitleName>Enter your date of birth</TitleName>
           <Calendar
             onChange={(date): void => setBirthDate(date as Date)}
             value={birthDate}
           />
         </CalendarDiv>
-        <SelectSexTitle>Switch your sex</SelectSexTitle>
+        <TitleName>Switch your sex</TitleName>
         <StyledDiv>
           <div>
             <InputDiv>
@@ -92,9 +93,10 @@ export default observer(function ExtraInfoPage(): JSX.Element {
                 onChange={({ target }): void => setSex(target.checked)}
               />
             </InputDiv>
-            <SelectSexName>Female </SelectSexName>
+            <SelectSexName> Female </SelectSexName>
           </div>
         </StyledDiv>
+        <TitleName>Select your astrological sign</TitleName>
         <ZodiacSelect>{options}</ZodiacSelect>
       </ExtraForm>
     </ExtraInfoDiv>

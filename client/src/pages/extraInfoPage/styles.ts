@@ -10,12 +10,13 @@ export const ExtraInfoDiv = styled.div`
 export const Title = styled.h1`
   text-align: center;
   font-size: 2rem;
-  margin: 1rem;
   width: 100%;
 `;
 
 export const CalendarDiv = styled.div`
-  margin: 0 auto;
+  margin: 0 auto 2rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const ExtraForm = styled.form`
@@ -30,7 +31,7 @@ export const ZodiacSelect = styled.select`
   font-size: 25px;
   max-width: 30rem;
   min-width: 10rem;
-  margin: 1rem auto;
+  margin: 2rem auto;
 `;
 
 export const StyledDiv = styled.div`
@@ -41,9 +42,10 @@ export const StyledDiv = styled.div`
   font-size: 25px;
 `;
 
-export const SelectSexTitle = styled.h3`
+export const TitleName = styled.h3`
   text-align: center;
   width: 100%;
+  margin: 1rem auto;
 `;
 
 export const InputDiv = styled.div`
