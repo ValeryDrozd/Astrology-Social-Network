@@ -3,9 +3,9 @@ export default interface User {
   firstName: string;
   lastName: string;
   email: string;
-  birthDate: Date;
-  sex: boolean;
-  zodiacSign: string;
+  birthDate?: Date;
+  sex?: boolean;
+  zodiacSign?: string;
 }
 
 export interface UserUpdates {

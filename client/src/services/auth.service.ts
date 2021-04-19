@@ -25,11 +25,11 @@ export async function login(
   email: string,
   password: string,
 ): Promise<NewToken> {
-  const fingerprint = await getFingerprint();
+  const astrologicalToken = await getFingerprint();
   return (await post('/auth/login', {
     email,
     password,
-    fingerprint,
+    astrologicalToken,
   })) as NewToken;
 }
 
@@ -39,19 +39,21 @@ export async function register(
   email: string,
   password: string,
 ): Promise<NewToken> {
-  const fingerprint = await getFingerprint();
+  const astrologicalToken = await getFingerprint();
   return (await post('/auth/register', {
     firstName,
     lastName,
     email,
     password,
-    fingerprint,
+    astrologicalToken,
   })) as NewToken;
 }
 
 export async function refresh(): Promise<NewToken> {
-  const fingerprint = await getFingerprint();
-  return (await post('/auth/refresh-tokens', { fingerprint })) as NewToken;
+  const astrologicalToken = await getFingerprint();
+  return (await post('/auth/refresh-tokens', {
+    astrologicalToken,
+  })) as NewToken;
 }
 
 export async function responseGoogle(

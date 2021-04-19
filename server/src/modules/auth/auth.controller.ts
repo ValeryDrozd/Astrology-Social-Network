@@ -39,7 +39,7 @@ export class AuthController {
     @Req() { headers }: Request,
   ): Promise<void> {
     const userAgent = String(headers[userAgentName]);
-    const pair = await this.authService.register(registerDTO, userAgent, 'local');
+    const pair = await this.authService.register(registerDTO, 'local', userAgent);
 
     sendTokensPair(response, pair);
   }
@@ -52,20 +52,19 @@ export class AuthController {
     @Req() { headers }: Request,
   ): Promise<void> {
     const userAgent = String(headers[userAgentName]);
-    console.log(authDTO);
     const pair = await this.authService.login(authDTO, userAgent, 'local');
     sendTokensPair(response, pair);
   }
 
   @Post(RefreshTokensRoute)
   async refreshTokens(
-    @Body() { fingerprint }: RefreshTokensParams,
+    @Body() { astrologicalToken }: RefreshTokensParams,
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
     const { refreshToken: oldToken } = request.cookies;
     if (!oldToken) throw new UnauthorizedException('No refresh token');
-    const pair = await this.authService.refreshTokens(oldToken, fingerprint);
+    const pair = await this.authService.refreshTokens(oldToken, astrologicalToken);
     sendTokensPair(response, pair);
   }
 
@@ -84,7 +83,11 @@ export class AuthController {
     }
     const userAgent = String(headers[userAgentName]);
 
-    const pair = await this.authService.googleAuth(userData, userAgent, body.fingerprint);
+    const pair = await this.authService.googleAuth(
+      userData,
+      userAgent,
+      body.astrologicalToken,
+    );
     sendTokensPair(response, pair);
   }
 }

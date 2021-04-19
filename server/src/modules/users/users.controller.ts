@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
 import {
@@ -11,6 +11,7 @@ import {
   UserByIDRouteResponse,
   UserRoute,
 } from '@interfaces/routes/user-routes';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller(UserRoute)
 export class UsersController {
