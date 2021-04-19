@@ -28,7 +28,7 @@ export class LoginParams {
   password?: string;
 
   @IsString()
-  fingerprint!: string;
+  astrologicalToken!: string;
 }
 
 export class RegisterParams extends LoginParams {
@@ -39,11 +39,11 @@ export class RegisterParams extends LoginParams {
 }
 
 export interface RefreshTokensParams {
-  fingerprint: string;
+  astrologicalToken: string;
 }
 
 export interface GoogleParams {
   accessToken: string;
   tokenId: string;
-  fingerprint: string;
+  astrologicalToken: string;
 }

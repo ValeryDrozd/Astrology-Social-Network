@@ -23,15 +23,16 @@ export class AuthService {
   ) {}
 
   async register(
-    { password: pass, email, firstName, lastName, fingerprint }: RegisterParams,
-    userAgent: string,
+    { password: pass, email, firstName, lastName, astrologicalToken }: RegisterParams,
     authName: AuthProviderName,
+    userAgent = '',
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const oldUser = await this.usersService.findByEmail(email);
     if (oldUser) {
       throw new BadRequestException('User with such email exists already');
     }
-    const password = pass ? await this.scryptService.hash(pass) : undefined;
+    const password =
+      authName === 'local' ? await this.scryptService.hash(pass as string) : undefined;
     const userID = uuid();
 
     await this.usersService.registerUser({
@@ -44,7 +45,7 @@ export class AuthService {
     const { accessToken, refreshToken } = await this.createNewRefreshSession({
       userID,
       userAgent,
-      fingerprint,
+      fingerprint: astrologicalToken,
     });
 
     await this.authProvidersService.saveProvider({ userID, authName, password });
@@ -52,7 +53,7 @@ export class AuthService {
   }
 
   async login(
-    { email, password, fingerprint }: LoginParams,
+    { email, password, astrologicalToken: fingerprint }: LoginParams,
     userAgent: string,
     authName: AuthProviderName,
   ): Promise<AuthTokensPair> {
@@ -76,7 +77,7 @@ export class AuthService {
     return await this.createNewRefreshSession({
       userID,
       userAgent,
-      fingerprint,
+      fingerprint: fingerprint,
     });
   }
 
@@ -108,7 +109,7 @@ export class AuthService {
     return await this.createNewRefreshSession({
       userID,
       userAgent,
-      fingerprint,
+      fingerprint: fingerprint,
     });
   }
 
@@ -146,7 +147,7 @@ export class AuthService {
   async googleAuth(
     userData: GoogleResponse,
     userAgent: string,
-    fingerprint: string,
+    astrologicalToken: string,
   ): Promise<AuthTokensPair> {
     const oldUser = await this.usersService.findByEmail(userData.email);
     if (!oldUser) {
@@ -155,10 +156,10 @@ export class AuthService {
           email: userData.email,
           firstName: userData.given_name,
           lastName: userData.family_name,
-          fingerprint,
+          astrologicalToken,
         },
-        userAgent ? userAgent : '',
         'google',
+        userAgent,
       );
     } else {
       const provider = await this.authProvidersService.findOne(oldUser.userID, 'google');
@@ -169,7 +170,7 @@ export class AuthService {
       return await this.login(
         {
           email: userData.email,
-          fingerprint: fingerprint,
+          astrologicalToken: astrologicalToken,
         },
         userAgent ? userAgent : '',
         'google',

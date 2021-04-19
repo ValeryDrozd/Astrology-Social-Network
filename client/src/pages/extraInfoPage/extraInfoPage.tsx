@@ -35,10 +35,11 @@ export default observer(function ExtraInfoPage(): JSX.Element {
         if (user?.birthDate && user?.sex && user?.zodiacSign) {
           return history.push('/profile');
         }
+        console.log(JSON.stringify(user));
         setUser(user);
-        setBirthDate(user?.birthDate);
-        setSex(user?.sex);
-        setZodiacSign(user?.zodiacSign);
+        setBirthDate(user?.birthDate as Date);
+        setSex(user?.sex as boolean);
+        setZodiacSign(user?.zodiacSign as string);
       } catch (error) {
         setShowError(true);
       }

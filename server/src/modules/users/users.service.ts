@@ -24,14 +24,14 @@ export class UsersService {
       userID,
       birthDate,
       sex,
-      zodiacID,
+      zodiacSignID: zodiacID,
     } = await this.pgService.findOne<UserEntity>({
       tableName: this.tableName,
       where: { email },
     });
 
-    const res = await this.zodiacSignsService.getZodiacName(zodiacID);
-    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign: res?.name };
+    const zodiacSign = await this.zodiacSignsService.getZodiacName(zodiacID);
+    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign };
   }
 
   async findById(userID: string): Promise<User> {
@@ -41,20 +41,29 @@ export class UsersService {
       email,
       birthDate,
       sex,
-      zodiacID,
+      zodiacSignID: zodiacID,
     } = await this.pgService.findOne<UserEntity>({
       tableName: this.tableName,
       where: { userID },
     });
 
-    const res = await this.zodiacSignsService.getZodiacName(zodiacID);
-    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign: res?.name };
+    const zodiacSign = await this.zodiacSignsService.getZodiacName(zodiacID);
+    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign };
   }
 
   async patchUser(userID: string, updates: UserUpdates): Promise<void> {
-    await this.pgService.update<UserUpdates>({
+    const newUpdates: Partial<UserEntity> & UserUpdates = { ...updates };
+    if (updates?.zodiacSign) {
+      const zodiacSignID = await this.zodiacSignsService.getZodiacSignID(
+        updates?.zodiacSign as string,
+      );
+      newUpdates.zodiacSignID = zodiacSignID;
+      delete newUpdates.zodiacSign;
+    }
+
+    await this.pgService.update<Partial<UserEntity>>({
       tableName: this.tableName,
-      updates: updates as Record<string, unknown>,
+      updates: newUpdates as Record<string, unknown>,
       where: { userID },
     });
   }
