@@ -9,16 +9,9 @@ export const FullMyProfileRoute = `/${UserRoute}/${MyProfileRoute}`;
 export const FullUserByIDRoute = `/${UserRoute}/`; // + userID
 export const FullPatchMyProfileRoute = `/${UserRoute}/${PatchMyProfileRoute}`;
 
-export interface StandardAccessProps {
-  accessToken: string;
-}
-
-export type MyProfileRouteProps = StandardAccessProps;
 export type MyProfileRouteResponse = User;
-
-export type UserByIDRouteProps = StandardAccessProps;
 export type UserByIDRouteResponse = User;
 
-export interface PatchMyProfileRouteProps extends StandardAccessProps {
+export interface PatchMyProfileRouteProps {
   updates: UserUpdates;
 }

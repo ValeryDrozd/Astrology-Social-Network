@@ -2,18 +2,22 @@ import { FullMyProfileRoute } from '../interfaces/routes/user-routes';
 import User from '../interfaces/user';
 
 export async function getMyProfile(accessToken: string): Promise<User> {
-  const params = new URLSearchParams();
-  params.append('accessToken', accessToken);
   const res = await fetch(
-    process.env.REACT_APP_SERVER_URL +
-      FullMyProfileRoute +
-      '?' +
-      params.toString(),
+    process.env.REACT_APP_SERVER_URL + FullMyProfileRoute,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
   );
   if (!res.ok) {
     throw new Error('Error');
   }
-  return await res.json();
+  const result = await res.json();
+  result.birthDate = result?.birthDate
+    ? new Date(result.birthDate)
+    : new Date();
+  return result;
 }
 
 // export async function UserByIDRoute()

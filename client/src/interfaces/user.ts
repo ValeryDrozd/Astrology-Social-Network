@@ -1,3 +1,6 @@
+import { IsDate } from 'class-validator';
+import { Type } from 'class-transformer';
+
 export default interface User {
   userID: string;
   firstName: string;
@@ -8,9 +11,11 @@ export default interface User {
   zodiacSign?: string;
 }
 
-export interface UserUpdates {
+export class UserUpdates {
   firstName?: string;
   lastName?: string;
+  @Type(() => Date)
+  @IsDate()
   birthDate?: Date;
   sex?: boolean;
   zodiacSign?: string;
