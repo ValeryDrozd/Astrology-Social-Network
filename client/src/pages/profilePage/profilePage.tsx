@@ -1,14 +1,12 @@
-import './profilePage.css';
+import ProfileBlock from '../../components/profile-block/profile-block';
+import { observer } from 'mobx-react';
 
 function ProfilePage(): JSX.Element {
   return (
     <div>
-      <div>
-        <p>Profile page</p>
-      </div>
-      <div></div>
+      <ProfileBlock />
     </div>
   );
 }
 
-export default ProfilePage;
+export default observer(ProfilePage);

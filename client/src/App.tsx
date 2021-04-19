@@ -10,7 +10,7 @@ import ProfilePage from './pages/profilePage/profilePage';
 import RegistrationPage from './pages/registrationPage/registrationPage';
 import styled from 'styled-components';
 import ChatPage from './pages/chatPage/chatPage';
-import React from 'react';
+import ExtraInfoPage from './pages/extraInfoPage/extraInfoPage';
 
 function App(): JSX.Element {
   return (
@@ -21,6 +21,7 @@ function App(): JSX.Element {
           <Route path="/profile" component={ProfilePage}></Route>
           <Route path="/chat" component={ChatPage}></Route>
           <Route path="/registration" component={RegistrationPage}></Route>
+          <Route path="/extra-page" component={ExtraInfoPage}></Route>
           <Redirect from="/" to="/" />
         </Switch>
       </Router>

@@ -52,8 +52,6 @@ export const MessagesArea = styled.div`
 export const MessageList = styled.ul`
   position: absolute;
   width: 100%;
-
-  /* top: -10vh; */
   left: 0;
   padding: 0;
   margin: auto;

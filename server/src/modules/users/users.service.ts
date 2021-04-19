@@ -30,8 +30,8 @@ export class UsersService {
       where: { email },
     });
 
-    const { name: zodiacSign } = await this.zodiacSignsService.getZodiacName(zodiacID);
-    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign };
+    const res = await this.zodiacSignsService.getZodiacName(zodiacID);
+    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign: res?.name };
   }
 
   async findById(userID: string): Promise<User> {
@@ -47,8 +47,8 @@ export class UsersService {
       where: { userID },
     });
 
-    const { name: zodiacSign } = await this.zodiacSignsService.getZodiacName(zodiacID);
-    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign };
+    const res = await this.zodiacSignsService.getZodiacName(zodiacID);
+    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign: res?.name };
   }
 
   async patchUser(userID: string, updates: UserUpdates): Promise<void> {

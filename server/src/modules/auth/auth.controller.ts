@@ -52,7 +52,6 @@ export class AuthController {
     @Req() { headers }: Request,
   ): Promise<void> {
     const userAgent = String(headers[userAgentName]);
-    console.log(authDTO);
     const pair = await this.authService.login(authDTO, userAgent, 'local');
     sendTokensPair(response, pair);
   }
