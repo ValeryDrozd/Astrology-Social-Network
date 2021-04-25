@@ -82,7 +82,6 @@ export class AuthController {
       throw new BadRequestException('Not confirmed google account!');
     }
     const userAgent = String(headers[userAgentName]);
-
     const pair = await this.authService.googleAuth(
       userData,
       userAgent,

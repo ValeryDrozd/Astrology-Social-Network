@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ScryptService } from '../scrypt/scrypt.service';
 import { v4 as uuid } from 'uuid';
 import { UsersService } from '../users/users.service';
@@ -27,10 +32,10 @@ export class AuthService {
     authName: AuthProviderName,
     userAgent = '',
   ): Promise<{ accessToken: string; refreshToken: string }> {
-      const oldUser = await this.usersService.findByEmail(email);
-      if (oldUser) {
-        throw new BadRequestException('User with such email exists already');
-      }
+    const oldUser = await this.usersService.findByEmail(email);
+    if (oldUser) {
+      throw new BadRequestException('User with such email exists already');
+    }
     const password =
       authName === 'local' ? await this.scryptService.hash(pass as string) : undefined;
     const userID = uuid();
@@ -59,25 +64,26 @@ export class AuthService {
   ): Promise<AuthTokensPair> {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new BadRequestException();
+      throw new NotFoundException();
     }
-
     const { userID } = user;
     const provider = await this.authProvidersService.findOne(userID, authName);
     if (!provider) {
-      throw new BadRequestException();
+      throw new NotFoundException();
     }
     const isValid =
       authName === 'local'
         ? await this.scryptService.verify(password as string, provider.password as string)
         : true;
 
-    if (!isValid) throw new BadRequestException();
+    if (!isValid) {
+      throw new BadRequestException();
+    }
 
     return await this.createNewRefreshSession({
       userID,
       userAgent,
-      fingerprint: fingerprint,
+      fingerprint,
     });
   }
 
@@ -149,8 +155,20 @@ export class AuthService {
     userAgent: string,
     astrologicalToken: string,
   ): Promise<AuthTokensPair> {
-    const oldUser = await this.usersService.findByEmail(userData.email);
-    if (!oldUser) {
+    try {
+      return await this.login(
+        {
+          email: userData.email,
+          astrologicalToken,
+        },
+        userAgent ? userAgent : '',
+        'google',
+      );
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      if (error.status === 400) {
+        throw new BadRequestException();
+      }
       return await this.register(
         {
           email: userData.email,
@@ -160,20 +178,6 @@ export class AuthService {
         },
         'google',
         userAgent,
-      );
-    } else {
-      const provider = await this.authProvidersService.findOne(oldUser.userID, 'google');
-      if (!provider) {
-        throw new BadRequestException();
-      }
-
-      return await this.login(
-        {
-          email: userData.email,
-          astrologicalToken: astrologicalToken,
-        },
-        userAgent ? userAgent : '',
-        'google',
       );
     }
   }

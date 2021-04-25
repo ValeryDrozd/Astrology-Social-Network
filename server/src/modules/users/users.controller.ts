@@ -11,6 +11,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
 import {
+  GetRecommendationsRoute,
+  GetRecommendationsRouteQueryParams,
   MyProfileRoute,
   MyProfileRouteResponse,
   PatchMyProfileRoute,
@@ -20,7 +22,7 @@ import {
 } from '@interfaces/routes/user-routes';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { JwtValidationOutput } from '../auth/strateries/jwt.strategy';
-import { UserUpdates } from '@interfaces/user';
+import { UserUpdates, UserWithCompability } from '@interfaces/user';
 
 @Controller(UserRoute)
 export class UsersController {
@@ -32,6 +34,15 @@ export class UsersController {
     @Request() { user }: JwtValidationOutput,
   ): Promise<MyProfileRouteResponse> {
     return await this.usersService.findById(user.userID);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(GetRecommendationsRoute)
+  async getRecommendations(
+    @Request() { user }: JwtValidationOutput,
+    @Query() { sex }: GetRecommendationsRouteQueryParams,
+  ): Promise<UserWithCompability[]> {
+    return await this.usersService.getRecommendations(user.userID, sex);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -11,6 +11,10 @@ export default interface User {
   zodiacSign?: string;
 }
 
+export interface UserWithCompability extends User {
+  compability: number;
+}
+
 export class UserUpdates {
   firstName?: string;
   lastName?: string;
