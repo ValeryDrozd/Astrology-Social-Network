@@ -21,3 +21,19 @@ export default function sendTokensPair(
   const newToken: NewToken = { accessToken };
   res.send(newToken);
 }
+
+export function cleanCookies(res: Response): void {
+  res.cookie('refreshToken', '', {
+    httpOnly: true,
+    maxAge: 0,
+    path: '/auth',
+    secure: true,
+  });
+  res.cookie('accessToken', '', {
+    httpOnly: true,
+    maxAge: 0,
+    path: '/chattings',
+    secure: true,
+  });
+  res.status(200).send();
+}
