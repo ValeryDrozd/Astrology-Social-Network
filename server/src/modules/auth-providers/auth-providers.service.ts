@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import AuthProviderDTO, { AuthProviderName } from './dto/auth-provider.dto';
 
@@ -12,9 +12,14 @@ export class AuthProvidersService {
   }
 
   async findOne(userID: string, authName: AuthProviderName): Promise<AuthProviderDTO> {
-    return await this.pgService.findOne({
+    const res = await this.pgService.findOne<AuthProviderDTO>({
       tableName: this.tableName,
       where: { userID, authName },
     });
+    if (!res) {
+      throw new NotFoundException();
+    }
+
+    return res;
   }
 }

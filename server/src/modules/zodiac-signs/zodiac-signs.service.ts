@@ -1,3 +1,4 @@
+import { UserWithCompability } from '@interfaces/user';
 import { Injectable } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import ZodiacSign from './zodiac-sign.entity';
@@ -23,5 +24,17 @@ export class ZodiacSignsService {
         where: { name },
       })
     )?.zodiacID;
+  }
+
+  async getMyRecommendations(
+    userID: string,
+    sex?: boolean,
+  ): Promise<UserWithCompability[]> {
+    const request =
+      sex === undefined
+        ? `SELECT * FROM "GetRecommendations" ($1)`
+        : `SELECT * FROM "GetRecommendationsWithSex" ($1, $2)`;
+    const varArray = sex === undefined ? [userID] : [userID, sex];
+    return (await this.pgService.useQuery(request, varArray)).rows;
   }
 }
