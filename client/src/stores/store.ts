@@ -18,7 +18,7 @@ import { refresh } from '../services/auth.service';
 import { getMyProfile } from '../services/users.service';
 import User from '../interfaces/user';
 
-class ChatStore {
+export class ChatStore {
   accessToken!: string;
   messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
@@ -30,12 +30,15 @@ class ChatStore {
   private socket!: WebSocketClient;
 
   constructor() {
+    makeAutoObservable(this);
     refresh()
       .then(({ accessToken }): void => {
         this.setAccessToken(accessToken);
-        this.setMyProfile();
       })
-      .catch(() => (this.online = false));
+      .catch(() => {
+        this.online = false;
+        this.initialized = true;
+      });
   }
 
   initSocket(): void {
@@ -72,12 +75,13 @@ class ChatStore {
     );
   }
 
-  setAccessToken(accessToken: string): void {
+  async setAccessToken(accessToken: string): Promise<void> {
     this.accessToken = accessToken;
     const res = this.checkToken();
     if (res) {
       this.myID = res.userID;
       this.exp = res.exp;
+      await this.setMyProfile();
       this.initSocket();
       console.log(res);
     }
@@ -180,4 +184,10 @@ class ChatStore {
   // addNewChat(): void {}
 }
 
-export default makeAutoObservable(new ChatStore());
+let chatStore = new ChatStore();
+
+export function reloadChatStore(): void {
+  chatStore = new ChatStore();
+}
+
+export default chatStore;

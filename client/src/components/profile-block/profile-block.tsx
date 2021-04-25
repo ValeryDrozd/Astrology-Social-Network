@@ -12,15 +12,21 @@ import { useParams } from 'react-router';
 import { getUserProfile } from '../../services/users.service';
 import { useEffect, useState } from 'react';
 import User from '../../interfaces/user';
+import { useHistory } from 'react-router-dom';
 
 export default observer(function ProfileBlock(): JSX.Element {
   const [user, setUser] = useState<User>();
+  const history = useHistory();
   const { id } = useParams() as { id: string };
   useEffect(() => {
     if (chatStore.initialized) {
-      getUserProfile(chatStore.accessToken, id).then((user) => {
-        setUser(user);
-      });
+      getUserProfile(chatStore.accessToken, id)
+        .then((user) => {
+          setUser(user);
+        })
+        .catch(() => {
+          history.push('/');
+        });
     }
   }, [chatStore.initialized]);
 

@@ -24,7 +24,7 @@ export default observer(function LoginPage(): JSX.Element {
   const handleGoogleClick = async (res: GoogleLoginResponse): Promise<void> => {
     try {
       const { accessToken } = await responseGoogle(res);
-      chatStore.setAccessToken(accessToken);
+      await chatStore.setAccessToken(accessToken);
       history.push('/chat');
     } catch (error) {
       setShowError(true);
@@ -34,7 +34,7 @@ export default observer(function LoginPage(): JSX.Element {
   const setToken = async (): Promise<void> => {
     try {
       const { accessToken } = await login(email, password);
-      chatStore.setAccessToken(accessToken);
+      await chatStore.setAccessToken(accessToken);
       history.push('/chat');
     } catch (error) {
       setShowError(true);

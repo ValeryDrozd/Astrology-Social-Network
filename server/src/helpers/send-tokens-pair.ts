@@ -35,5 +35,5 @@ export function cleanCookies(res: Response): void {
     path: '/chattings',
     secure: true,
   });
-  res.status(200).send();
+  res.status(200).send({});
 }
