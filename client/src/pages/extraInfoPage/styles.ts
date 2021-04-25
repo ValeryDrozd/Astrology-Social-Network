@@ -48,10 +48,6 @@ export const TitleName = styled.h3`
   margin: 1rem auto;
 `;
 
-export const InputDiv = styled.div`
-  margin: 0 auto;
-`;
-
 export const SelectSexName = styled.label`
   text-align: center;
   font-size: 20px;

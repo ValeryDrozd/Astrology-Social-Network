@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react';
-import { useEffect } from 'react';
 import { useHistory } from 'react-router';
 import ChatBlock from '../../components/chat-block/chat-block';
 import chatStore from '../../stores/store';

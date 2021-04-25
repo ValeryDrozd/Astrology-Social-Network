@@ -1,5 +1,12 @@
 import { observer } from 'mobx-react';
-import { Title, AvatarImage, ProfileBlockView, Name } from './styles';
+import {
+  Title,
+  AvatarImage,
+  ProfileBlockView,
+  DetailInfo,
+  InfoBlock,
+  ProfileDetails,
+} from './styles';
 import chatStore from '../../stores/store';
 import { useParams } from 'react-router';
 import { getUserProfile } from '../../services/users.service';
@@ -20,10 +27,18 @@ export default observer(function ProfileBlock(): JSX.Element {
   return (
     <ProfileBlockView>
       <Title>Profile</Title>
-      <AvatarImage src={user?.sex ? '/man.jpg' : 'women.jpg'} />
-      <Name>
-        {user?.lastName} {user?.firstName}
-      </Name>
+      <InfoBlock>
+        <AvatarImage src={user?.sex ? '/man.jpg' : '/women.jpg'} />
+        <ProfileDetails>
+          <DetailInfo>
+            {user?.lastName} {user?.firstName}
+          </DetailInfo>
+          <DetailInfo>{user?.zodiacSign}</DetailInfo>
+          <DetailInfo>{user?.birthDate?.toDateString()}</DetailInfo>
+          <DetailInfo>{user?.email}</DetailInfo>
+          <DetailInfo>{user?.sex}</DetailInfo>
+        </ProfileDetails>
+      </InfoBlock>
     </ProfileBlockView>
   );
 });

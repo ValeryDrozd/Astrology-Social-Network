@@ -1,21 +1,18 @@
-import { userInfo } from 'node:os';
 import {
   FullMyProfileRoute,
   FullPatchMyProfileRoute,
   FullUserByIDRoute,
-  UserByIDRoute,
 } from '../interfaces/routes/user-routes';
 import User, { UserUpdates } from '../interfaces/user';
 
-export async function getMyProfile(accessToken: string): Promise<User> {
-  const res = await fetch(
-    process.env.REACT_APP_SERVER_URL + FullMyProfileRoute,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+const get = async (path: string, accessToken: string): Promise<unknown> => {
+  const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     },
-  );
+  });
   if (!res.ok) {
     throw new Error('Error');
   }
@@ -24,28 +21,17 @@ export async function getMyProfile(accessToken: string): Promise<User> {
     ? new Date(result.birthDate)
     : new Date();
   return result;
-}
+};
 
 export async function getUserProfile(
   accessToken: string,
   userID: string,
 ): Promise<User> {
-  const res = await fetch(
-    process.env.REACT_APP_SERVER_URL + FullUserByIDRoute + userID,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    },
-  );
-  if (!res.ok) {
-    throw new Error('Error');
-  }
-  const result = await res.json();
-  result.birthDate = result?.birthDate
-    ? new Date(result.birthDate)
-    : new Date();
-  return result;
+  return (await get(FullUserByIDRoute + userID, accessToken)) as User;
+}
+
+export async function getMyProfile(accessToken: string): Promise<User> {
+  return (await get(FullMyProfileRoute, accessToken)) as User;
 }
 
 export async function patchMyProfile(

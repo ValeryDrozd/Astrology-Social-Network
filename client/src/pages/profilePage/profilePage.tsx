@@ -16,7 +16,7 @@ function ProfilePage(): JSX.Element {
         history.push('/extra-page');
       }
     }
-  }, [chatStore.user, chatStore.initialized]);
+  }, [chatStore?.user, chatStore.initialized, history]);
   return (
     <div>
       <ProfileBlock />

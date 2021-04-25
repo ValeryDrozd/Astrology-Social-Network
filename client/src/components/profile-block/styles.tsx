@@ -7,17 +7,30 @@ export const Title = styled.h1`
 `;
 
 export const AvatarImage = styled.img`
-  margin: 0 auto;
-  max-width: 30rem;
+  //margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 20rem;
   height: auto;
-`;
-
-export const Name = styled.h2`
-  text-align: center;
 `;
 
 export const ProfileBlockView = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
+`;
+export const InfoBlock = styled.div`
+  display: flex;
+  padding: 1rem;
+  justify-content: space-evenly;
+`;
+
+export const ProfileDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const DetailInfo = styled.h2`
+  text-align: center;
+  display: flex;
 `;

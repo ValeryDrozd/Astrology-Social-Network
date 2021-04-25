@@ -1,4 +1,3 @@
-import { IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export default interface User {
