@@ -4,6 +4,8 @@ import {
   Switch,
   Route,
   Redirect,
+  useParams,
+  useHistory,
 } from 'react-router-dom';
 import LoginPage from './pages/loginPage/loginPage';
 import ProfilePage from './pages/profilePage/profilePage';
@@ -18,17 +20,17 @@ function App(): JSX.Element {
       <Router>
         <Switch>
           <Route path="/" exact component={LoginPage}></Route>
-          <Route path="/profile" component={ProfilePage}></Route>
+          <Route path="/profile" exact component={ProfilePage}></Route>
           <Route path="/chat" component={ChatPage}></Route>
           <Route path="/registration" component={RegistrationPage}></Route>
           <Route path="/extra-page" component={ExtraInfoPage}></Route>
-          <Redirect from="/" to="/" />
+          <Route path="/users/:id" component={ProfilePage} />
+          <Redirect to="/" />
         </Switch>
       </Router>
     </AppView>
   );
 }
-
 export default App;
 
 const AppView = styled.div`
