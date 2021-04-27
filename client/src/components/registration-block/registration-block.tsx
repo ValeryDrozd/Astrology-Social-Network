@@ -32,7 +32,7 @@ const RegistrationBlock = (): JSX.Element => {
         password,
       );
       chatStore.setAccessToken(accessToken);
-      history.push('/chat');
+      history.push('/extra-page');
     } catch (error) {
       setShowError(true);
     }

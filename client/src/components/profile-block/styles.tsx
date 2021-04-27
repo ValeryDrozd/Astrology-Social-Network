@@ -16,11 +16,13 @@ export const AvatarImage = styled.img`
 
 export const ProfileBlockView = styled.div`
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   padding: 1rem;
 `;
 export const InfoBlock = styled.div`
   display: flex;
+  flex-wrap: wrap;
   padding: 1rem;
   justify-content: space-evenly;
 `;

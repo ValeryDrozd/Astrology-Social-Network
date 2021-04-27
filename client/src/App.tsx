@@ -4,7 +4,7 @@ import {
   Switch,
   Route,
   Redirect,
-  useHistory,
+  Link,
 } from 'react-router-dom';
 import LoginPage from './pages/loginPage/loginPage';
 import ProfilePage from './pages/profilePage/profilePage';
@@ -13,38 +13,36 @@ import styled from 'styled-components';
 import ChatPage from './pages/chatPage/chatPage';
 import ExtraInfoPage from './pages/extraInfoPage/extraInfoPage';
 import { logout } from './services/auth.service';
-import chatStore, { ChatStore, reloadChatStore } from './stores/store';
+import chatStore, { reloadChatStore } from './stores/store';
 import { observer } from 'mobx-react';
+import React from 'react';
+import { StyledButton } from './components/styled/styled-button';
+import NavigationBar from './components/menu-navigation/menu-navigation';
 
 export default observer(function App(): JSX.Element {
-  const history = useHistory();
   return (
     <AppView>
       <Router>
-        <Switch>
-          <Route path="/" exact component={LoginPage}></Route>
-          <Route path="/chat" component={ChatPage}></Route>
-          <Route path="/registration" component={RegistrationPage}></Route>
-          <Route path="/extra-page" component={ExtraInfoPage}></Route>
-          <Route path="/users/:id" component={ProfilePage} />
-          <Redirect to="/" />
-        </Switch>
+        <MainLayout>
+          {chatStore?.user ? <NavigationBar /> : null}
+          <Switch>
+            <Route path="/" exact component={LoginPage}></Route>
+            <Route path="/chat" component={ChatPage}></Route>
+            <Route path="/registration" component={RegistrationPage}></Route>
+            <Route path="/extra-page" component={ExtraInfoPage}></Route>
+            <Route path="/users/:id" component={ProfilePage} />
+            <Redirect to="/" />
+          </Switch>
+        </MainLayout>
       </Router>
-      {chatStore?.user ? (
-        <button
-          onClick={async (): Promise<void> => {
-            await logout();
-            reloadChatStore();
-            console.log('kukusiki');
-            window.location.reload();
-          }}
-        >
-          Logout
-        </button>
-      ) : null}
     </AppView>
   );
 });
+
+const MainLayout = styled.div`
+  display: flex;
+  height: 100vh;
+`;
 
 const AppView = styled.div`
   background: #282c34;

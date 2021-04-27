@@ -17,11 +17,7 @@ function ProfilePage(): JSX.Element {
       }
     }
   }, [chatStore?.user, chatStore.initialized, history]);
-  return (
-    <div>
-      <ProfileBlock />
-    </div>
-  );
+  return <ProfileBlock />;
 }
 
 export default observer(ProfilePage);

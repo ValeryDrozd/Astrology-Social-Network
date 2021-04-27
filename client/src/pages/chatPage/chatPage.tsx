@@ -21,11 +21,7 @@ function ChatPage(): JSX.Element {
     }
   }, [history, chatStore?.user, chatStore.initialized]);
 
-  return (
-    <div>
-      <ChatBlock />
-    </div>
-  );
+  return <ChatBlock />;
 }
 
 export default observer(ChatPage);

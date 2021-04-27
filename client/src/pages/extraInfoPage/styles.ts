@@ -13,8 +13,8 @@ export const Title = styled.h1`
   width: 100%;
 `;
 
-export const CalendarDiv = styled.div`
-  margin: 0 auto 2rem;
+export const InfoPart = styled.div`
+  margin: 0 2rem;
   display: flex;
   flex-direction: column;
 `;
@@ -31,14 +31,14 @@ export const ZodiacSelect = styled.select`
   font-size: 25px;
   max-width: 30rem;
   min-width: 10rem;
-  margin: 2rem auto;
+  margin: 0.75rem;
 `;
 
 export const StyledDiv = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  margin: 2rem;
+  /* margin: 1rem; */
   font-size: 25px;
 `;
 
@@ -51,11 +51,19 @@ export const TitleName = styled.h3`
 export const SelectSexName = styled.label`
   text-align: center;
   font-size: 20px;
-  margin: 0;
+  margin: 0.5rem;
   width: 100%;
 `;
 
 export const Input = styled.input`
   margin: 0 auto;
   display: block;
+`;
+
+export const InfoDiv = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
 `;

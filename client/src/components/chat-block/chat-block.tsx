@@ -49,7 +49,7 @@ const ChatBlock = (): JSX.Element => {
         {chat.senderInfo.lastName + ' ' + chat.senderInfo.firstName}
       </ChatName>
       <ChatLastMessage>
-        {chat.messageList[chat.messageList.length - 1].text.slice(0, 30) +
+        {chat.messageList[chat.messageList.length - 1]?.text.slice(0, 30) +
           '...'}
       </ChatLastMessage>
     </ChatItem>
@@ -99,7 +99,7 @@ const ChatBlock = (): JSX.Element => {
                 value={newMessageText}
                 onChange={({ target }): void => setNewMessageText(target.value)}
               />
-              <Button className="button">Send</Button>
+              <Button>Send</Button>
             </ChatForm>
           </InputArea>
         ) : null}

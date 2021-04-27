@@ -5,10 +5,11 @@ import {
   Input,
   Title,
   ZodiacSelect,
-  CalendarDiv,
+  InfoPart,
   StyledDiv,
   TitleName,
   SelectSexName,
+  InfoDiv,
 } from './styles';
 import chatStore from '../../stores/store';
 import { useHistory } from 'react-router-dom';
@@ -17,6 +18,7 @@ import { patchMyProfile } from '../../services/users.service';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import zodiacSigns from '../../interfaces/zodiac-signs';
+import { StyledButton } from '../../components/styled/styled-button';
 
 export default observer(function ExtraInfoPage(): JSX.Element {
   const [birthDate, setBirthDate] = useState<Date>(new Date());
@@ -58,35 +60,43 @@ export default observer(function ExtraInfoPage(): JSX.Element {
     <ExtraInfoDiv>
       <ExtraForm onSubmit={handleSubmit}>
         <Title>Enter more information</Title>
-        <CalendarDiv>
-          <TitleName>Enter your date of birth</TitleName>
-          <Calendar
-            onChange={(date): void => setBirthDate(date as Date)}
-            value={birthDate}
-          />
-        </CalendarDiv>
-        <TitleName>Switch your sex</TitleName>
-        <StyledDiv
-          onChange={({ target }: React.ChangeEvent<HTMLInputElement>): void =>
-            setSex(target.value === 'Male')
-          }
-        >
-          <SelectSexName>
-            <Input type="radio" checked={sex} value="Male" name="sex" />
-            Male
-          </SelectSexName>
-          <SelectSexName>
-            <Input type="radio" checked={!sex} value="Female" name="sex" />
-            Female
-          </SelectSexName>
-        </StyledDiv>
-        <TitleName>Select your astrological sign</TitleName>
-        <button>Go</button>
-        <ZodiacSelect
-          onChange={({ target }): void => setZodiacSign(target.value)}
-        >
-          {options}
-        </ZodiacSelect>
+        <InfoDiv>
+          <InfoPart>
+            <TitleName>Enter your date of birth</TitleName>
+            <Calendar
+              onChange={(date): void => setBirthDate(date as Date)}
+              value={birthDate}
+            />
+          </InfoPart>
+          <InfoPart>
+            <TitleName>Switch your sex</TitleName>
+            <StyledDiv
+              onChange={({
+                target,
+              }: React.ChangeEvent<HTMLInputElement>): void =>
+                setSex(target.value === 'Male')
+              }
+            >
+              <SelectSexName>
+                <Input type="radio" checked={sex} value="Male" name="sex" />
+                Male
+              </SelectSexName>
+              <SelectSexName>
+                <Input type="radio" checked={!sex} value="Female" name="sex" />
+                Female
+              </SelectSexName>
+            </StyledDiv>
+          </InfoPart>
+          <InfoPart>
+            <TitleName>Select your astrological sign</TitleName>
+            <ZodiacSelect
+              onChange={({ target }): void => setZodiacSign(target.value)}
+            >
+              {options}
+            </ZodiacSelect>
+          </InfoPart>
+        </InfoDiv>
+        <StyledButton>Go</StyledButton>
       </ExtraForm>
     </ExtraInfoDiv>
   );

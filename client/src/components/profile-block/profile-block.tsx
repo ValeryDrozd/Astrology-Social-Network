@@ -30,6 +30,8 @@ export default observer(function ProfileBlock(): JSX.Element {
     }
   }, [chatStore.initialized]);
 
+  if (!user) return <div></div>;
+
   return (
     <ProfileBlockView>
       <Title>Profile</Title>
