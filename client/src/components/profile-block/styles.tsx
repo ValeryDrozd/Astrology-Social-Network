@@ -41,3 +41,9 @@ export const DetailInfo = styled.h2`
   text-align: center;
   display: flex;
 `;
+
+export const ButtonBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+`;

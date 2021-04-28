@@ -6,6 +6,7 @@ import {
   DetailInfo,
   InfoBlock,
   ProfileDetails,
+  ButtonBlock,
 } from './styles';
 import chatStore from '../../stores/store';
 import { useParams } from 'react-router';
@@ -13,11 +14,15 @@ import { getUserProfile } from '../../services/users.service';
 import { useEffect, useState } from 'react';
 import User from '../../interfaces/user';
 import { useHistory } from 'react-router-dom';
+import Modal from '../modal/modal';
+import { StyledButton } from '../styled/styled-button';
 
 export default observer(function ProfileBlock(): JSX.Element {
   const [user, setUser] = useState<User>();
+  const [showModal, setShowModal] = useState(false);
   const history = useHistory();
-  const { id } = useParams() as { id: string };
+  const params = useParams() as { id: string };
+  const { id } = params;
   useEffect(() => {
     if (chatStore.initialized) {
       getUserProfile(chatStore.accessToken, id)
@@ -28,12 +33,21 @@ export default observer(function ProfileBlock(): JSX.Element {
           history.push('/');
         });
     }
-  }, [chatStore.initialized]);
+  }, [chatStore.initialized, params]);
 
   if (!user) return <div></div>;
 
+  const modal = showModal ? (
+    <Modal onClose={(): void => setShowModal(false)}>
+      <input></input>
+      <input></input>
+      <input></input>
+    </Modal>
+  ) : null;
+
   return (
     <ProfileBlockView>
+      {modal}
       <Title>Profile</Title>
       <InfoBlock>
         <AvatarImage className={user?.sex ? '' : 'womanImg'} />
@@ -47,6 +61,13 @@ export default observer(function ProfileBlock(): JSX.Element {
           <DetailInfo>{user?.sex}</DetailInfo>
         </ProfileDetails>
       </InfoBlock>
+      <ButtonBlock>
+        {user?.userID === chatStore?.myID ? (
+          <StyledButton onClick={(): void => setShowModal(true)}>
+            Change profile
+          </StyledButton>
+        ) : null}
+      </ButtonBlock>
     </ProfileBlockView>
   );
 });
