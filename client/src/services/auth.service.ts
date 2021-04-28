@@ -1,5 +1,5 @@
 import { GoogleLoginResponse } from 'react-google-login';
-import getFingerprint from '../helpers/get-fingerprint';
+import getAstrologicalToken from '../helpers/get-astrological-token';
 import { NewToken } from '../interfaces/new-token';
 import {
   FullGoogleRoute,
@@ -32,7 +32,7 @@ export async function login(
   email: string,
   password: string,
 ): Promise<NewToken> {
-  const astrologicalToken = await getFingerprint();
+  const astrologicalToken = await getAstrologicalToken();
   return (await post(FullLoginRoute, {
     email,
     password,
@@ -49,7 +49,7 @@ export async function register(
   email: string,
   password: string,
 ): Promise<NewToken> {
-  const astrologicalToken = await getFingerprint();
+  const astrologicalToken = await getAstrologicalToken();
   return (await post(FullRegisterRoute, {
     firstName,
     lastName,
@@ -60,7 +60,7 @@ export async function register(
 }
 
 export async function refresh(): Promise<NewToken> {
-  const astrologicalToken = await getFingerprint();
+  const astrologicalToken = await getAstrologicalToken();
   return (await post(FullRefreshTokensRoute, {
     astrologicalToken,
   })) as NewToken;
@@ -71,6 +71,6 @@ export async function responseGoogle(
 ): Promise<NewToken> {
   return (await post(FullGoogleRoute, {
     tokenId: res.tokenId,
-    astrologicalToken: await getFingerprint(),
+    astrologicalToken: await getAstrologicalToken(),
   })) as NewToken;
 }

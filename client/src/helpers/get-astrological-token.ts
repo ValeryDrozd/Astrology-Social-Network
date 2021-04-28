@@ -1,10 +1,10 @@
 import Fingerprint2 from 'fingerprintjs2';
 import UAParser from 'ua-parser-js';
 
-export default function getFingerprint(): Promise<string> {
-  const fingerPrint = sessionStorage.getItem('fingerprint');
-  if (fingerPrint) {
-    return Promise.resolve(fingerPrint);
+export default function getAstrologicalToken(): Promise<string> {
+  const astrologicalToken = sessionStorage.getItem('astrologicalToken');
+  if (astrologicalToken) {
+    return Promise.resolve(astrologicalToken);
   }
   return new Promise(async (resolve, reject) => {
     async function getHash(): Promise<string> {
@@ -42,7 +42,7 @@ export default function getFingerprint(): Promise<string> {
       }
     }
     const hash = await getHash();
-    sessionStorage.setItem('fingerprint', hash);
+    sessionStorage.setItem('astrologicalToken', hash);
     resolve(hash);
   });
 }

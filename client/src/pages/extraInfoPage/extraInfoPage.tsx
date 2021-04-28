@@ -23,20 +23,19 @@ import { StyledButton } from '../../components/styled/styled-button';
 export default observer(function ExtraInfoPage(): JSX.Element {
   const [birthDate, setBirthDate] = useState<Date>(new Date());
   const [sex, setSex] = useState<boolean>(true);
-  const [zodiacSign, setZodiacSign] = useState<string>('');
+  const [zodiacSign, setZodiacSign] = useState<string>(zodiacSigns[0]);
   const history = useHistory();
 
   useEffect(() => {
     const { user } = chatStore;
     if (user) {
       try {
-        console.log(user?.birthDate && user?.sex && user?.zodiacSign);
-        if (user?.birthDate && user?.sex !== null && user?.zodiacSign) {
-          return history.push('/users/' + user.userID);
+        if (user.birthDate && user.sex !== null && user.zodiacSign) {
+          return history.push(`/users/${user.userID}`);
         }
-        setBirthDate(user?.birthDate as Date);
-        setSex(user?.sex !== null ? (user.sex as boolean) : true);
-        setZodiacSign(user?.zodiacSign as string);
+        setBirthDate(user.birthDate as Date);
+        setSex(user.sex !== null ? (user.sex as boolean) : true);
+        setZodiacSign(user.zodiacSign || zodiacSigns[0]);
       } catch (error) {}
     }
   }, [chatStore?.user]);
@@ -50,12 +49,14 @@ export default observer(function ExtraInfoPage(): JSX.Element {
     chatStore.user.sex = sex;
     chatStore.user.zodiacSign = zodiacSign;
 
-    history.push('/users/' + chatStore?.user?.userID);
+    history.push(`/users/${chatStore?.user?.userID}`);
   };
 
-  console.log(JSON.stringify(birthDate.toLocaleString()));
-
-  const options = zodiacSigns.map((name) => <option>{name}</option>);
+  const options = zodiacSigns.map((name) => (
+    <option key={name} value={name}>
+      {name}
+    </option>
+  ));
   return (
     <ExtraInfoDiv>
       <ExtraForm onSubmit={handleSubmit}>
@@ -70,19 +71,25 @@ export default observer(function ExtraInfoPage(): JSX.Element {
           </InfoPart>
           <InfoPart>
             <TitleName>Switch your sex</TitleName>
-            <StyledDiv
-              onChange={({
-                target,
-              }: React.ChangeEvent<HTMLInputElement>): void =>
-                setSex(target.value === 'Male')
-              }
-            >
+            <StyledDiv>
               <SelectSexName>
-                <Input type="radio" checked={sex} value="Male" name="sex" />
+                <Input
+                  onChange={(): void => setSex(true)}
+                  type="radio"
+                  checked={sex}
+                  value="Male"
+                  name="sex"
+                />
                 Male
               </SelectSexName>
               <SelectSexName>
-                <Input type="radio" checked={!sex} value="Female" name="sex" />
+                <Input
+                  onChange={(): void => setSex(false)}
+                  type="radio"
+                  checked={!sex}
+                  value="Female"
+                  name="sex"
+                />
                 Female
               </SelectSexName>
             </StyledDiv>
@@ -90,6 +97,7 @@ export default observer(function ExtraInfoPage(): JSX.Element {
           <InfoPart>
             <TitleName>Select your astrological sign</TitleName>
             <ZodiacSelect
+              value={zodiacSign}
               onChange={({ target }): void => setZodiacSign(target.value)}
             >
               {options}

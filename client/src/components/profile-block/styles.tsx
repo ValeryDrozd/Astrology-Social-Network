@@ -7,11 +7,16 @@ export const Title = styled.h1`
 `;
 
 export const AvatarImage = styled.img`
-  //margin: 0 auto;
   display: flex;
   flex-direction: column;
   max-width: 20rem;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  background-image: url('/man.jpg');
+  background-size: contain;
+  &.womanImg {
+    background-image: url('/women.jpg');
+  }
 `;
 
 export const ProfileBlockView = styled.div`

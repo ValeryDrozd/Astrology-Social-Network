@@ -1,3 +1,4 @@
+import { useStaticRendering } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 
 interface ScrollListProps {
@@ -21,6 +22,7 @@ export default function ScrollList({
   const [topItem, setTopItem] = useState<number>(
     startBottom ? list.length - 1 - numberOfVisibleItems : 0,
   );
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     setTopItem(startBottom ? list.length - 1 - numberOfVisibleItems : 0);
@@ -33,6 +35,7 @@ export default function ScrollList({
 
   const showList = visualList.map(renderItem);
   const onWheel = ({ deltaY }: React.WheelEvent<HTMLUListElement>): void => {
+    if (scrolled) return;
     if (deltaY > 15) {
       setTopItem(
         topItem + 1 > list.length - 1 - numberOfVisibleItems
@@ -42,6 +45,8 @@ export default function ScrollList({
     } else if (deltaY < -15) {
       setTopItem(topItem - 1 < 0 ? 0 : topItem - 1);
     }
+    setScrolled(true);
+    setTimeout(() => setScrolled(false), 15);
   };
   return wrap(showList, onWheel);
 }

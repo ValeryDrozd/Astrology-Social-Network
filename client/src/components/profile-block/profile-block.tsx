@@ -36,7 +36,7 @@ export default observer(function ProfileBlock(): JSX.Element {
     <ProfileBlockView>
       <Title>Profile</Title>
       <InfoBlock>
-        <AvatarImage src={user?.sex ? '/man.jpg' : '/women.jpg'} />
+        <AvatarImage className={user?.sex ? '' : 'womanImg'} />
         <ProfileDetails>
           <DetailInfo>
             {user?.lastName} {user?.firstName}

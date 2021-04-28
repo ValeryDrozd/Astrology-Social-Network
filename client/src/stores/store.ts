@@ -3,7 +3,6 @@ import WebSocketClient from '../socket';
 import Chat from '../interfaces/chat';
 import { NewMessage } from '../interfaces/new-message';
 import { v4 as uuid } from 'uuid';
-import jwt from 'jsonwebtoken';
 import {
   AddNewMessageFunction,
   ConnectionStatusNotification,
@@ -17,6 +16,7 @@ import { ServerMessage } from '../interfaces/message';
 import { refresh } from '../services/auth.service';
 import { getMyProfile } from '../services/users.service';
 import User from '../interfaces/user';
+import checkToken from '../helpers/check-token';
 
 export class ChatStore {
   accessToken!: string;
@@ -77,23 +77,13 @@ export class ChatStore {
 
   async setAccessToken(accessToken: string): Promise<void> {
     this.accessToken = accessToken;
-    const res = this.checkToken();
+    const res = checkToken(accessToken);
     if (res) {
       this.myID = res.userID;
       this.exp = res.exp;
       await this.setMyProfile();
       this.initSocket();
-      console.log(res);
     }
-  }
-
-  checkToken(): { userID: string; exp: number; iat: number } | undefined {
-    try {
-      return jwt.verify(
-        this.accessToken,
-        process.env.REACT_APP_JWT_SECRET as string,
-      ) as { userID: string; exp: number; iat: number };
-    } catch (error) {}
   }
 
   private async checkValidToken(): Promise<void> {
@@ -164,7 +154,6 @@ export class ChatStore {
       this.sendOneMessage(message);
       this.messagesQueue.shift();
     });
-    console.log('SenderMessage');
   }
 
   saveQueue(): void {

@@ -38,7 +38,6 @@ export async function patchMyProfile(
   accessToken: string,
   updates: UserUpdates,
 ): Promise<void> {
-  console.log(updates.birthDate?.toLocaleDateString());
   const res = await fetch(
     process.env.REACT_APP_SERVER_URL + FullPatchMyProfileRoute,
     {
