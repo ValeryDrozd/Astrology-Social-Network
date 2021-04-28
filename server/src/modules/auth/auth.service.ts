@@ -165,7 +165,6 @@ export class AuthService {
         'google',
       );
     } catch (error) {
-      console.log(JSON.stringify(error));
       if (error.status === 400) {
         throw new BadRequestException();
       }

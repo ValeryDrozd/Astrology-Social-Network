@@ -1,40 +1,41 @@
-import { UserWithCompability } from '@interfaces/user';
-import { Injectable } from '@nestjs/common';
+import User, { UserWithCompability } from '@interfaces/user';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
-import ZodiacSign from './zodiac-sign.entity';
+import zodiacSigns from '@interfaces/zodiac-signs';
+import zodiacSignsCompatibilities from './zodiac-signs-compatibilities';
 
 @Injectable()
 export class ZodiacSignsService {
-  private tableName = 'ZodiacSigns';
   constructor(private pgService: PgService) {}
 
-  async getZodiacName(zodiacID: number): Promise<string | undefined> {
-    return (
-      await this.pgService.findOne<ZodiacSign>({
-        tableName: this.tableName,
-        where: { zodiacID },
-      })
-    )?.name;
+  async getMyRecommendations(user: User, sex?: boolean): Promise<UserWithCompability[]> {
+    const signs = this.getRecommendedSigns(user);
+    const request = `SELECT u."userID", u."firstName", u."lastName", u."email", u."birthDate", u."sex", u."zodiacSign" FROM "Users" u
+        WHERE u."sex" ${sex === undefined ? 'IS NOT NULL' : ` = ${sex}`} AND (${signs
+      .map((s, index) => `"zodiacSign" = $${index + 1}`)
+      .join(' OR ')})
+        AND NOT u."userID" = $${signs.length + 1}
+        ORDER BY RANDOM() LIMIT 20`;
+    return (await this.pgService.useQuery(request, [...signs, user.userID])).rows;
   }
 
-  async getZodiacSignID(name: string): Promise<number | undefined> {
-    return (
-      await this.pgService.findOne<ZodiacSign>({
-        tableName: this.tableName,
-        where: { name },
-      })
-    )?.zodiacID;
-  }
+  private getRecommendedSigns(user: User): string[] {
+    const zodiacID = zodiacSigns.findIndex((z) => z === user.zodiacSign);
+    if (zodiacID === -1) {
+      throw new NotFoundException('No such zodiac sign!');
+    }
 
-  async getMyRecommendations(
-    userID: string,
-    sex?: boolean,
-  ): Promise<UserWithCompability[]> {
-    const request =
-      sex === undefined
-        ? `SELECT * FROM "GetRecommendations" ($1)`
-        : `SELECT * FROM "GetRecommendationsWithSex" ($1, $2)`;
-    const varArray = sex === undefined ? [userID] : [userID, sex];
-    return (await this.pgService.useQuery(request, varArray)).rows;
+    const minimumCompatibility = 75;
+    return user?.sex
+      ? zodiacSignsCompatibilities.reduce<string[]>(
+          (prev, arr, index) =>
+            arr[zodiacID] > minimumCompatibility ? [...prev, zodiacSigns[index]] : prev,
+          [],
+        )
+      : zodiacSignsCompatibilities[zodiacID].reduce<string[]>(
+          (prev, num, index) =>
+            num > minimumCompatibility ? [...prev, zodiacSigns[index]] : prev,
+          [],
+        );
   }
 }

@@ -6,5 +6,5 @@ export default interface UserEntity {
   password: string;
   birthDate: Date;
   sex: boolean;
-  zodiacSignID: number;
+  zodiacSign: string;
 }
