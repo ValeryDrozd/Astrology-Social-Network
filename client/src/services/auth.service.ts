@@ -1,14 +1,21 @@
 import { GoogleLoginResponse } from 'react-google-login';
 import getFingerprint from '../helpers/get-fingerprint';
 import { NewToken } from '../interfaces/new-token';
+import {
+  FullGoogleRoute,
+  FullLoginRoute,
+  FullLogoutRoute,
+  FullRefreshTokensRoute,
+  FullRegisterRoute,
+} from '../interfaces/routes/auth-routes';
 
 const post = async (
   path: string,
-  body: Record<string, unknown>,
+  body?: Record<string, unknown>,
 ): Promise<unknown> => {
   const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
     method: 'POST',
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -26,13 +33,16 @@ export async function login(
   password: string,
 ): Promise<NewToken> {
   const astrologicalToken = await getFingerprint();
-  return (await post('/auth/login', {
+  return (await post(FullLoginRoute, {
     email,
     password,
     astrologicalToken,
   })) as NewToken;
 }
 
+export async function logout(): Promise<void> {
+  await post(FullLogoutRoute);
+}
 export async function register(
   firstName: string,
   lastName: string,
@@ -40,7 +50,7 @@ export async function register(
   password: string,
 ): Promise<NewToken> {
   const astrologicalToken = await getFingerprint();
-  return (await post('/auth/register', {
+  return (await post(FullRegisterRoute, {
     firstName,
     lastName,
     email,
@@ -51,7 +61,7 @@ export async function register(
 
 export async function refresh(): Promise<NewToken> {
   const astrologicalToken = await getFingerprint();
-  return (await post('/auth/refresh-tokens', {
+  return (await post(FullRefreshTokensRoute, {
     astrologicalToken,
   })) as NewToken;
 }
@@ -59,7 +69,7 @@ export async function refresh(): Promise<NewToken> {
 export async function responseGoogle(
   res: GoogleLoginResponse,
 ): Promise<NewToken> {
-  return (await post('/auth/google', {
+  return (await post(FullGoogleRoute, {
     tokenId: res.tokenId,
     astrologicalToken: await getFingerprint(),
   })) as NewToken;

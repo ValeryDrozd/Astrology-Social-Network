@@ -6,6 +6,7 @@ export const ChatBlockView = styled.div`
   padding-top: 1rem;
   height: 95vh;
   position: relative;
+  flex-grow: 1;
   z-index: 1;
 `;
 
@@ -14,6 +15,7 @@ export const ChatList = styled.div`
   flex-direction: column;
   border: #fff 1px solid;
   width: 35vw;
+  max-width: 20rem;
 `;
 
 export const ChatItem = styled.div`
@@ -22,6 +24,7 @@ export const ChatItem = styled.div`
   margin: 0.25rem;
   border-radius: 0.25rem;
   transition: background 0.3s ease;
+  cursor: pointer;
 
   &:hover {
     background-color: #5f3292;
@@ -87,6 +90,7 @@ export const InputArea = styled.div`
 `;
 
 export const Button = styled.button`
+  cursor: pointer;
   display: flex;
   flex-grow: 2;
   align-items: center;

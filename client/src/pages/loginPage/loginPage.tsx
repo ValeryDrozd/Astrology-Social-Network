@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { StyledButton } from '../../components/styled/styled-button';
 import { login, responseGoogle } from '../../services/auth.service';
@@ -6,19 +6,25 @@ import chatStore from '../../stores/store';
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
 import { ErrorValidation } from '../../components/styled/error-validation';
 import { ButtonBox, LoginDiv, LoginForm, LoginInput, Title } from './styles';
+import { observer } from 'mobx-react';
 
-export default function LoginPage(): JSX.Element {
+export default observer(function LoginPage(): JSX.Element {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
-  // const [isCorrectPassword, setCorrectPassword] = useState<boolean>(true);
 
   const history = useHistory();
 
+  useEffect(() => {
+    const { user } = chatStore;
+    if (user) {
+      history.push('/users/' + user.userID);
+    }
+  }, [history, chatStore?.user]);
   const handleGoogleClick = async (res: GoogleLoginResponse): Promise<void> => {
     try {
       const { accessToken } = await responseGoogle(res);
-      chatStore.setAccessToken(accessToken);
+      await chatStore.setAccessToken(accessToken);
       history.push('/chat');
     } catch (error) {
       setShowError(true);
@@ -28,7 +34,7 @@ export default function LoginPage(): JSX.Element {
   const setToken = async (): Promise<void> => {
     try {
       const { accessToken } = await login(email, password);
-      chatStore.setAccessToken(accessToken);
+      await chatStore.setAccessToken(accessToken);
       history.push('/chat');
     } catch (error) {
       setShowError(true);
@@ -77,4 +83,4 @@ export default function LoginPage(): JSX.Element {
       </StyledButton>
     </LoginDiv>
   );
-}
+});

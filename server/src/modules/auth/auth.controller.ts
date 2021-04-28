@@ -10,7 +10,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import sendTokensPair from 'src/helpers/send-tokens-pair';
+import sendTokensPair, { cleanCookies } from 'src/helpers/send-tokens-pair';
 import { AuthService } from './auth.service';
 import GoogleResponse from './dto/google-response';
 import fetch from 'node-fetch';
@@ -20,6 +20,7 @@ import {
   GoogleRoute,
   LoginParams,
   LoginRoute,
+  LogoutRoute,
   RefreshTokensParams,
   RefreshTokensRoute,
   RegisterParams,
@@ -88,5 +89,16 @@ export class AuthController {
       body.astrologicalToken,
     );
     sendTokensPair(response, pair);
+  }
+
+  @Post(LogoutRoute)
+  async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
+    const { refreshToken } = request.cookies;
+    console.log(refreshToken);
+    await this.authService.logout(refreshToken);
+    cleanCookies(response);
   }
 }

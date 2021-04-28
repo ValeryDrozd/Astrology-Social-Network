@@ -180,4 +180,8 @@ export class AuthService {
       );
     }
   }
+
+  async logout(refreshToken: string): Promise<void> {
+    await this.refreshSessionsService.delete(refreshToken);
+  }
 }

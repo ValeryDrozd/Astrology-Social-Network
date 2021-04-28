@@ -1,4 +1,3 @@
-import { IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export default interface User {
@@ -18,8 +17,7 @@ export interface UserWithCompability extends User {
 export class UserUpdates {
   firstName?: string;
   lastName?: string;
-  @Type(() => Date)
-  @IsDate()
+  @Type(() => Date.UTC)
   birthDate?: Date;
   sex?: boolean;
   zodiacSign?: string;

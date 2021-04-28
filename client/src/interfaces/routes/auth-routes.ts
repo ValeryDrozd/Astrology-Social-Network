@@ -11,11 +11,13 @@ export const LoginRoute = 'login';
 export const RegisterRoute = 'register';
 export const RefreshTokensRoute = 'refresh-tokens';
 export const GoogleRoute = 'google';
+export const LogoutRoute = 'logout';
 
 export const FullLoginRoute = `/${AuthRoute}/${LoginRoute}`;
 export const FullRegisterRoute = `/${AuthRoute}/${RegisterRoute}`;
 export const FullRefreshTokensRoute = `/${AuthRoute}/${RefreshTokensRoute}`;
 export const FullGoogleRoute = `/${AuthRoute}/${GoogleRoute}`;
+export const FullLogoutRoute = `/${AuthRoute}/${LogoutRoute}`;
 
 export class LoginParams {
   @IsEmail()

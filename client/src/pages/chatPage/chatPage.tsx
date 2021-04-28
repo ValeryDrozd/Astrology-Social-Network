@@ -6,19 +6,22 @@ import chatStore from '../../stores/store';
 
 function ChatPage(): JSX.Element {
   const history = useHistory();
-  if (
-    chatStore.initialized &&
-    (!chatStore.user?.sex ||
-      !chatStore.user?.zodiacSign ||
-      !chatStore.user?.birthDate)
-  ) {
-    history.push('/extra-page');
-  }
-  return (
-    <div>
-      <ChatBlock />
-    </div>
-  );
+  useEffect(() => {
+    if (
+      chatStore.initialized &&
+      (chatStore.user?.sex === null ||
+        !chatStore.user?.zodiacSign ||
+        !chatStore.user?.birthDate)
+    ) {
+      history.push('/extra-page');
+    }
+    console.log(chatStore.initialized);
+    if (chatStore?.initialized && !chatStore?.user) {
+      history.push('/login');
+    }
+  }, [history, chatStore?.user, chatStore.initialized]);
+
+  return <ChatBlock />;
 }
 
 export default observer(ChatPage);
