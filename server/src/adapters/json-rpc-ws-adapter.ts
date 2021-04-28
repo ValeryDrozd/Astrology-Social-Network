@@ -4,7 +4,12 @@ import { AbstractWsAdapter, MessageMappingProperties } from '@nestjs/websockets'
 import { Observable, fromEvent, EMPTY } from 'rxjs';
 import { mergeMap, filter, map } from 'rxjs/operators';
 import { IncomingMessage } from 'node:http';
-import { JsonRpcError, JsonRpcRequest, JsonRpcResponse } from '@interfaces/json-rpc';
+import {
+  JsonRpcError,
+  JsonRpcErrorCodes,
+  JsonRpcRequest,
+  JsonRpcResponse,
+} from '@interfaces/json-rpc';
 import { generateJsonRpcFromValue } from '../helpers/json-rpc.utils';
 
 export class JsonRpcWsAdapter extends AbstractWsAdapter {
@@ -45,20 +50,39 @@ export class JsonRpcWsAdapter extends AbstractWsAdapter {
     handlers: MessageMappingProperties[],
     process: (data: unknown) => Observable<unknown>,
   ): Observable<JsonRpcResponse | JsonRpcError> {
-    const message: JsonRpcRequest = JSON.parse(buffer.data);
+    let res = new Observable<unknown>();
+    let id = 0;
+    try {
+      const message: JsonRpcRequest = JSON.parse(buffer.data);
+      id = message.id;
+      const messageHandler = handlers.find(
+        (handler) => handler.message === message.method,
+      );
 
-    const messageHandler = handlers.find((handler) => handler.message === message.method);
+      if (!messageHandler) {
+        return EMPTY;
+      }
+      res = process(messageHandler.callback(message.params));
 
-    if (!messageHandler) {
-      return EMPTY;
+      return res.pipe(
+        map<unknown, JsonRpcResponse | JsonRpcError>((value) =>
+          generateJsonRpcFromValue(value as Record<string, unknown>, message.id),
+        ),
+      );
+    } catch (error) {
+      res = process({
+        error: {
+          code: JsonRpcErrorCodes.PARSE_ERROR,
+          message: 'Request is not in JSON format',
+        },
+      });
+    } finally {
+      return res.pipe(
+        map<unknown, JsonRpcResponse | JsonRpcError>((value) =>
+          generateJsonRpcFromValue(value as Record<string, unknown>, id),
+        ),
+      );
     }
-    const res = process(messageHandler.callback(message.params));
-
-    return res.pipe(
-      map<unknown, JsonRpcResponse | JsonRpcError>((value) =>
-        generateJsonRpcFromValue(value as Record<string, unknown>, message.id),
-      ),
-    );
   }
 
   public close(server: WebSocket): void {
