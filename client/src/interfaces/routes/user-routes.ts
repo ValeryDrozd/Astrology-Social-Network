@@ -1,4 +1,4 @@
-import User, { UserUpdates } from '../user';
+import User, { UserUpdates } from 'interfaces/user';
 
 export const UserRoute = 'users';
 export const MyProfileRoute = 'me';

@@ -1,16 +1,16 @@
 import { observer } from 'mobx-react';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { register } from '../../services/auth.service';
-import { ErrorValidation } from '../styled/error-validation';
-import { StyledButton } from '../styled/styled-button';
+import { register } from 'services/auth.service';
+import { ErrorValidation } from 'components/styled/error-validation';
+import { StyledButton } from 'components/styled/styled-button';
 import {
   RegistrationDiv,
   RegistrationForm,
   RegistrationInput,
   Title,
 } from './styles';
-import chatStore from '../../stores/store';
+import chatStore from 'stores/store';
 
 const RegistrationBlock = (): JSX.Element => {
   const [firstName, setFirstName] = useState<string>('');

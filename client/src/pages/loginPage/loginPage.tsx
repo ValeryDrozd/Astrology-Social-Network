@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import { StyledButton } from '../../components/styled/styled-button';
-import { login, responseGoogle } from '../../services/auth.service';
-import chatStore from '../../stores/store';
+import { StyledButton } from 'components/styled/styled-button';
+import { login, responseGoogle } from 'services/auth.service';
+import chatStore from 'stores/store';
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
-import { ErrorValidation } from '../../components/styled/error-validation';
+import { ErrorValidation } from 'components/styled/error-validation';
 import { ButtonBox, LoginDiv, LoginForm, LoginInput, Title } from './styles';
 import { observer } from 'mobx-react';
 

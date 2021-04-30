@@ -8,14 +8,14 @@ import {
   ProfileDetails,
   ButtonBlock,
 } from './styles';
-import chatStore from '../../stores/store';
+import chatStore from 'stores/store';
 import { useParams } from 'react-router';
-import { getUserProfile } from '../../services/users.service';
+import { getUserProfile } from 'services/users.service';
 import { useEffect, useState } from 'react';
-import User from '../../interfaces/user';
+import User from 'interfaces/user';
 import { useHistory } from 'react-router-dom';
-import Modal from '../modal/modal';
-import { StyledButton } from '../styled/styled-button';
+import Modal from 'components/modal/modal';
+import { StyledButton } from 'components/styled/styled-button';
 
 export default observer(function ProfileBlock(): JSX.Element {
   const [user, setUser] = useState<User>();
@@ -23,6 +23,20 @@ export default observer(function ProfileBlock(): JSX.Element {
   const history = useHistory();
   const params = useParams() as { id: string };
   const { id } = params;
+
+  useEffect(() => {
+    const { user } = chatStore;
+    if (chatStore.initialized) {
+      if (!user) {
+        return history.push('/login');
+      }
+
+      if (user.sex === null || !user.birthDate || !user.zodiacSign) {
+        history.push('/extra-page');
+      }
+    }
+  }, [chatStore?.user, chatStore.initialized, history]);
+
   useEffect(() => {
     if (chatStore.initialized) {
       getUserProfile(chatStore.accessToken, id)

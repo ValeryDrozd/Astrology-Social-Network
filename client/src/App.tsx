@@ -1,23 +1,19 @@
-import './App.css';
+import 'App.css';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-  Link,
 } from 'react-router-dom';
-import LoginPage from './pages/loginPage/loginPage';
-import ProfilePage from './pages/profilePage/profilePage';
-import RegistrationPage from './pages/registrationPage/registrationPage';
+import LoginPage from 'pages/loginPage/loginPage';
+import ProfilePage from 'pages/profilePage/profilePage';
+import RegistrationPage from 'pages/registrationPage/registrationPage';
 import styled from 'styled-components';
-import ChatPage from './pages/chatPage/chatPage';
-import ExtraInfoPage from './pages/extraInfoPage/extraInfoPage';
-import { logout } from './services/auth.service';
-import chatStore, { reloadChatStore } from './stores/store';
+import ChatPage from 'pages/chatPage/chatPage';
+import ExtraInfoPage from 'pages/extraInfoPage/extraInfoPage';
+import chatStore from 'stores/store';
 import { observer } from 'mobx-react';
-import React from 'react';
-import { StyledButton } from './components/styled/styled-button';
-import NavigationBar from './components/menu-navigation/menu-navigation';
+import NavigationBar from 'components/menu-navigation/menu-navigation';
 
 export default observer(function App(): JSX.Element {
   return (

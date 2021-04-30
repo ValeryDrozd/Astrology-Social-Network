@@ -1,13 +1,13 @@
 import { GoogleLoginResponse } from 'react-google-login';
-import getAstrologicalToken from '../helpers/get-astrological-token';
-import { NewToken } from '../interfaces/new-token';
+import getAstrologicalToken from 'helpers/get-astrological-token';
+import { NewToken } from 'interfaces/new-token';
 import {
   FullGoogleRoute,
   FullLoginRoute,
   FullLogoutRoute,
   FullRefreshTokensRoute,
   FullRegisterRoute,
-} from '../interfaces/routes/auth-routes';
+} from 'interfaces/routes/auth-routes';
 
 const post = async (
   path: string,

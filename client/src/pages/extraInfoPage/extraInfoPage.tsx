@@ -11,14 +11,14 @@ import {
   SelectSexName,
   InfoDiv,
 } from './styles';
-import chatStore from '../../stores/store';
+import chatStore from 'stores/store';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
-import { patchMyProfile } from '../../services/users.service';
+import { patchMyProfile } from 'services/users.service';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import zodiacSigns from '../../interfaces/zodiac-signs';
-import { StyledButton } from '../../components/styled/styled-button';
+import zodiacSigns from 'interfaces/zodiac-signs';
+import { StyledButton } from 'components/styled/styled-button';
 
 export default observer(function ExtraInfoPage(): JSX.Element {
   const [birthDate, setBirthDate] = useState<Date>(new Date());

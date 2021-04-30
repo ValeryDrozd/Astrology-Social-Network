@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react';
 import { useState } from 'react';
-import Message from '../../interfaces/message';
-import chatStore from '../../stores/store';
-import ScrollList from '../scroll-list/scroll-list';
+import Message from 'interfaces/message';
+import chatStore from 'stores/store';
+import ScrollList from 'components/scroll-list/scroll-list';
 import {
   ChatForm,
   ChatBlockView,

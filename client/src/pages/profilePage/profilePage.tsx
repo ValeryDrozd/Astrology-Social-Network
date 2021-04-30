@@ -1,23 +1,7 @@
-import ProfileBlock from '../../components/profile-block/profile-block';
-import { observer } from 'mobx-react';
-import { useEffect } from 'react';
-import chatStore from '../../stores/store';
-import { useHistory } from 'react-router';
-function ProfilePage(): JSX.Element {
-  const history = useHistory();
-  useEffect(() => {
-    const { user } = chatStore;
-    if (chatStore.initialized) {
-      if (!user) {
-        return history.push('/login');
-      }
+import ProfileBlock from 'components/profile-block/profile-block';
 
-      if (user.sex === null || !user.birthDate || !user.zodiacSign) {
-        history.push('/extra-page');
-      }
-    }
-  }, [chatStore?.user, chatStore.initialized, history]);
+function ProfilePage(): JSX.Element {
   return <ProfileBlock />;
 }
 
-export default observer(ProfilePage);
+export default ProfilePage;

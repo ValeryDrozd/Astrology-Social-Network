@@ -1,8 +1,6 @@
-import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { logout } from '../../services/auth.service';
-import chatStore, { reloadChatStore } from '../../stores/store';
-import { StyledButton } from '../styled/styled-button';
+import { useHistory } from 'react-router-dom';
+import { logout } from 'services/auth.service';
+import chatStore, { reloadChatStore } from 'stores/store';
 import { ListItem, NavigationBarBlock } from './styles';
 export default function NavigationBar(): JSX.Element {
   const history = useHistory();

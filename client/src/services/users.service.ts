@@ -2,8 +2,8 @@ import {
   FullMyProfileRoute,
   FullPatchMyProfileRoute,
   FullUserByIDRoute,
-} from '../interfaces/routes/user-routes';
-import User, { UserUpdates } from '../interfaces/user';
+} from 'interfaces/routes/user-routes';
+import User, { UserUpdates } from 'interfaces/user';
 
 const get = async (path: string, accessToken: string): Promise<unknown> => {
   const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {

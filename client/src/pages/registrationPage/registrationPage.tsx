@@ -1,11 +1,7 @@
-import RegistrationBlock from '../../components/registration-block/registration-block';
+import RegistrationBlock from 'components/registration-block/registration-block';
 
 function RegistrationPage(): JSX.Element {
-  return (
-    <div>
-      <RegistrationBlock />
-    </div>
-  );
+  return <RegistrationBlock />;
 }
 
 export default RegistrationPage;
