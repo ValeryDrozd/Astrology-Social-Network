@@ -5,9 +5,15 @@ export const StyledButton = styled.button`
   color: #fff;
   border-radius: 0.5rem;
   border: 1px #9e38e2 solid;
-  padding: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+  transition: background 0.1s ease;
+  &:hover {
+    cursor: pointer;
+    background: #6d3294;
+  }
 
-  &.mrg-1 {
-    margin: 1rem;
+  &.register {
+    margin-top: 1rem;
   }
 `;

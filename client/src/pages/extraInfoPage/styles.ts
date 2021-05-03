@@ -38,7 +38,6 @@ export const StyledDiv = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  /* margin: 1rem; */
   font-size: 25px;
 `;
 

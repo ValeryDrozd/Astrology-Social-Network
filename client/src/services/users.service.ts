@@ -1,9 +1,10 @@
 import {
+  FullGetRecommendationsRoute,
   FullMyProfileRoute,
   FullPatchMyProfileRoute,
   FullUserByIDRoute,
 } from 'interfaces/routes/user-routes';
-import User, { UserUpdates } from 'interfaces/user';
+import User, { UserUpdates, UserWithCompability } from 'interfaces/user';
 
 const get = async (path: string, accessToken: string): Promise<unknown> => {
   const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
@@ -22,6 +23,20 @@ const get = async (path: string, accessToken: string): Promise<unknown> => {
     : new Date();
   return result;
 };
+
+export async function getRecommendation(
+  accessToken: string,
+  sex?: boolean,
+): Promise<UserWithCompability[]> {
+  const users = (await get(
+    FullGetRecommendationsRoute + (sex ? '?sex=' + sex : ''),
+    accessToken,
+  )) as UserWithCompability[];
+  return users.map((user) => ({
+    ...user,
+    birthDate: user.birthDate ? new Date(user.birthDate) : new Date(),
+  }));
+}
 
 export async function getUserProfile(
   accessToken: string,

@@ -14,6 +14,7 @@ import ExtraInfoPage from 'pages/extraInfoPage/extraInfoPage';
 import chatStore from 'stores/store';
 import { observer } from 'mobx-react';
 import NavigationBar from 'components/menu-navigation/menu-navigation';
+import RecommendationPage from 'pages/recommendationPage/recommendationPage';
 
 export default observer(function App(): JSX.Element {
   return (
@@ -27,6 +28,7 @@ export default observer(function App(): JSX.Element {
             <Route path="/registration" component={RegistrationPage}></Route>
             <Route path="/extra-page" component={ExtraInfoPage}></Route>
             <Route path="/users/:id" component={ProfilePage} />
+            <Route path="/recommendation" component={RecommendationPage} />
             <Redirect to="/" />
           </Switch>
         </MainLayout>

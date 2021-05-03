@@ -12,6 +12,9 @@ export default function NavigationBar(): JSX.Element {
         Profile
       </ListItem>
       <ListItem onClick={(): void => history.push('/chat')}>Chats</ListItem>
+      <ListItem onClick={(): void => history.push('/recommendation')}>
+        Recommendation
+      </ListItem>
       <ListItem
         onClick={async (): Promise<void> => {
           await logout();
