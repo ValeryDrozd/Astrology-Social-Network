@@ -72,11 +72,7 @@ export default observer(function ChatPage(): JSX.Element {
     </ChatItem>
   ));
 
-  const renderMessage = (
-    message: Message,
-    index: number,
-    array: Message[],
-  ): JSX.Element => (
+  const renderMessage = (message: Message, index: number): JSX.Element => (
     <MessageItem
       key={`message-${currentChatId}-${index + 1}`}
       className={chatStore.myID === message.senderID ? 'my' : ''}
@@ -102,8 +98,8 @@ export default observer(function ChatPage(): JSX.Element {
           startBottom
           numberOfVisibleItems={9}
           wrap={wrapMessagesList}
-          renderItem={(message, index, array): JSX.Element =>
-            renderMessage(message as Message, index, array as Message[])
+          renderItem={(message, index): JSX.Element =>
+            renderMessage(message as Message, index)
           }
           list={currentChat ? currentChat.messageList : []}
         ></ScrollList>

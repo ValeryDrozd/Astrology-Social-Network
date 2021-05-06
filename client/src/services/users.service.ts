@@ -29,7 +29,7 @@ export async function getRecommendation(
   sex?: boolean,
 ): Promise<UserWithCompability[]> {
   const users = (await get(
-    FullGetRecommendationsRoute + (sex ? '?sex=' + sex : ''),
+    FullGetRecommendationsRoute + (sex !== undefined ? '?sex=' + sex : ''),
     accessToken,
   )) as UserWithCompability[];
   return users.map((user) => ({

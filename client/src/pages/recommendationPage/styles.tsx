@@ -17,6 +17,10 @@ export const UsersList = styled.ul`
   flex-direction: column;
   padding: 0.5rem;
   overflow-y: auto;
+
+  @media (max-width: 50rem) {
+    max-height: 32rem;
+  }
 `;
 
 export const UsersListItem = styled.li`
@@ -55,3 +59,24 @@ export const UserInfoBlock = styled.div`
     margin: 0.25rem;
   }
 `;
+
+export const SelectSexName = styled.label`
+  text-align: center;
+  font-size: 20px;
+  margin: 0.5rem;
+  width: 100%;
+`;
+
+export const RecommendationBlock = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-left: 10rem;
+  margin-right: 10rem;
+`;
+
+export const Input = styled.input`
+  margin: 0 auto;
+  display: block;
+`;
+
+export const SelectDiv = styled.div``;

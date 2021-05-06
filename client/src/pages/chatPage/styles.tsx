@@ -19,13 +19,19 @@ export const ChatBlockView = styled.div`
   position: relative;
   flex-grow: 1;
   z-index: 1;
+
+  @media (max-width: 50rem) {
+    max-height: 85vh;
+  }
 `;
 
 export const ChatList = styled.div`
   display: flex;
   flex-direction: column;
   border: #fff 1px solid;
-  width: 35vw;
+  flex-grow: 1;
+  /* width: 35vw; */
+  min-width: 13rem;
   max-width: 20rem;
 `;
 
@@ -60,7 +66,6 @@ export const MessagesArea = styled.div`
   position: relative;
   border: #fff 1px solid;
   overflow-x: hidden;
-  height: 90vh;
 `;
 
 export const MessageList = styled.ul`

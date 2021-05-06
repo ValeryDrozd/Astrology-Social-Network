@@ -40,6 +40,10 @@ export default observer(function App(): JSX.Element {
 const MainLayout = styled.div`
   display: flex;
   height: 100vh;
+
+  @media (max-width: 50rem) {
+    flex-direction: column;
+  }
 `;
 
 const AppView = styled.div`

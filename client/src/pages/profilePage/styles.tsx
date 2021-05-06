@@ -31,7 +31,7 @@ export const ProfileBlockView = styled.div`
 export const InfoBlock = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding: 1rem;
+  padding: 0.5rem;
   justify-content: space-evenly;
 `;
 
@@ -49,7 +49,7 @@ export const DetailInfo = styled.h2`
 export const ButtonBlock = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
 `;
 
 export const EditInput = styled.input`
