@@ -10,10 +10,10 @@ CREATE TABLE "Users"(
 );
 
 CREATE TABLE "AuthProviders"(
-	"authID" SERIAL PRIMARY KEY,
 	"userID" UUID REFERENCES "Users" ON DELETE CASCADE,
 	"authName" VARCHAR (100) NOT NULL,
-	"password" TEXT
+	"password" TEXT,
+	PRIMARY KEY("userID", "authName")
 );
 
 
