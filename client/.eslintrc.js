@@ -19,6 +19,7 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
+    "sonarjs/cognitive-complexity": "warn",
     "prettier/prettier": [
       "error",
       {

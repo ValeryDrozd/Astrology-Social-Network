@@ -8,7 +8,7 @@ export const RecommendationDiv = styled.div`
 
 export const Title = styled.h1`
   text-align: center;
-  font-size: calc(3vw + 2rem);
+  font-size: calc(3vw + 1rem);
   margin: 1rem;
 `;
 
@@ -22,9 +22,7 @@ export const UsersList = styled.ul`
 export const UsersListItem = styled.li`
   list-style-type: none;
   background: #570e88;
-
   display: flex;
-
   margin: 0.5rem;
   font-size: 1rem;
   padding: 1rem;

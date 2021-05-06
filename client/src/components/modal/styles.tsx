@@ -16,6 +16,7 @@ export const ModalBg = styled.div`
 export const ModalDiv = styled.div`
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   padding: 1.5rem;
   background: #282c34;
   border-radius: 0.5rem;

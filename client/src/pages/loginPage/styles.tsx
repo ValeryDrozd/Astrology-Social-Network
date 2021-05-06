@@ -10,6 +10,7 @@ export const LoginDiv = styled.div`
   padding: 1rem 5rem;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
 `;
 
 export const LoginInput = styled.input`

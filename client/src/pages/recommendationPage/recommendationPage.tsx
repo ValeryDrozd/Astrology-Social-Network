@@ -1,6 +1,6 @@
-import User, { UserWithCompability } from 'interfaces/user';
+import { UserWithCompability } from 'interfaces/user';
 import { observer } from 'mobx-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { getRecommendation } from 'services/users.service';
 import chatStore from 'stores/store';

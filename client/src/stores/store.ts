@@ -41,6 +41,10 @@ export class ChatStore {
       });
   }
 
+  setUser(newUserInfo: User): void {
+    this.user = newUserInfo;
+  }
+
   initSocket(): void {
     this.socket = new WebSocketClient();
     this.socket.listenTo('open', () => {

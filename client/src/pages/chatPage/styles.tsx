@@ -12,6 +12,7 @@ export const otherMessages = styled.div`
 
 export const ChatBlockView = styled.div`
   display: flex;
+  flex-wrap: wrap;
   margin: 0 1rem;
   padding-top: 1rem;
   height: 95vh;
@@ -128,6 +129,7 @@ export const MessagesBlock = styled.div`
   display: flex;
   flex-grow: 3;
   flex-direction: column;
+  flex-wrap: wrap;
 `;
 
 export const ChatForm = styled.form`

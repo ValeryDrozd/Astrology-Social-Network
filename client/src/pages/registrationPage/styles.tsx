@@ -5,6 +5,7 @@ export const RegistrationDiv = styled.div`
   padding: 1rem 5rem;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
 `;
 
 export const RegistrationForm = styled.form`
@@ -14,7 +15,6 @@ export const RegistrationForm = styled.form`
 
 export const RegistrationInput = styled.input`
   border-radius: 0.25rem;
-  padding: 0.5rem;
   margin: 0.5rem 0;
   font-size: 1.25rem;
   padding: 1rem;

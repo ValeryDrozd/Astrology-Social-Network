@@ -4,7 +4,6 @@ export const ExtraInfoDiv = styled.div`
   margin: 0 auto;
   padding: 1rem 5rem;
   display: flex;
-  flex-direction: row;
 `;
 
 export const Title = styled.h1`
@@ -36,7 +35,6 @@ export const ZodiacSelect = styled.select`
 
 export const StyledDiv = styled.div`
   display: flex;
-  flex-direction: row;
   justify-content: space-evenly;
   font-size: 25px;
 `;
