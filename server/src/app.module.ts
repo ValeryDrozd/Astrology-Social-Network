@@ -8,6 +8,7 @@ import { AuthProvidersModule } from './modules/auth-providers/auth-providers.mod
 import { ChatsService } from './modules/chats/chats.service';
 import { MessagesService } from './modules/messages/messages.service';
 import { ZodiacSignsService } from './modules/zodiac-signs/zodiac-signs.service';
+import { ChatsModule } from './modules/chats/chats.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ZodiacSignsService } from './modules/zodiac-signs/zodiac-signs.service'
     AuthModule,
     RefreshSessionsModule,
     AuthProvidersModule,
+    ChatsModule,
   ],
   controllers: [],
   providers: [ScryptService, ChatsService, MessagesService, ZodiacSignsService],
