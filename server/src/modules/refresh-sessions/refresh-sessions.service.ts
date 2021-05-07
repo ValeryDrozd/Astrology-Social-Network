@@ -28,4 +28,8 @@ export class RefreshSessionsService {
   async delete(refreshToken: string): Promise<void> {
     await this.pgService.delete({ tableName: this.tableName, where: { refreshToken } });
   }
+
+  async deleteAll(userID: string): Promise<void> {
+    await this.pgService.delete({ tableName: this.tableName, where: { userID } });
+  }
 }

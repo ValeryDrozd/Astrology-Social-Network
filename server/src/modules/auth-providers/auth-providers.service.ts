@@ -22,4 +22,12 @@ export class AuthProvidersService {
 
     return res;
   }
+
+  async changePassword(userID: string, password: string): Promise<void> {
+    await this.pgService.update({
+      tableName: this.tableName,
+      updates: { password },
+      where: { userID, authName: 'local' },
+    });
+  }
 }

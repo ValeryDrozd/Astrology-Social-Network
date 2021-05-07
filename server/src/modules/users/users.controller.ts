@@ -2,15 +2,23 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Query,
+  Req,
   Request,
+  Res,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+import { Request as ExpressRequest, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
 import {
+  ChangeMyPasswordRoute,
+  ChangeMyPasswordRouteProps,
   GetRecommendationsRoute,
   GetRecommendationsRouteQueryParams,
   MyProfileRoute,
@@ -23,10 +31,11 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { JwtValidationOutput } from '../auth/strateries/jwt.strategy';
 import { UserUpdates, UserWithCompability } from '@interfaces/user';
+import sendTokensPair from 'src/helpers/send-tokens-pair';
 
 @Controller(UserRoute)
 export class UsersController {
-  constructor(private usersService: UsersService, private jwtService: JwtService) {}
+  constructor(private usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(MyProfileRoute)
@@ -58,5 +67,26 @@ export class UsersController {
     @Body('updates') updates: UserUpdates,
   ): Promise<void> {
     await this.usersService.patchUser(user.userID, updates);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Patch(ChangeMyPasswordRoute)
+  async changePassword(
+    @Request() { user }: JwtValidationOutput,
+    @Body() { oldPassword, newPassword, astrologicalToken }: ChangeMyPasswordRouteProps,
+    @Req() { headers }: ExpressRequest,
+    @Res() res: Response,
+  ): Promise<void> {
+    const userAgent = String(headers['user-agent']);
+    const pair = await this.usersService.changePassword(
+      user.userID,
+      oldPassword,
+      newPassword,
+      astrologicalToken,
+      userAgent,
+    );
+
+    sendTokensPair(res, pair);
   }
 }
