@@ -1,23 +1,20 @@
-import './App.css';
+import 'App.css';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-  Link,
 } from 'react-router-dom';
-import LoginPage from './pages/loginPage/loginPage';
-import ProfilePage from './pages/profilePage/profilePage';
-import RegistrationPage from './pages/registrationPage/registrationPage';
+import LoginPage from 'pages/loginPage/loginPage';
+import ProfilePage from 'pages/profilePage/profilePage';
+import RegistrationPage from 'pages/registrationPage/registrationPage';
 import styled from 'styled-components';
-import ChatPage from './pages/chatPage/chatPage';
-import ExtraInfoPage from './pages/extraInfoPage/extraInfoPage';
-import { logout } from './services/auth.service';
-import chatStore, { reloadChatStore } from './stores/store';
+import ChatPage from 'pages/chatPage/chatPage';
+import ExtraInfoPage from 'pages/extraInfoPage/extraInfoPage';
+import chatStore from 'stores/store';
 import { observer } from 'mobx-react';
-import React from 'react';
-import { StyledButton } from './components/styled/styled-button';
-import NavigationBar from './components/menu-navigation/menu-navigation';
+import NavigationBar from 'components/menu-navigation/menu-navigation';
+import RecommendationPage from 'pages/recommendationPage/recommendationPage';
 
 export default observer(function App(): JSX.Element {
   return (
@@ -31,6 +28,7 @@ export default observer(function App(): JSX.Element {
             <Route path="/registration" component={RegistrationPage}></Route>
             <Route path="/extra-page" component={ExtraInfoPage}></Route>
             <Route path="/users/:id" component={ProfilePage} />
+            <Route path="/recommendation" component={RecommendationPage} />
             <Redirect to="/" />
           </Switch>
         </MainLayout>
@@ -42,6 +40,10 @@ export default observer(function App(): JSX.Element {
 const MainLayout = styled.div`
   display: flex;
   height: 100vh;
+
+  @media (max-width: 50rem) {
+    flex-direction: column;
+  }
 `;
 
 const AppView = styled.div`

@@ -1,19 +1,49 @@
-import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { logout } from '../../services/auth.service';
-import chatStore, { reloadChatStore } from '../../stores/store';
-import { StyledButton } from '../styled/styled-button';
+import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { logout } from 'services/auth.service';
+import chatStore, { reloadChatStore } from 'stores/store';
 import { ListItem, NavigationBarBlock } from './styles';
 export default function NavigationBar(): JSX.Element {
+  const [route, setRoute] = useState('');
   const history = useHistory();
+  useEffect(() => {
+    setRoute(history.location.pathname);
+  }, []);
+
   return (
     <NavigationBarBlock>
       <ListItem
-        onClick={(): void => history.push(`/users/${chatStore.user.userID}`)}
+        className={
+          route === `/users/${chatStore.user.userID}` ? 'selected' : ''
+        }
+        onClick={(): void => {
+          const newRoute = `/users/${chatStore.user.userID}`;
+          history.push(newRoute);
+          setRoute(newRoute);
+        }}
       >
         Profile
       </ListItem>
-      <ListItem onClick={(): void => history.push('/chat')}>Chats</ListItem>
+      <ListItem
+        className={route === `/chat` ? 'selected' : ''}
+        onClick={(): void => {
+          const newRoute = '/chat';
+          history.push(newRoute);
+          setRoute(newRoute);
+        }}
+      >
+        Chats
+      </ListItem>
+      <ListItem
+        className={route === `/recommendation` ? 'selected' : ''}
+        onClick={(): void => {
+          const newRoute = '/recommendation';
+          history.push(newRoute);
+          setRoute(newRoute);
+        }}
+      >
+        Recommendation
+      </ListItem>
       <ListItem
         onClick={async (): Promise<void> => {
           await logout();

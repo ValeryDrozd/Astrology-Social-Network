@@ -1,4 +1,3 @@
-import { useStaticRendering } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 
 interface ScrollListProps {
