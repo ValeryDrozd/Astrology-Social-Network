@@ -14,7 +14,7 @@ import {
 } from 'interfaces/rpc-events';
 import { ServerMessage } from 'interfaces/message';
 import { refresh } from 'services/auth.service';
-import { getMyProfile } from 'services/users.service';
+import { createNewChat, getMyProfile } from 'services/users.service';
 import User from 'interfaces/user';
 import checkToken from 'helpers/check-token';
 
@@ -103,7 +103,13 @@ export class ChatStore {
       const res = await this.socket.call<GetMessagesFunctionResponse>(
         GetMessagesFunction,
       );
-      this.chats = res;
+      this.chats = res.map((chat) => ({
+        ...chat,
+        messageList: chat.messageList.map((message) => ({
+          ...message,
+          time: new Date(message.time),
+        })),
+      }));
     } catch (error) {}
   }
 
@@ -174,7 +180,9 @@ export class ChatStore {
     }
   }
 
-  // addNewChat(): void {}
+  async addNewChat(chat: Chat): Promise<void> {
+    this.chats.unshift(chat);
+  }
 }
 
 let chatStore = new ChatStore();
