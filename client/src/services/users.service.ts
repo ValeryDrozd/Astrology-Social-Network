@@ -1,4 +1,9 @@
+import getAstrologicalToken from 'helpers/get-astrological-token';
+import Chat from 'interfaces/chat';
+import { NewToken } from 'interfaces/new-token';
+import { FullCreateNewChatRoute } from 'interfaces/routes/chat-routes';
 import {
+  FullChangeMyPasswordRoute,
   FullGetRecommendationsRoute,
   FullMyProfileRoute,
   FullPatchMyProfileRoute,
@@ -6,13 +11,17 @@ import {
 } from 'interfaces/routes/user-routes';
 import User, { UserUpdates, UserWithCompability } from 'interfaces/user';
 
+const getHeaders = (
+  accessToken: string,
+): { 'Content-Type': string; Authorization: string } => ({
+  'Content-Type': 'application/json',
+  Authorization: `Bearer ${accessToken}`,
+});
+
 const get = async (path: string, accessToken: string): Promise<unknown> => {
   const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
+    headers: getHeaders(accessToken),
   });
   if (!res.ok) {
     throw new Error('Error');
@@ -22,6 +31,39 @@ const get = async (path: string, accessToken: string): Promise<unknown> => {
     ? new Date(result.birthDate)
     : new Date();
   return result;
+};
+
+const patch = async (
+  path: string,
+  body: Record<string, unknown>,
+  accessToken: string,
+): Promise<Response> => {
+  const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+    headers: getHeaders(accessToken),
+  });
+  if (!res.ok) {
+    throw new Error('Error');
+  }
+
+  return res;
+};
+
+const post = async (
+  path: string,
+  body: Record<string, unknown>,
+  accessToken: string,
+): Promise<Chat> => {
+  const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
+    method: 'POST',
+    headers: getHeaders(accessToken),
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    throw new Error('Error');
+  }
+  return await res.json();
 };
 
 export async function getRecommendation(
@@ -53,23 +95,40 @@ export async function patchMyProfile(
   accessToken: string,
   updates: UserUpdates,
 ): Promise<void> {
-  const res = await fetch(
-    process.env.REACT_APP_SERVER_URL + FullPatchMyProfileRoute,
+  await patch(
+    FullPatchMyProfileRoute,
     {
-      method: 'PATCH',
-      body: JSON.stringify({
-        updates: {
-          ...updates,
-          birthDate: updates.birthDate?.toLocaleDateString(),
-        },
-      }),
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+      updates: {
+        ...updates,
+        birthDate: updates.birthDate?.toLocaleDateString(),
       },
     },
+    accessToken,
   );
-  if (!res.ok) {
-    throw new Error('Error');
-  }
+}
+
+export async function changeMyPassword(
+  accessToken: string,
+  oldPassword: string,
+  newPassword: string,
+): Promise<NewToken> {
+  const astrologicalToken = await getAstrologicalToken();
+  const res = await patch(
+    FullChangeMyPasswordRoute,
+    { oldPassword, newPassword, astrologicalToken },
+    accessToken,
+  );
+
+  return (await res.json()) as NewToken;
+}
+
+export async function createNewChat(
+  accessToken: string,
+  memberID: string,
+): Promise<Chat> {
+  return (await post(
+    FullCreateNewChatRoute,
+    { memberID },
+    accessToken,
+  )) as Chat;
 }

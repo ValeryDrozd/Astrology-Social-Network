@@ -57,20 +57,29 @@ export default observer(function ChatPage(): JSX.Element {
     }
   };
 
-  const chatViews = chatStore.chats.map((chat, index) => (
-    <ChatItem
-      key={`chat-${index + 1}`}
-      onClick={(): void => handlerChatClick(chat.chatID)}
-    >
-      <ChatName>
-        {chat.senderInfo.lastName + ' ' + chat.senderInfo.firstName}
-      </ChatName>
-      <ChatLastMessage>
-        {chat.messageList[chat.messageList.length - 1]?.text.slice(0, 30) +
-          '...'}
-      </ChatLastMessage>
-    </ChatItem>
-  ));
+  const chatViews = chatStore.chats
+    .slice()
+    .sort((chat1, chat2) =>
+      !chat2.messageList.length || !chat1.messageList.length
+        ? -Number.MAX_VALUE
+        : chat2.messageList[chat2.messageList.length - 1]?.time.valueOf() -
+          chat1.messageList[chat1.messageList.length - 1]?.time.valueOf(),
+    )
+    .map((chat, index) => (
+      <ChatItem
+        className={currentChatId === chat.chatID ? `selected` : ''}
+        key={`chat-${index + 1}`}
+        onClick={(): void => handlerChatClick(chat.chatID)}
+      >
+        <ChatName>
+          {chat.senderInfo.lastName + ' ' + chat.senderInfo.firstName}
+        </ChatName>
+        <ChatLastMessage>
+          {chat.messageList[chat.messageList.length - 1]?.text.slice(0, 30) +
+            '...'}
+        </ChatLastMessage>
+      </ChatItem>
+    ));
 
   const renderMessage = (message: Message, index: number): JSX.Element => (
     <MessageItem

@@ -46,6 +46,10 @@ export const ChatItem = styled.div`
   &:hover {
     background-color: #5f3292;
   }
+
+  &.selected {
+    background-color: #5f3292;
+  }
 `;
 
 export const ChatName = styled.h4`
