@@ -93,6 +93,7 @@ test('Should give my profile', async () => {
     birthDate: new Date(),
     sex: true,
     zodiacSign: 'Aries',
+    authProviders: ['google'],
   };
   const fetchMock = mockFetch(testUser);
   const accessToken = 'some_token';
@@ -118,6 +119,7 @@ test('shoud give recommendation', async () => {
       sex: true,
       zodiacSign: 'Aries',
       compability: 50,
+      authProviders: ['local'],
     },
     {
       userID: '7890',
@@ -128,6 +130,7 @@ test('shoud give recommendation', async () => {
       sex: true,
       zodiacSign: 'Taurus',
       compability: 30,
+      authProviders: ['local'],
     },
   ];
 
@@ -162,6 +165,7 @@ test('should throw error when ok is false', async () => {
     birthDate: new Date(),
     sex: true,
     zodiacSign: 'Aries',
+    authProviders: ['local'],
   };
   const fetchMock = mockFetch(testUser, false);
   const accessToken = 'some_token';
@@ -246,6 +250,7 @@ test('Should give user profile', async () => {
     firstName: 'firstName',
     lastName: 'lastName',
     email: 'email@gmail.com',
+    authProviders: ['google'],
   };
   const fetchMock = mockFetch(testUser);
 
