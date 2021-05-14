@@ -10,6 +10,7 @@ import {
   TitleName,
   SelectSexName,
   InfoDiv,
+  ButtonBox,
 } from './styles';
 import chatStore from 'stores/store';
 import { useHistory } from 'react-router-dom';
@@ -104,7 +105,9 @@ export default observer(function ExtraInfoPage(): JSX.Element {
             </ZodiacSelect>
           </InfoPart>
         </InfoDiv>
-        <StyledButton>Go</StyledButton>
+        <ButtonBox>
+          <StyledButton className="bold">Go</StyledButton>
+        </ButtonBox>
       </ExtraForm>
     </ExtraInfoDiv>
   );

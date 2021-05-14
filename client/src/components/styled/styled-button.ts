@@ -14,6 +14,12 @@ export const StyledButton = styled.button`
   }
 
   &.register {
-    margin-top: 1rem;
+    margin: 1rem;
+  }
+
+  &.bold {
+    font-size: x-large;
+    font-weight: bold;
+    padding: 1rem 3rem;
   }
 `;

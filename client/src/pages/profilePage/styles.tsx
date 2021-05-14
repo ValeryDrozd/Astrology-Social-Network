@@ -6,6 +6,11 @@ export const Title = styled.h1`
   margin: 1rem;
 `;
 
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
+
 export const AvatarImage = styled.img`
   display: flex;
   flex-direction: column;
@@ -72,4 +77,10 @@ export const SelectZodiac = styled.select`
 
 export const Label = styled.label`
   margin: 0.25rem;
+`;
+
+export const SexBlock = styled.div`
+  display: flex;
+  padding: 0.5rem 0;
+  justify-content: space-between;
 `;

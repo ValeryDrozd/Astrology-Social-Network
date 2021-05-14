@@ -69,6 +69,12 @@ export default observer(function RegistrationPage(): JSX.Element {
         {showError ? <ErrorValidation>ERROR!</ErrorValidation> : null}
         <StyledButton className="register">Register now</StyledButton>
       </RegistrationForm>
+      <StyledButton
+        className="register"
+        onClick={(): void => history.push('/')}
+      >
+        Back to Login page
+      </StyledButton>
     </RegistrationDiv>
   );
 });

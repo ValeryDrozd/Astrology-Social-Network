@@ -10,6 +10,7 @@ export const Title = styled.h1`
   text-align: center;
   font-size: 2rem;
   width: 100%;
+  margin: 0 auto;
 `;
 
 export const InfoPart = styled.div`
@@ -30,7 +31,7 @@ export const ZodiacSelect = styled.select`
   font-size: 25px;
   max-width: 30rem;
   min-width: 10rem;
-  margin: 0.75rem;
+  margin: 0.5rem;
 `;
 
 export const StyledDiv = styled.div`
@@ -42,7 +43,7 @@ export const StyledDiv = styled.div`
 export const TitleName = styled.h3`
   text-align: center;
   width: 100%;
-  margin: 1rem auto;
+  margin: 0.75rem auto;
 `;
 
 export const SelectSexName = styled.label`
@@ -62,5 +63,10 @@ export const InfoDiv = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+`;
+
+export const ButtonBox = styled.div`
+  display: flex;
+  justify-content: center;
 `;

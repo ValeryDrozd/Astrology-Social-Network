@@ -37,11 +37,13 @@ const patch = async (
   path: string,
   body: Record<string, unknown>,
   accessToken: string,
+  cookies = false,
 ): Promise<Response> => {
   const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
     method: 'PATCH',
     body: JSON.stringify(body),
     headers: getHeaders(accessToken),
+    credentials: cookies ? 'include' : 'omit',
   });
   if (!res.ok) {
     throw new Error('Error');
@@ -117,6 +119,7 @@ export async function changeMyPassword(
     FullChangeMyPasswordRoute,
     { oldPassword, newPassword, astrologicalToken },
     accessToken,
+    true,
   );
 
   return (await res.json()) as NewToken;
