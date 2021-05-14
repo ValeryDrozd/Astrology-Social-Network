@@ -29,7 +29,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "yarn lint-staged",
-      "pre-push": "yarn test:server"
+      "pre-push": "yarn test"
     }
   },
   "lint-staged": {
@@ -43,7 +43,9 @@
     ]
   },
   "scripts": {
+    "test": "yarn test:server && yarn test:client",
     "test:server": "cd server && yarn test",
+    "test:client": "cd client && yarn test",
     "lint:server": "cd server && yarn lint:write",
     "lint:client": "cd client && yarn lint:write",
     "lint:all": "yarn lint:server . && yarn lint:client .",

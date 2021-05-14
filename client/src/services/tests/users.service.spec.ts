@@ -51,6 +51,7 @@ test('Should patch user`s profile', async () => {
   const expectedURL = `${process.env.REACT_APP_SERVER_URL}${FullPatchMyProfileRoute}`;
   const expectedFetchConfig = {
     method: 'PATCH',
+    credentials: 'omit',
     body: JSON.stringify({ updates: props.updates }),
     headers: getHeaders(props.accessToken),
   };
@@ -74,6 +75,7 @@ test('Should  throw error when ok is false', async () => {
     const expectedURL = `${process.env.REACT_APP_SERVER_URL}${FullPatchMyProfileRoute}`;
     const expectedFetchConfig = {
       method: 'PATCH',
+      credentials: 'omit',
       body: JSON.stringify({ updates: props.updates }),
       headers: getHeaders(props.accessToken),
     };
@@ -290,6 +292,7 @@ test('Should change password', async () => {
     process.env.REACT_APP_SERVER_URL + FullChangeMyPasswordRoute,
     {
       method: 'PATCH',
+      credentials: 'include',
       body: JSON.stringify({ oldPassword, newPassword, astrologicalToken }),
       headers: getHeaders(accessToken),
     },
