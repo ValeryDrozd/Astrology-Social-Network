@@ -11,7 +11,7 @@ import {
 } from 'interfaces/routes/user-routes';
 import User, { UserUpdates, UserWithCompability } from 'interfaces/user';
 
-const getHeaders = (
+export const getHeaders = (
   accessToken: string,
 ): { 'Content-Type': string; Authorization: string } => ({
   'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const post = async (
   if (!res.ok) {
     throw new Error('Error');
   }
-  return await res.json();
+  return res.json();
 };
 
 export async function getRecommendation(
@@ -122,13 +122,9 @@ export async function changeMyPassword(
   return (await res.json()) as NewToken;
 }
 
-export async function createNewChat(
+export function createNewChat(
   accessToken: string,
   memberID: string,
 ): Promise<Chat> {
-  return (await post(
-    FullCreateNewChatRoute,
-    { memberID },
-    accessToken,
-  )) as Chat;
+  return post(FullCreateNewChatRoute, { memberID }, accessToken);
 }
