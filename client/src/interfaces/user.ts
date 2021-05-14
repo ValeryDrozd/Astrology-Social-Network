@@ -1,4 +1,5 @@
 import { Type } from 'class-transformer';
+export type AuthProviderName = 'local' | 'google';
 
 export default interface User {
   userID: string;
@@ -8,6 +9,7 @@ export default interface User {
   birthDate?: Date;
   sex?: boolean;
   zodiacSign?: string;
+  authProviders: AuthProviderName[];
 }
 
 export interface UserWithCompability extends User {

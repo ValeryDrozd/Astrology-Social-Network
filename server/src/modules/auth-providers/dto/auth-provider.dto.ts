@@ -1,4 +1,4 @@
-export type AuthProviderName = 'local' | 'google';
+import { AuthProviderName } from '@interfaces/user';
 
 export default interface AuthProviderDTO {
   userID: string;

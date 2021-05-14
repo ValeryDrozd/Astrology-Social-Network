@@ -50,7 +50,19 @@ export class UsersService {
       return user;
     }
     const { firstName, lastName, userID, birthDate, sex, zodiacSign } = user;
-    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign };
+    const authProviders = (await this.authProvidersService.find(userID)).map(
+      (a) => a.authName,
+    );
+    return {
+      userID,
+      firstName,
+      lastName,
+      email,
+      birthDate,
+      sex,
+      zodiacSign,
+      authProviders,
+    };
   }
 
   async findById(userID: string): Promise<User> {
@@ -63,7 +75,19 @@ export class UsersService {
     }
 
     const { firstName, lastName, email, birthDate, sex, zodiacSign } = user;
-    return { userID, firstName, lastName, email, birthDate, sex, zodiacSign };
+    const authProviders = (await this.authProvidersService.find(userID)).map(
+      (a) => a.authName,
+    );
+    return {
+      userID,
+      firstName,
+      lastName,
+      email,
+      birthDate,
+      sex,
+      zodiacSign,
+      authProviders,
+    };
   }
 
   async patchUser(userID: string, updates: UserUpdates): Promise<void> {

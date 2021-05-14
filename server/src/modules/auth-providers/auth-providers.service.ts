@@ -1,6 +1,7 @@
+import { AuthProviderName } from '@interfaces/user';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
-import AuthProviderDTO, { AuthProviderName } from './dto/auth-provider.dto';
+import AuthProviderDTO from './dto/auth-provider.dto';
 
 @Injectable()
 export class AuthProvidersService {
@@ -21,6 +22,13 @@ export class AuthProvidersService {
     }
 
     return res;
+  }
+
+  async find(userID: string): Promise<AuthProviderDTO[]> {
+    return await this.pgService.find<AuthProviderDTO>({
+      tableName: this.tableName,
+      where: { userID },
+    });
   }
 
   async changePassword(userID: string, password: string): Promise<void> {

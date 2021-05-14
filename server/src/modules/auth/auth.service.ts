@@ -9,12 +9,12 @@ import { v4 as uuid } from 'uuid';
 import { UsersService } from '../users/users.service';
 import { RefreshSessionsService } from '../refresh-sessions/refresh-sessions.service';
 import { AuthProvidersService } from '../auth-providers/auth-providers.service';
-import { AuthProviderName } from '../auth-providers/dto/auth-provider.dto';
 import Session, { RefreshSessionDTO } from '../refresh-sessions/dto/refresh-session.dto';
 import { JwtService } from '@nestjs/jwt';
 import AuthTokensPair from './dto/tokens-pair.dto';
 import GoogleResponse from './dto/google-response';
 import { LoginParams, RegisterParams } from '@interfaces/routes/auth-routes';
+import { AuthProviderName } from '@interfaces/user';
 
 @Injectable()
 export class AuthService {
