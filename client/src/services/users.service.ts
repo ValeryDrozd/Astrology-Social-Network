@@ -9,7 +9,7 @@ import {
   FullPatchMyProfileRoute,
   FullUserByIDRoute,
 } from 'interfaces/routes/user-routes';
-import User, { UserUpdates, UserWithCompability } from 'interfaces/user';
+import User, { UserUpdates, UserWithCompatibility } from 'interfaces/user';
 
 export const getHeaders = (
   accessToken: string,
@@ -71,11 +71,11 @@ const post = async (
 export async function getRecommendation(
   accessToken: string,
   sex?: boolean,
-): Promise<UserWithCompability[]> {
+): Promise<UserWithCompatibility[]> {
   const users = (await get(
     FullGetRecommendationsRoute + (sex !== undefined ? '?sex=' + sex : ''),
     accessToken,
-  )) as UserWithCompability[];
+  )) as UserWithCompatibility[];
   return users.map((user) => ({
     ...user,
     birthDate: user.birthDate ? new Date(user.birthDate) : new Date(),

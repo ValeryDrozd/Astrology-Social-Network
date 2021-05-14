@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import User, { UserUpdates, UserWithCompability } from '@interfaces/user';
+import User, { UserUpdates, UserWithCompatibility } from '@interfaces/user';
 import { RegisterData } from '../auth/dto/register.dto';
 import { PgService } from '../pg/pg.service';
 import UserEntity from './user.entity';
@@ -36,7 +36,7 @@ export class UsersService {
   async getRecommendations(
     userID: string,
     sex?: boolean,
-  ): Promise<UserWithCompability[]> {
+  ): Promise<UserWithCompatibility[]> {
     const user = await this.findById(userID);
     return await this.zodiacSignsService.getMyRecommendations(user, sex);
   }

@@ -14,7 +14,7 @@ import {
 } from 'interfaces/rpc-events';
 import { ServerMessage } from 'interfaces/message';
 import { refresh } from 'services/auth.service';
-import { createNewChat, getMyProfile } from 'services/users.service';
+import { getMyProfile } from 'services/users.service';
 import User from 'interfaces/user';
 import checkToken from 'helpers/check-token';
 
@@ -75,6 +75,7 @@ export class ChatStore {
         this.chats
           .find((chat) => chat.chatID === message.chatID)
           ?.messageList.push({ ...message, isSent: true });
+        this.chats = [...this.chats];
       },
     );
   }

@@ -9,7 +9,7 @@ import {
   FullPatchMyProfileRoute,
   FullUserByIDRoute,
 } from 'interfaces/routes/user-routes';
-import User, { UserWithCompability } from 'interfaces/user';
+import User, { UserWithCompatibility } from 'interfaces/user';
 import {
   changeMyPassword,
   createNewChat,
@@ -111,7 +111,7 @@ test('Should give my profile', async () => {
 });
 
 test('shoud give recommendation', async () => {
-  const testRecomendations: UserWithCompability[] = [
+  const testRecomendations: UserWithCompatibility[] = [
     {
       userID: '1234',
       firstName: 'firstName',
@@ -120,7 +120,7 @@ test('shoud give recommendation', async () => {
       birthDate: new Date(),
       sex: true,
       zodiacSign: 'Aries',
-      compability: 50,
+      compatibility: 50,
       authProviders: ['local'],
     },
     {
@@ -131,7 +131,7 @@ test('shoud give recommendation', async () => {
       birthDate: new Date(),
       sex: true,
       zodiacSign: 'Taurus',
-      compability: 30,
+      compatibility: 30,
       authProviders: ['local'],
     },
   ];

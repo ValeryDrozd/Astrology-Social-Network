@@ -12,8 +12,8 @@ export default interface User {
   authProviders: AuthProviderName[];
 }
 
-export interface UserWithCompability extends User {
-  compability: number;
+export interface UserWithCompatibility extends User {
+  compatibility: number;
 }
 
 export class UserUpdates {

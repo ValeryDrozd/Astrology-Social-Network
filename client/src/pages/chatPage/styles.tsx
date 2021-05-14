@@ -12,7 +12,6 @@ export const otherMessages = styled.div`
 
 export const ChatBlockView = styled.div`
   display: flex;
-  flex-wrap: wrap;
   margin: 0 1rem;
   padding-top: 1rem;
   height: 95vh;
@@ -25,14 +24,14 @@ export const ChatBlockView = styled.div`
   }
 `;
 
-export const ChatList = styled.div`
+export const ChatList = styled.ul`
   display: flex;
   flex-direction: column;
   border: #fff 1px solid;
-  flex-grow: 1;
-  /* width: 35vw; */
-  min-width: 13rem;
-  max-width: 20rem;
+  overflow: hidden;
+  width: 15rem;
+  margin: 0;
+  padding: 0;
 `;
 
 export const ChatItem = styled.div`
@@ -42,6 +41,8 @@ export const ChatItem = styled.div`
   border-radius: 0.25rem;
   transition: background 0.3s ease;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     background-color: #5f3292;
@@ -53,47 +54,52 @@ export const ChatItem = styled.div`
 `;
 
 export const ChatName = styled.h4`
-  margin: 0;
+  margin: 0.25rem 0;
   font-size: x-large;
+  white-space: nowrap; /* Запрещаем перенос строк */
+  overflow: hidden; /* Обрезаем все, что не помещается в область */
+  text-overflow: ellipsis; /* Добавляем многоточие */
 `;
 
 export const ChatLastMessage = styled.span`
   font-size: x-small;
+  margin: auto 0;
+  white-space: nowrap; /* Запрещаем перенос строк */
+  overflow: hidden; /* Обрезаем все, что не помещается в область */
+  text-overflow: ellipsis; /* Добавляем многоточие */
 `;
 
 export const MessagesArea = styled.div`
-  overflow-y: hidden;
+  overflow-y: auto;
   z-index: 10;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   position: relative;
   border: #fff 1px solid;
-  overflow-x: hidden;
+  overflow-y: hidden;
+  overflow-x: auto;
 `;
 
 export const MessageList = styled.ul`
-  position: absolute;
-  width: 100%;
-  left: 0;
   padding: 0;
-  margin: auto;
-  overflow-y: hidden;
-  z-index: -1;
+  /* overflow-y: hidden;
+  overflow-x: auto; */
   display: flex;
+
   flex-direction: column;
-  overflow-x: hidden;
-  height: 100%;
 `;
 
 export const MessageItem = styled.div`
   padding: 0.75rem;
-  overflow-y: hidden;
   margin: 0.25rem;
   display: flex;
-  max-width: 60vw;
-
+  flex-direction: column;
+  overflow: hidden;
+  margin-right: auto;
+  margin-left: 0;
   &.my {
+    margin-right: 0;
     margin-left: auto;
   }
 `;
@@ -136,9 +142,8 @@ export const Input = styled.input`
 
 export const MessagesBlock = styled.div`
   display: flex;
-  flex-grow: 3;
   flex-direction: column;
-  flex-wrap: wrap;
+  flex-grow: 3;
 `;
 
 export const ChatForm = styled.form`
