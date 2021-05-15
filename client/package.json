@@ -3,9 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "fingerprintjs2": "^2.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "mobx": "^6.1.8",
+    "mobx-react": "^7.1.0",
+    "mobx-state-tree": "3.6.0",
     "react": "^17.0.1",
+    "react-calendar": "^3.4.0",
     "react-dom": "^17.0.1",
+    "react-google-login": "^5.2.2",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-virtual-scrolling": "^1.1.4",
+    "rpc-websockets": "^7.4.9",
+    "styled-components": "^5.2.1",
+    "ua-parser-js": "^0.7.26",
     "web-vitals": "^1.1.0"
   },
   "lint-staged": {
@@ -17,7 +30,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
+    "test:coverage": "jest --collectCoverage",
     "eject": "react-scripts eject",
     "lint": "eslint",
     "lint:write": "eslint --fix",
@@ -26,7 +40,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "stylelint"
     ]
   },
   "browserslist": {
@@ -45,10 +60,43 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
+    "@types/fingerprintjs2": "^2.0.0",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.33",
     "@types/react": "^17.0.3",
+    "@types/react-calendar": "^3.1.4",
     "@types/react-dom": "^17.0.2",
-    "eslint-plugin-react": "^7.22.0"
+    "@types/react-router-dom": "^5.1.7",
+    "@types/styled-components": "^5.1.9",
+    "@types/ua-parser-js": "^0.7.35",
+    "eslint-config-stylelint": "^13.1.0",
+    "eslint-plugin-react": "^7.22.0",
+    "stylelint": "^13.12.0",
+    "stylelint-config-standard": "^21.0.0",
+    "ts-jest": "^26.5.6"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "testEnvironment": "node",
+    "coverageDirectory": "../coverage",
+    "moduleNameMapper": {
+      "interfaces/(.*)": "<rootDir>/interfaces/$1",
+      "services/(.*)": "<rootDir>/services/$1",
+      "pages/(.*)": "<rootDir>/pages/$1",
+      "^helpers/(.*)": "<rootDir>/helpers/$1",
+      "components/(.*)": "<rootDir>/components/$1"
+    }
   }
 }

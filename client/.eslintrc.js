@@ -19,6 +19,13 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
+    "sonarjs/cognitive-complexity": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      },
+    ],
     "@typescript-eslint/naming-convention": [
       "error",
       {

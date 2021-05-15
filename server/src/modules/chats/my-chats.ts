@@ -1,0 +1,8 @@
+export default `WITH chats AS (SELECT c."chatID" FROM "Chats" c 
+JOIN "ChatsUsers" cu ON c."chatID" = cu."chatID"
+WHERE cu."userID" = $1)
+
+SELECT c."chatID", u."lastName", u."firstName", u."userID" FROM chats c
+JOIN "ChatsUsers" cu ON c."chatID" = cu."chatID"
+JOIN "Users" u ON cu."userID" = u."userID"
+WHERE NOT cu."userID" = $1`;
