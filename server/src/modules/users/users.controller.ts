@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Query,
@@ -14,7 +13,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Request as ExpressRequest, Response } from 'express';
-import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
 import {
   ChangeMyPasswordRoute,
