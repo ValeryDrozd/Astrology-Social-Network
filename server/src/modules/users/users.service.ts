@@ -18,7 +18,7 @@ import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UsersService {
-  private tableName = 'Users';
+  tableName = 'Users';
   constructor(
     private pgService: PgService,
     private zodiacSignsService: ZodiacSignsService,
@@ -112,7 +112,6 @@ export class UsersService {
     if (!user) throw new NotFoundException();
 
     const provider = await this.authProvidersService.findOne(user.userID, 'local');
-    if (!provider) throw new NotFoundException();
 
     const isValid = await this.scryptService.verify(
       oldPassword,
