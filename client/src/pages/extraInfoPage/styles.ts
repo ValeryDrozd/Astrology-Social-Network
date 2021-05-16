@@ -48,7 +48,7 @@ export const StyledDiv = styled.div`
 export const TitleName = styled.h3`
   text-align: center;
   width: 100%;
-  margin: 0.75rem auto;
+  margin: 0.5rem auto;
 `;
 
 export const SelectSexName = styled.label`

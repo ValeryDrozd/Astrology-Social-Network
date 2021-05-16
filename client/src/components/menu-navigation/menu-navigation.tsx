@@ -8,7 +8,9 @@ export default function NavigationBar(): JSX.Element {
   const history = useHistory();
   useEffect(() => {
     setRoute(history.location.pathname);
-  }, []);
+  }, [history.location.pathname]);
+
+  if (history.location.pathname === '/extra-page') return <></>;
 
   return (
     <NavigationBarBlock>

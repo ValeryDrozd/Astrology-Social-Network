@@ -4,5 +4,5 @@ export const ErrorValidation = styled.div`
   color: red;
   font-size: 2rem;
   text-align: center;
-  margin: 0.5rem;
+  margin: 0.25rem;
 `;

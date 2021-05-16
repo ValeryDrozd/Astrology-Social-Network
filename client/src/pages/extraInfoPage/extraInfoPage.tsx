@@ -119,7 +119,7 @@ export default observer(function ExtraInfoPage(): JSX.Element {
           <AboutInput
             type="text"
             placeholder="Input about yourself"
-            maxLength={50}
+            maxLength={40}
             value={about}
             onChange={({ target }): void => setAbout(target.value)}
           ></AboutInput>

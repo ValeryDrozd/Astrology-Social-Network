@@ -77,7 +77,7 @@ export default observer(function ProfilePage(): JSX.Element {
   if (!user) return <div></div>;
 
   const changeProfile = async (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
     if (!newUserInfo?.firstName || !newUserInfo?.lastName)
@@ -130,7 +130,7 @@ export default observer(function ProfilePage(): JSX.Element {
 
   const modal = showModal ? (
     <Modal onClose={(): void => setShowModal(false)}>
-      <Form onSubmit={changePassword}>
+      <Form onSubmit={changeProfile}>
         <Label>Enter your First name</Label>
         <EditInput
           value={newUserInfo?.firstName}
@@ -209,7 +209,7 @@ export default observer(function ProfilePage(): JSX.Element {
           {options}
         </SelectZodiac>
         <EditInput
-          maxLength={50}
+          maxLength={40}
           placeholder="Input about yourself"
           value={newUserInfo?.about}
           onChange={({ target }): void =>
@@ -219,34 +219,36 @@ export default observer(function ProfilePage(): JSX.Element {
             }))
           }
         ></EditInput>
-        <StyledButton onClick={changeProfile}>Save changes</StyledButton>
+        <StyledButton>Save changes</StyledButton>
       </Form>
     </Modal>
   ) : null;
 
   const changePasswordModal = showChangePasswordModal ? (
     <Modal onClose={(): void => setShowChangePasswordModal(false)}>
-      <Label>Confirm your password</Label>
-      <EditInput
-        value={oldPassword}
-        onChange={({ target }): void => setOldPassword(target.value)}
-        type="password"
-      />
+      <Form onSubmit={changePassword}>
+        <Label>Confirm your password</Label>
+        <EditInput
+          value={oldPassword}
+          onChange={({ target }): void => setOldPassword(target.value)}
+          type="password"
+        />
 
-      <Label>Enter new password</Label>
-      <EditInput
-        value={newPassword}
-        onChange={({ target }): void => setNewPassword(target.value)}
-        type="password"
-      />
+        <Label>Enter new password</Label>
+        <EditInput
+          value={newPassword}
+          onChange={({ target }): void => setNewPassword(target.value)}
+          type="password"
+        />
 
-      <Label>Repeat new password</Label>
-      <EditInput
-        value={repeatNewPassword}
-        onChange={({ target }): void => setRepeatNewPassword(target.value)}
-        type="password"
-      />
-      <StyledButton>Change password</StyledButton>
+        <Label>Repeat new password</Label>
+        <EditInput
+          value={repeatNewPassword}
+          onChange={({ target }): void => setRepeatNewPassword(target.value)}
+          type="password"
+        />
+        <StyledButton>Change password</StyledButton>
+      </Form>
     </Modal>
   ) : null;
 

@@ -62,7 +62,7 @@ export default observer(function ChatPage(): JSX.Element {
   const chatsList = chatStore.chats
     .slice()
     .sort((chat1, chat2) =>
-      !chat2.messageList.length || !chat1.messageList.length
+      !chat2.messageList?.length || !chat1.messageList?.length
         ? -Number.MAX_VALUE
         : chat2.messageList[chat2.messageList.length - 1]?.time.valueOf() -
           chat1.messageList[chat1.messageList.length - 1]?.time.valueOf(),

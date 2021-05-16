@@ -14,7 +14,7 @@ export const StyledButton = styled.button`
   }
 
   &.register {
-    margin: 1rem;
+    margin: 0.75rem;
   }
 
   &.bold {
