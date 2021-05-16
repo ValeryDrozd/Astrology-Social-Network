@@ -35,6 +35,6 @@ jobs:
             rm -rf Astrology-Social-Network
             git clone -b development/docker git@github.com:ValeryDrozd/Astrology-Social-Network.git
             cd Astrology-Social-Network
-            docker-compose build
+            SERVER_PORT=$SERVER_PORT GOOGLE_RESOURCE_ID=$GOOGLE_RESOURCE_ID JWT_SECRET=$JWT_SECRET PGHOST=$PGHOST PGUSER=$PGUSER PGDATABASE=$PGDATABASE PGPASSWORD=$PGPASSWORD PGPORT=$PGPORT REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID REACT_APP_ADDR_NAME=$REACT_APP_ADDR_NAME REACT_APP_JWT_SECRET=$REACT_APP_JWT_SECRET REACT_APP_SERVER_URL=$REACT_APP_SERVER_URL docker-compose build
             docker-compose up -d
             echo 'Deployment successful to digital ocean' 
