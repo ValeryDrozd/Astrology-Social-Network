@@ -12,6 +12,7 @@ async function bootstrap(): Promise<void> {
   app.useWebSocketAdapter(new JsonRpcWsAdapter(app));
   app.enableCors({ credentials: true, origin: true });
   app.use(cookieParser());
+  console.log(process.env);
   await app.listen(port);
 }
 bootstrap();

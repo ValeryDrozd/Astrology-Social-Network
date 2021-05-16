@@ -2,7 +2,7 @@ import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 import User, { UserUpdates } from '../user';
 
-export const UserRoute = 'users';
+export const UserRoute = 'user';
 export const MyProfileRoute = 'me';
 export const PatchMyProfileRoute = 'me';
 export const UserByIDRoute = ':id';

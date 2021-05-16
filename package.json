@@ -44,14 +44,18 @@
   },
   "scripts": {
     "test": "yarn test:server && yarn test:client",
-    "test:server": "cd server && yarn test",
-    "test:client": "cd client && yarn test",
-    "lint:server": "cd server && yarn lint:write",
-    "lint:client": "cd client && yarn lint:write",
+    "build": "yarn build:client && yarn build:server",
+    "build:client": "yarn --cwd ./client build",
+    "build:server": "yarn --cwd ./server build",
+    "test:server": "yarn --cwd ./server test",
+    "test:client": "yarn --cwd ./client test",
+    "lint:server": "yarn --cwd ./server lint:write",
+    "lint:client": "yarn --cwd ./client lint:write",
     "lint:all": "yarn lint:server . && yarn lint:client .",
-    "lint": "cd server && yarn lint . && cd ../client && yarn lint .",
-    "start:client": "cd client && yarn start",
-    "start:server": "cd server && yarn start:dev"
+    "lint": "yarn --cwd ./server lint . && yarn --cwd ./client lint .",
+    "start": "yarn --cwd ./server start",
+    "start:client": "yarn --cwd ./client start",
+    "start:server": "yarn --cwd ./server start:dev"
   },
   "dependencies": {
     "typescript": "^4.2.3",
