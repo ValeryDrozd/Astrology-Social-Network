@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { observer } from 'mobx-react';
-import { useState } from 'react';
 import Message from 'interfaces/message';
 import chatStore from 'stores/store';
 import ScrollList from 'components/scroll-list/scroll-list';
@@ -20,6 +19,8 @@ import {
   ChatLastMessage,
   ChatName,
   MessagesArea,
+  MessageStatus,
+  SendBlock,
 } from './styles';
 import Chat from 'interfaces/chat';
 
@@ -67,12 +68,21 @@ export default observer(function ChatPage(): JSX.Element {
           chat1.messageList[chat1.messageList.length - 1]?.time.valueOf(),
     );
 
+  const messagesList = currentChat
+    ? currentChat.messageList
+        .slice()
+        .sort((a, b) => a.time.getTime() - b.time.getTime())
+    : [];
+
   const renderMessage = (message: Message): JSX.Element => (
     <MessageItem
       key={`message-${currentChatId}-${message.messageID}`}
       className={chatStore.myID === message.senderID ? 'my' : ''}
     >
-      <MessageView>{message.text}</MessageView>
+      <SendBlock>
+        <MessageView>{message.text}</MessageView>
+        <MessageStatus className={message.isSent ? 'isSent' : ''} />
+      </SendBlock>
     </MessageItem>
   );
 
@@ -122,9 +132,8 @@ export default observer(function ChatPage(): JSX.Element {
           renderItem={(message): JSX.Element =>
             renderMessage(message as Message)
           }
-          list={currentChat ? currentChat.messageList : []}
+          list={messagesList}
         />
-
         {currentChatId ? (
           <InputArea>
             <ChatForm onSubmit={(ev): void => handleSubmit(ev)}>

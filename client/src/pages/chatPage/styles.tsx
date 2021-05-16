@@ -56,17 +56,17 @@ export const ChatItem = styled.div`
 export const ChatName = styled.h4`
   margin: 0.25rem 0;
   font-size: x-large;
-  white-space: nowrap; /* Запрещаем перенос строк */
-  overflow: hidden; /* Обрезаем все, что не помещается в область */
-  text-overflow: ellipsis; /* Добавляем многоточие */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const ChatLastMessage = styled.span`
   font-size: x-small;
   margin: auto 0;
-  white-space: nowrap; /* Запрещаем перенос строк */
-  overflow: hidden; /* Обрезаем все, что не помещается в область */
-  text-overflow: ellipsis; /* Добавляем многоточие */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const MessagesArea = styled.div`
@@ -83,10 +83,7 @@ export const MessagesArea = styled.div`
 
 export const MessageList = styled.ul`
   padding: 0;
-  /* overflow-y: hidden;
-  overflow-x: auto; */
   display: flex;
-
   flex-direction: column;
 `;
 
@@ -152,4 +149,19 @@ export const ChatForm = styled.form`
   margin: 0 auto;
   padding: 0;
   width: 100%;
+`;
+
+export const MessageStatus = styled.div`
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 1rem auto 0 0.5rem;
+  border-radius: 50%;
+  background-color: red;
+
+  &.isSent {
+    background-color: green;
+  }
+`;
+export const SendBlock = styled.div`
+  display: flex;
 `;

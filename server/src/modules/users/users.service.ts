@@ -49,7 +49,7 @@ export class UsersService {
     if (!user) {
       return user;
     }
-    const { firstName, lastName, userID, birthDate, sex, zodiacSign } = user;
+    const { firstName, lastName, userID, birthDate, sex, zodiacSign, about } = user;
     const authProviders = (await this.authProvidersService.find(userID)).map(
       (a) => a.authName,
     );
@@ -62,6 +62,7 @@ export class UsersService {
       sex,
       zodiacSign,
       authProviders,
+      about,
     };
   }
 
@@ -74,7 +75,7 @@ export class UsersService {
       return user;
     }
 
-    const { firstName, lastName, email, birthDate, sex, zodiacSign } = user;
+    const { firstName, lastName, email, birthDate, sex, zodiacSign, about } = user;
     const authProviders = (await this.authProvidersService.find(userID)).map(
       (a) => a.authName,
     );
@@ -87,6 +88,7 @@ export class UsersService {
       sex,
       zodiacSign,
       authProviders,
+      about,
     };
   }
 

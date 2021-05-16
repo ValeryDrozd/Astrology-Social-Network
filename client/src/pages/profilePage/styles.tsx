@@ -45,23 +45,25 @@ export const ProfileDetails = styled.div`
   flex-direction: column;
 `;
 
-export const DetailInfo = styled.h2`
+export const DetailInfo = styled.h3`
   text-align: center;
   display: flex;
-  margin: 0.5rem;
+  margin: 0.25rem;
 `;
 
 export const ButtonBlock = styled.div`
   display: flex;
   justify-content: center;
-  /* margin-top: 1rem; */
+  & * {
+    margin: 0 0.25rem;
+  }
 `;
 
 export const EditInput = styled.input`
   border-radius: 0.25rem;
   margin: 0.5rem 0;
   font-size: 1.25rem;
-  padding: 1rem;
+  padding: 0.5rem;
 `;
 
 export const SelectSex = styled.div`
@@ -69,7 +71,7 @@ export const SelectSex = styled.div`
 `;
 
 export const SelectZodiac = styled.select`
-  margin: 1rem;
+  margin: 0.5rem;
   font-size: 25px;
   max-width: 30rem;
   min-width: 10rem;

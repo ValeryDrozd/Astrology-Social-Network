@@ -7,6 +7,7 @@ export default interface User {
   lastName: string;
   email: string;
   birthDate?: Date;
+  about?: string;
   sex?: boolean;
   zodiacSign?: string;
   authProviders: AuthProviderName[];
@@ -21,6 +22,7 @@ export class UserUpdates {
   lastName?: string;
   @Type(() => Date.UTC)
   birthDate?: Date;
+  about?: string;
   sex?: boolean;
   zodiacSign?: string;
 }

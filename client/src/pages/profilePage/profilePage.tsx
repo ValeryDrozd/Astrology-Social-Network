@@ -28,7 +28,7 @@ import { useHistory } from 'react-router-dom';
 import Modal from 'components/modal/modal';
 import { StyledButton } from 'components/styled/styled-button';
 import Calendar from 'react-calendar';
-import zodiacSigns from 'interfaces/zodiac-signs';
+import zodiacSigns, { vkosmoseZodiacSigns } from 'interfaces/zodiac-signs';
 
 export default observer(function ProfilePage(): JSX.Element {
   const [user, setUser] = useState<User>();
@@ -82,13 +82,21 @@ export default observer(function ProfilePage(): JSX.Element {
     event.preventDefault();
     if (!newUserInfo?.firstName || !newUserInfo?.lastName)
       return alert('Type your name');
-    const { firstName, lastName, zodiacSign, birthDate, sex } = newUserInfo;
+    const {
+      firstName,
+      lastName,
+      zodiacSign,
+      birthDate,
+      sex,
+      about,
+    } = newUserInfo;
     await patchMyProfile(chatStore.accessToken, {
       firstName,
       lastName,
       zodiacSign,
       birthDate,
       sex,
+      about,
     });
     chatStore.setUser(newUserInfo);
     setUser(newUserInfo);
@@ -200,6 +208,17 @@ export default observer(function ProfilePage(): JSX.Element {
         >
           {options}
         </SelectZodiac>
+        <EditInput
+          maxLength={50}
+          placeholder="Input about yourself"
+          value={newUserInfo?.about}
+          onChange={({ target }): void =>
+            setNewUserInfo((u) => ({
+              ...(u as User),
+              about: target.value,
+            }))
+          }
+        ></EditInput>
         <StyledButton onClick={changeProfile}>Save changes</StyledButton>
       </Form>
     </Modal>
@@ -262,7 +281,8 @@ export default observer(function ProfilePage(): JSX.Element {
           <DetailInfo>{user?.zodiacSign}</DetailInfo>
           <DetailInfo>{user?.birthDate?.toDateString()}</DetailInfo>
           <DetailInfo>{user?.email}</DetailInfo>
-          <DetailInfo>{user?.sex}</DetailInfo>
+          <DetailInfo>{user?.sex ? 'Male' : 'Female'}</DetailInfo>
+          <DetailInfo>{user?.about}</DetailInfo>
         </ProfileDetails>
       </InfoBlock>
       <ButtonBlock>
@@ -276,6 +296,23 @@ export default observer(function ProfilePage(): JSX.Element {
               Change profile
             </StyledButton>
             {changePasswordButton}
+            <StyledButton
+              onClick={(): void => {
+                window.open(
+                  `https://v-kosmose.com/${
+                    user.zodiacSign === 'Aquarius'
+                      ? 'doma-v-znakah-zodiaka'
+                      : 'znaki-zodiaka'
+                  }/${
+                    vkosmoseZodiacSigns[
+                      zodiacSigns.findIndex((z) => z === user.zodiacSign)
+                    ]
+                  }`,
+                );
+              }}
+            >
+              Read about your zodiac sign
+            </StyledButton>
           </>
         ) : (
           <StyledButton onClick={makeNewChat}>Write a message</StyledButton>

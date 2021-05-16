@@ -17,6 +17,11 @@ export const InfoPart = styled.div`
   margin: 0 2rem;
   display: flex;
   flex-direction: column;
+
+  &.row {
+    flex-direction: row;
+    margin-top: 0.5rem;
+  }
 `;
 
 export const ExtraForm = styled.form`
@@ -49,7 +54,7 @@ export const TitleName = styled.h3`
 export const SelectSexName = styled.label`
   text-align: center;
   font-size: 20px;
-  margin: 0.5rem;
+  margin: 0.75rem 0.5rem 0.25rem 0.5rem;
   width: 100%;
 `;
 
@@ -69,4 +74,13 @@ export const InfoDiv = styled.div`
 export const ButtonBox = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+export const AboutInput = styled.input`
+  border: #bf99d8 1px solid;
+  font-size: medium;
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+  flex-grow: 1;
+  max-width: 50rem;
 `;
