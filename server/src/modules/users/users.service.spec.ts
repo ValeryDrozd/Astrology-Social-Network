@@ -1,4 +1,4 @@
-import User, { UserUpdates, UserWithCompability } from '@interfaces/user';
+import User, { UserUpdates, UserWithCompatibility } from '@interfaces/user';
 import { forwardRef } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthProvidersService } from '../auth-providers/auth-providers.service';
@@ -32,6 +32,7 @@ describe('TestService', () => {
     birthDate: new Date(),
     sex: true,
     zodiacSign: 'Aries',
+    about: 'about',
   };
   const authProviders: AuthProviderDTO[] = [
     {
@@ -360,7 +361,7 @@ describe('TestService', () => {
 
   describe('should give recommendations', () => {
     let usersFindByIdSpy: jest.SpyInstance<Promise<User>>;
-    let zodiacRecommendationsSpy: jest.SpyInstance<Promise<UserWithCompability[]>>;
+    let zodiacRecommendationsSpy: jest.SpyInstance<Promise<UserWithCompatibility[]>>;
     const foundUser: Partial<UserEntity> & User = {
       ...userEntity,
       authProviders: authProviders.map((a) => a.authName),
@@ -378,7 +379,7 @@ describe('TestService', () => {
           Promise.resolve([
             {
               ...foundUser,
-              compability: 90,
+              compatibility: 90,
             },
           ]),
         );

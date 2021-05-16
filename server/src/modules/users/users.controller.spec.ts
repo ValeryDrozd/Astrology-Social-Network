@@ -26,6 +26,7 @@ describe('UsersController', () => {
     birthDate: new Date(),
     sex: true,
     zodiacSign: 'Aries',
+    about: 'about',
   };
   const authProviders: AuthProviderDTO[] = [
     {
@@ -78,7 +79,7 @@ describe('UsersController', () => {
     delete foundUser.password;
     const usersRecsSpy = jest
       .spyOn(usersService, 'getRecommendations')
-      .mockImplementation(() => Promise.resolve([{ ...foundUser, compability: 80 }]));
+      .mockImplementation(() => Promise.resolve([{ ...foundUser, compatibility: 80 }]));
 
     await usersController.getRecommendations({ user }, { sex });
     expect(usersRecsSpy).toHaveBeenCalledWith(userID, sex);
