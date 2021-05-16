@@ -10,6 +10,8 @@ import {
   TitleName,
   SelectSexName,
   InfoDiv,
+  ButtonBox,
+  AboutInput,
 } from './styles';
 import chatStore from 'stores/store';
 import { useHistory } from 'react-router-dom';
@@ -24,6 +26,7 @@ export default observer(function ExtraInfoPage(): JSX.Element {
   const [birthDate, setBirthDate] = useState<Date>(new Date());
   const [sex, setSex] = useState<boolean>(true);
   const [zodiacSign, setZodiacSign] = useState<string>(zodiacSigns[0]);
+  const [about, setAbout] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
@@ -44,10 +47,16 @@ export default observer(function ExtraInfoPage(): JSX.Element {
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
-    await patchMyProfile(chatStore.accessToken, { sex, birthDate, zodiacSign });
+    await patchMyProfile(chatStore.accessToken, {
+      sex,
+      birthDate,
+      zodiacSign,
+      about,
+    });
     chatStore.user.birthDate = birthDate;
     chatStore.user.sex = sex;
     chatStore.user.zodiacSign = zodiacSign;
+    chatStore.user.about = about;
 
     history.push(`/users/${chatStore?.user?.userID}`);
   };
@@ -70,41 +79,54 @@ export default observer(function ExtraInfoPage(): JSX.Element {
             />
           </InfoPart>
           <InfoPart>
-            <TitleName>Switch your sex</TitleName>
-            <StyledDiv>
-              <SelectSexName>
-                <Input
-                  onChange={(): void => setSex(true)}
-                  type="radio"
-                  checked={sex}
-                  value="Male"
-                  name="sex"
-                />
-                Male
-              </SelectSexName>
-              <SelectSexName>
-                <Input
-                  onChange={(): void => setSex(false)}
-                  type="radio"
-                  checked={!sex}
-                  value="Female"
-                  name="sex"
-                />
-                Female
-              </SelectSexName>
-            </StyledDiv>
-          </InfoPart>
-          <InfoPart>
-            <TitleName>Select your astrological sign</TitleName>
-            <ZodiacSelect
-              value={zodiacSign}
-              onChange={({ target }): void => setZodiacSign(target.value)}
-            >
-              {options}
-            </ZodiacSelect>
+            <InfoPart className="row">
+              <TitleName>Switch your sex</TitleName>
+              <StyledDiv>
+                <SelectSexName>
+                  <Input
+                    onChange={(): void => setSex(true)}
+                    type="radio"
+                    checked={sex}
+                    value="Male"
+                    name="sex"
+                  />
+                  Male
+                </SelectSexName>
+                <SelectSexName>
+                  <Input
+                    onChange={(): void => setSex(false)}
+                    type="radio"
+                    checked={!sex}
+                    value="Female"
+                    name="sex"
+                  />
+                  Female
+                </SelectSexName>
+              </StyledDiv>
+            </InfoPart>
+            <InfoPart>
+              <TitleName>Select your astrological sign</TitleName>
+              <ZodiacSelect
+                value={zodiacSign}
+                onChange={({ target }): void => setZodiacSign(target.value)}
+              >
+                {options}
+              </ZodiacSelect>
+            </InfoPart>
           </InfoPart>
         </InfoDiv>
-        <StyledButton>Go</StyledButton>
+        <InfoDiv>
+          <AboutInput
+            type="text"
+            placeholder="Input about yourself"
+            maxLength={50}
+            value={about}
+            onChange={({ target }): void => setAbout(target.value)}
+          ></AboutInput>
+        </InfoDiv>
+        <ButtonBox>
+          <StyledButton className="bold">Go</StyledButton>
+        </ButtonBox>
       </ExtraForm>
     </ExtraInfoDiv>
   );

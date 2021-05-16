@@ -19,30 +19,42 @@ export default function ScrollList({
   startBottom,
 }: ScrollListProps): JSX.Element {
   const [topItem, setTopItem] = useState<number>(
-    startBottom ? list.length - 1 - numberOfVisibleItems : 0,
+    startBottom
+      ? list.length <= numberOfVisibleItems
+        ? 0
+        : list.length - 1 - numberOfVisibleItems
+      : 0,
   );
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    setTopItem(startBottom ? list.length - 1 - numberOfVisibleItems : 0);
+    setTopItem(
+      startBottom
+        ? list.length <= numberOfVisibleItems
+          ? 0
+          : list.length - numberOfVisibleItems
+        : 0,
+    );
   }, [list.length]);
 
   const startIndex = topItem;
-  const endIndex = topItem + numberOfVisibleItems;
-
-  const visualList = list.slice(startIndex, endIndex + 1);
+  const endIndex =
+    topItem + numberOfVisibleItems > list.length - 1
+      ? list.length
+      : topItem + numberOfVisibleItems;
+  const visualList = list.slice(startIndex, endIndex);
 
   const showList = visualList.map(renderItem);
   const onWheel = ({ deltaY }: React.WheelEvent<HTMLUListElement>): void => {
-    if (scrolled) return;
+    if (list.length <= numberOfVisibleItems || scrolled) return;
     if (deltaY > 15) {
       setTopItem(
-        topItem + 1 > list.length - 1 - numberOfVisibleItems
-          ? list.length - 1 - numberOfVisibleItems
+        topItem >= list.length - numberOfVisibleItems
+          ? list.length - numberOfVisibleItems
           : topItem + 1,
       );
     } else if (deltaY < -15) {
-      setTopItem(topItem - 1 < 0 ? 0 : topItem - 1);
+      setTopItem(topItem <= 0 ? 0 : topItem - 1);
     }
     setScrolled(true);
     setTimeout(() => setScrolled(false), 15);

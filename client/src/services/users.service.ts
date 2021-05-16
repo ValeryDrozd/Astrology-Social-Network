@@ -9,7 +9,7 @@ import {
   FullPatchMyProfileRoute,
   FullUserByIDRoute,
 } from 'interfaces/routes/user-routes';
-import User, { UserUpdates, UserWithCompability } from 'interfaces/user';
+import User, { UserUpdates, UserWithCompatibility } from 'interfaces/user';
 
 export const getHeaders = (
   accessToken: string,
@@ -37,11 +37,13 @@ const patch = async (
   path: string,
   body: Record<string, unknown>,
   accessToken: string,
+  cookies = false,
 ): Promise<Response> => {
   const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
     method: 'PATCH',
     body: JSON.stringify(body),
     headers: getHeaders(accessToken),
+    credentials: cookies ? 'include' : 'omit',
   });
   if (!res.ok) {
     throw new Error('Error');
@@ -69,11 +71,11 @@ const post = async (
 export async function getRecommendation(
   accessToken: string,
   sex?: boolean,
-): Promise<UserWithCompability[]> {
+): Promise<UserWithCompatibility[]> {
   const users = (await get(
     FullGetRecommendationsRoute + (sex !== undefined ? '?sex=' + sex : ''),
     accessToken,
-  )) as UserWithCompability[];
+  )) as UserWithCompatibility[];
   return users.map((user) => ({
     ...user,
     birthDate: user.birthDate ? new Date(user.birthDate) : new Date(),
@@ -117,6 +119,7 @@ export async function changeMyPassword(
     FullChangeMyPasswordRoute,
     { oldPassword, newPassword, astrologicalToken },
     accessToken,
+    true,
   );
 
   return (await res.json()) as NewToken;

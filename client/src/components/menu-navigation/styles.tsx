@@ -12,7 +12,7 @@ export const NavigationBarBlock = styled.div`
 
 export const ListItem = styled.li`
   background: #570e88;
-  margin: 0.5rem;
+  margin: 0.25rem;
   text-align: center;
   padding: 1rem;
   border-radius: 0.5rem;

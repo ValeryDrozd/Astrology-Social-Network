@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import User, { UserUpdates, UserWithCompability } from '@interfaces/user';
+import User, { UserUpdates, UserWithCompatibility } from '@interfaces/user';
 import { RegisterData } from '../auth/dto/register.dto';
 import { PgService } from '../pg/pg.service';
 import UserEntity from './user.entity';
@@ -36,7 +36,7 @@ export class UsersService {
   async getRecommendations(
     userID: string,
     sex?: boolean,
-  ): Promise<UserWithCompability[]> {
+  ): Promise<UserWithCompatibility[]> {
     const user = await this.findById(userID);
     return await this.zodiacSignsService.getMyRecommendations(user, sex);
   }
@@ -49,7 +49,7 @@ export class UsersService {
     if (!user) {
       return user;
     }
-    const { firstName, lastName, userID, birthDate, sex, zodiacSign } = user;
+    const { firstName, lastName, userID, birthDate, sex, zodiacSign, about } = user;
     const authProviders = (await this.authProvidersService.find(userID)).map(
       (a) => a.authName,
     );
@@ -62,6 +62,7 @@ export class UsersService {
       sex,
       zodiacSign,
       authProviders,
+      about,
     };
   }
 
@@ -74,7 +75,7 @@ export class UsersService {
       return user;
     }
 
-    const { firstName, lastName, email, birthDate, sex, zodiacSign } = user;
+    const { firstName, lastName, email, birthDate, sex, zodiacSign, about } = user;
     const authProviders = (await this.authProvidersService.find(userID)).map(
       (a) => a.authName,
     );
@@ -87,6 +88,7 @@ export class UsersService {
       sex,
       zodiacSign,
       authProviders,
+      about,
     };
   }
 

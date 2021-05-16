@@ -14,13 +14,12 @@ import {
 } from 'interfaces/rpc-events';
 import { ServerMessage } from 'interfaces/message';
 import { refresh } from 'services/auth.service';
-import { createNewChat, getMyProfile } from 'services/users.service';
+import { getMyProfile } from 'services/users.service';
 import User from 'interfaces/user';
 import checkToken from 'helpers/check-token';
 
 export class ChatStore {
   accessToken!: string;
-  messagesQueue: NewMessage[] = [];
   chats: Chat[] = [];
   online = false;
   myID!: string;
@@ -58,6 +57,7 @@ export class ChatStore {
             await this.checkValidToken();
           }
 
+          await this.sendMessages();
           await this.getMessages();
         });
     });
@@ -65,6 +65,7 @@ export class ChatStore {
     this.socket.listenTo('close', (res) => {
       this.online = false;
     });
+
     this.socket.listenTo('error', (err) => {
       console.log(err);
     });
@@ -72,9 +73,17 @@ export class ChatStore {
     this.socket.listenTo(
       NewMessageNotification,
       (message: NewMessageNotificationParams) => {
-        this.chats
-          .find((chat) => chat.chatID === message.chatID)
-          ?.messageList.push({ ...message, isSent: true });
+        const messageList = this.chats.find(
+          (chat) => chat.chatID === message.chatID,
+        )?.messageList;
+        if (!messageList?.find((m) => m.messageID === message.messageID)) {
+          messageList?.push({
+            ...message,
+            time: new Date(message.time),
+            isSent: true,
+          });
+        }
+        this.chats = [...this.chats];
       },
     );
   }
@@ -121,53 +130,74 @@ export class ChatStore {
       time: new Date(),
       text,
     };
-    this.messagesQueue = [...this.messagesQueue, { ...message, chatID }];
+    const messagesQueue = this.getLocalStorageQueue();
+    this.setLocalStorageQueue([...messagesQueue, { ...message, chatID }]);
     this.chats
       .find((chat) => chat.chatID === chatID)
       ?.messageList.push({ ...message, isSent: false });
     this.sendOneMessage({ ...message, chatID });
   }
 
-  removeMessage(): void {
-    const localStorageValue =
+  getLocalStorageQueue(): NewMessage[] {
+    const localStorageQueue =
       localStorage.getItem('queue') == null
         ? '[]'
         : (localStorage.getItem('queue') as string);
 
     try {
-      this.messagesQueue = JSON.parse(localStorageValue);
-      localStorage.removeItem('queue');
-      this.sendMessages();
-    } catch (error) {}
+      return JSON.parse(localStorageQueue);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  setLocalStorageQueue(messagesQueue: NewMessage[]): void {
+    localStorage.setItem('queue', JSON.stringify(messagesQueue));
   }
 
   async sendOneMessage(msg: NewMessage): Promise<void> {
     await this.checkValidToken();
 
-    const res: { ok: boolean } = await this.socket.call(
-      AddNewMessageFunction,
-      msg,
-    );
-    if (res.ok) {
-      const currentChat = this.chats.find((chat) => chat.chatID === msg.chatID);
-      const currentIndex = currentChat?.messageList.findIndex(
-        (message) => message.messageID === msg.messageID,
+    if (this.online) {
+      const res: { ok: boolean } = await this.socket.call(
+        AddNewMessageFunction,
+        msg,
       );
-      if (currentChat && currentIndex) {
-        currentChat.messageList[currentIndex].isSent = true;
+      if (res.ok) {
+        const currentChatIndex = this.chats.findIndex(
+          (chat) => chat.chatID === msg.chatID,
+        );
+        const currentMessageIndex = this.chats[
+          currentChatIndex
+        ]?.messageList.findIndex(
+          (message) => message.messageID === msg.messageID,
+        );
+        if (currentChatIndex !== -1 && currentMessageIndex !== -1) {
+          const message = this.chats[currentChatIndex].messageList[
+            currentMessageIndex
+          ];
+          message.isSent = true;
+          this.chats[currentChatIndex].messageList[currentMessageIndex] = {
+            ...message,
+          };
+          this.chats[currentChatIndex] = { ...this.chats[currentChatIndex] };
+          const messagesQueue = this.getLocalStorageQueue();
+          messagesQueue.splice(
+            messagesQueue.findIndex((m) => m.messageID === msg.messageID),
+            1,
+          );
+          this.setLocalStorageQueue(messagesQueue);
+        }
       }
     }
   }
 
-  sendMessages(): void {
-    this.messagesQueue.forEach((message: NewMessage) => {
-      this.sendOneMessage(message);
-      this.messagesQueue.shift();
-    });
-  }
-
-  saveQueue(): void {
-    localStorage.setItem('queue', JSON.stringify(this.messagesQueue));
+  async sendMessages(): Promise<void> {
+    const messagesQueue = this.getLocalStorageQueue();
+    for (const message of messagesQueue) {
+      console.log(message);
+      await this.sendOneMessage(message);
+    }
   }
 
   async setMyProfile(): Promise<void> {
