@@ -102,7 +102,7 @@ export async function patchMyProfile(
     {
       updates: {
         ...updates,
-        birthDate: updates.birthDate?.toLocaleDateString(),
+        birthDate: updates.birthDate?.toDateString(),
       },
     },
     accessToken,
