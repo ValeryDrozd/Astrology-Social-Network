@@ -6,7 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap(): Promise<void> {
-  const port = process.env.PORT ?? 3001;
+  const port = process.env.SERVER_PORT ?? 3001;
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useWebSocketAdapter(new JsonRpcWsAdapter(app));

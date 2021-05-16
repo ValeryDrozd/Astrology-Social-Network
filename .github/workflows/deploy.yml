@@ -4,7 +4,7 @@ on:
     branches: [development/docker]
 
 env:
-  PORT: ${{ secrets.PORT }}
+  SERVER_PORT: ${{ secrets.PORT }}
   GOOGLE_RESOURCE_ID: ${{ secrets.GOOGLE_RESOURCE_ID }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
   PGHOST: ${{ secrets.PGHOST }}
@@ -28,8 +28,9 @@ jobs:
           host: ${{secrets.SSH_HOST}}
           key: ${{secrets.SSH_KEY}}
           username: ${{ secrets.SSH_USERNAME }}
-          envs: PORT, GOOGLE_RESOURCE_ID, JWT_SECRET, PGHOST, PGUSER, PGDATABASE, PGPASSWORD, PGPORT, REACT_APP_GOOGLE_CLIENT_ID, REACT_APP_ADDR_NAME, REACT_APP_JWT_SECRET, REACT_APP_SERVER_URL
+          envs: SERVER_PORT, GOOGLE_RESOURCE_ID, JWT_SECRET, PGHOST, PGUSER, PGDATABASE, PGPASSWORD, PGPORT, REACT_APP_GOOGLE_CLIENT_ID, REACT_APP_ADDR_NAME, REACT_APP_JWT_SECRET, REACT_APP_SERVER_URL
           script: |
+            echo 'Start deploy'
             git clone git@github.com:ValeryDrozd/Astrology-Social-Network.git
             git checkout development/docker
             cd Astrology-Social-Network
