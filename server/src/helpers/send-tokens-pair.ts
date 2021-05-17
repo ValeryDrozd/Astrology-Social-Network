@@ -10,13 +10,13 @@ export default function sendTokensPair(
     httpOnly: true,
     maxAge: 5.184e9,
     path: '/auth',
-    secure: true,
+    // secure: true,
   });
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
     maxAge: 30 * 60000,
     path: '/chattings',
-    secure: true,
+    // secure: true,
   });
   const newToken: NewToken = { accessToken };
   res.send(newToken);
