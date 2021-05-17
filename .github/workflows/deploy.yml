@@ -32,6 +32,7 @@ jobs:
           envs: SERVER_PORT, GOOGLE_RESOURCE_ID, JWT_SECRET, PGHOST, PGUSER, PGDATABASE, PGPASSWORD, PGPORT, REACT_APP_GOOGLE_CLIENT_ID, REACT_APP_ADDR_NAME, REACT_APP_JWT_SECRET, REACT_APP_SERVER_URL
           script: |
             echo 'Start deploy'
+            rm -rf Astrology-Social-Network
             git clone -b development/docker git@github.com:ValeryDrozd/Astrology-Social-Network.git
             cd Astrology-Social-Network
             echo 'SERVER_PORT'
