@@ -49,6 +49,5 @@ jobs:
             export REACT_APP_ADDR_NAME=$REACT_APP_ADDR_NAME
             export REACT_APP_JWT_SECRET=$REACT_APP_JWT_SECRET
             export REACT_APP_SERVER_URL=$REACT_APP_SERVER_URL
-            docker-compose build
-            docker-compose up -d
+            docker-compose up -d --build
             echo 'Deployment successful to digital ocean' 

@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts --max_old_space_size=512 build",
+    "build": "react-scripts build",
     "test": "jest",
     "test:coverage": "jest --collectCoverage",
     "eject": "react-scripts eject",
