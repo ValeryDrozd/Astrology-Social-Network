@@ -9,7 +9,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - ${PGPORT}:${PGPORT}
   web:
     build:
       context: .
@@ -34,7 +34,7 @@ services:
     volumes: 
       - node_modules:/usr/src/web-app/node_modules
     ports:
-      - 4000:4000
+      - ${SERVER_PORT}:${SERVER_PORT}
 volumes:
   pgdata:
   node_modules:
