@@ -32,9 +32,22 @@ jobs:
           envs: SERVER_PORT, GOOGLE_RESOURCE_ID, JWT_SECRET, PGHOST, PGUSER, PGDATABASE, PGPASSWORD, PGPORT, REACT_APP_GOOGLE_CLIENT_ID, REACT_APP_ADDR_NAME, REACT_APP_JWT_SECRET, REACT_APP_SERVER_URL
           script: |
             echo 'Start deploy'
-            rm -rf Astrology-Social-Network
             git clone -b development/docker git@github.com:ValeryDrozd/Astrology-Social-Network.git
             cd Astrology-Social-Network
-            SERVER_PORT=$SERVER_PORT GOOGLE_RESOURCE_ID=$GOOGLE_RESOURCE_ID JWT_SECRET=$JWT_SECRET PGHOST=$PGHOST PGUSER=$PGUSER PGDATABASE=$PGDATABASE PGPASSWORD=$PGPASSWORD PGPORT=$PGPORT REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID REACT_APP_ADDR_NAME=$REACT_APP_ADDR_NAME REACT_APP_JWT_SECRET=$REACT_APP_JWT_SECRET REACT_APP_SERVER_URL=$REACT_APP_SERVER_URL docker-compose build
+            echo 'SERVER_PORT'
+            echo $SERVER_PORT
+            export SERVER_PORT=$SERVER_PORT
+            export GOOGLE_RESOURCE_ID=$GOOGLE_RESOURCE_ID
+            export JWT_SECRET=$JWT_SECRET
+            export PGHOST=$PGHOST
+            export PGUSER=$PGUSER
+            export PGDATABASE=$PGDATABASE
+            export PGPASSWORD=$PGPASSWORD
+            export PGPORT=$PGPORT
+            export REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID
+            export REACT_APP_ADDR_NAME=$REACT_APP_ADDR_NAME
+            export REACT_APP_JWT_SECRET=$REACT_APP_JWT_SECRET
+            export REACT_APP_SERVER_URL=$REACT_APP_SERVER_URL
+            docker-compose build
             docker-compose up -d
             echo 'Deployment successful to digital ocean' 

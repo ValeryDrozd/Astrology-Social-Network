@@ -3,3 +3,4 @@
 coverage
 /pgdata
 **/dist
+*.sh

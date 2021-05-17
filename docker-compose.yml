@@ -9,7 +9,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - 5432:5432
   web:
     build:
       context: .
@@ -21,7 +21,7 @@ services:
         - REACT_APP_SERVER_URL=${REACT_APP_SERVER_URL}
     
     environment: 
-      - PORT=${PORT}
+      - SERVER_PORT=${SERVER_PORT}
       - GOOGLE_RESOURCE_ID=${GOOGLE_RESOURCE_ID}
       - JWT_SECRET=${JWT_SECRET}
       - PGHOST=${PGHOST}
@@ -34,7 +34,7 @@ services:
     volumes: 
       - node_modules:/usr/src/web-app/node_modules
     ports:
-      - "4000:4000"
+      - 4000:4000
 volumes:
   pgdata:
   node_modules:
