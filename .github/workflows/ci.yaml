@@ -1,9 +1,9 @@
-name: lint
+name: ci
 
 on: [push, pull_request]
 
 jobs:
-  lint:
+  сi:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -11,3 +11,5 @@ jobs:
       run: yarn install
     - name: lint
       run: yarn lint
+    - name: test
+      run: yarn test
