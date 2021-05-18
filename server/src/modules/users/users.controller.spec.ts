@@ -39,6 +39,7 @@ describe('UsersController', () => {
   let usersService: UsersService;
 
   beforeEach(async () => {
+    process.env.NODE_ENV = 'test';
     const userModule: TestingModule = await Test.createTestingModule({
       imports: [forwardRef(() => AuthModule)],
       controllers: [UsersController],

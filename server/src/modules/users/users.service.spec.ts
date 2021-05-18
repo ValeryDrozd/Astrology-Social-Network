@@ -43,7 +43,7 @@ describe('UsersService', () => {
   ];
 
   beforeEach(async () => {
-    process.env.JWT_SECRET = 'jwt_secret';
+    process.env.NODE_ENV = 'test';
     userModule = await Test.createTestingModule({
       imports: [forwardRef(() => AuthModule)],
       controllers: [UsersController],

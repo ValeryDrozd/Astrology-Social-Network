@@ -15,10 +15,13 @@ dotenv.config();
 export class PgService {
   private pool: Pool = new Pool();
   constructor() {
-    fs.readFile('db/tables.sql', (err, data) => {
-      if (err) return console.log(err);
-      this.useQuery(data.toString());
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      this.pool = new Pool();
+      fs.readFile('db/tables.sql', (err, data) => {
+        if (err) return console.log(err);
+        this.useQuery(data.toString());
+      });
+    }
   }
   async create<T>({
     tableName,
