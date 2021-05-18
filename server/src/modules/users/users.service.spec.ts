@@ -47,7 +47,12 @@ describe('UsersService', () => {
     userModule = await Test.createTestingModule({
       imports: [forwardRef(() => AuthModule)],
       controllers: [UsersController],
-      providers: [UsersService],
+      providers: [
+        {
+          provide: UsersService,
+          useValue: {},
+        },
+      ],
       exports: [UsersService],
     }).compile();
 
