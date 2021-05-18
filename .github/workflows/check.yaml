@@ -1,13 +1,15 @@
-name: test
+name: check
 
 on: [push, pull_request]
 
 jobs:
-  test:
+  check:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: install node_modules
       run: yarn install
+    - name: lint
+      run: yarn lint
     - name: test
       run: yarn test
