@@ -44,6 +44,19 @@ export class ChatsService {
     });
   }
 
+  async checkChat(userID: string, memberID: string): Promise<string> {
+    const res = (
+      await this.pgService.useQuery(
+        `
+    SELECT ch."chatID" FROM "ChatsUsers" ch
+    INNER JOIN "ChatsUsers" ch1 ON ch."chatID" = ch1."chatID"
+    WHERE ch."userID" = $1 AND ch1."userID" = $2`,
+        [userID, memberID],
+      )
+    ).rows[0];
+    return res?.chatID;
+  }
+
   async createNewChat(userID: string, memberID: string): Promise<Chat> {
     const chatID = uuid();
     await this.pgService.create<{ chatID: string }>({

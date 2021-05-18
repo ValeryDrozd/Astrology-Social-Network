@@ -15,6 +15,7 @@ import AuthTokensPair from '../auth/dto/tokens-pair.dto';
 import { ScryptService } from '../scrypt/scrypt.service';
 import { RefreshSessionsService } from '../refresh-sessions/refresh-sessions.service';
 import { AuthService } from '../auth/auth.service';
+import { SenderInfo } from '@interfaces/chat';
 
 @Injectable()
 export class UsersService {
@@ -63,6 +64,23 @@ export class UsersService {
       zodiacSign,
       authProviders,
       about,
+    };
+  }
+
+  async getSenderInfo(userID: string): Promise<SenderInfo> {
+    const { firstName, lastName } = await this.pgService.findOne<{
+      firstName: string;
+      lastName: string;
+    }>({
+      query: ['firstName', 'lastName'],
+      tableName: this.tableName,
+      where: { userID },
+    });
+
+    return {
+      senderID: userID,
+      firstName,
+      lastName,
     };
   }
 

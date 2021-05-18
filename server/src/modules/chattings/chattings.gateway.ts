@@ -12,12 +12,16 @@ import broadcast from 'src/helpers/broadcast';
 import { ChattingSession, ChattingsService } from './chattings.service';
 import { NewMessage } from '@interfaces/new-message';
 import {
+  AddNewChatFunction,
+  AddNewChatParams,
   AddNewMessageFunction,
   ConnectionStatusNotification,
   ConnectionStatusNotificationPayload,
   DeliveredEvent,
   GetMessagesFunction,
   GetMessagesFunctionResponse,
+  NewChatNotification,
+  NewChatNotificationParams,
   NewMessageNotification,
   NewMessageNotificationParams,
 } from '@interfaces/rpc-events';
@@ -27,6 +31,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ChatsService } from '../chats/chats.service';
 import { generateJsonRpcNotification } from 'src/helpers/json-rpc.utils';
 import { ErrorType, JsonRpcErrorCodes } from '@interfaces/json-rpc';
+import { UnauthorizedException } from '@nestjs/common';
+import Chat from '@interfaces/chat';
 
 const invalidTokenError = {
   error: { code: JsonRpcErrorCodes.INVALID_REQUEST, message: 'INVALID TOKEN!' },
@@ -105,7 +111,7 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
     const session = this.chatingsService.getSession(socket);
     try {
       if (!session) {
-        return { ok: false, error: 'INVALID TOKEN!' };
+        throw new UnauthorizedException();
       }
 
       this.jwtService.verify(session.token);
@@ -123,6 +129,43 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
         .map(({ socket }) => socket);
       broadcast<NewMessageNotificationParams>(NewMessageNotification, recievers, message);
       return { ok: true };
+    } catch (error) {
+      return invalidTokenError;
+    }
+  }
+  @SubscribeMessage(AddNewChatFunction)
+  async createNewChat(
+    @MessageBody() { memberID }: AddNewChatParams,
+    @ConnectedSocket() socket: WebSocket,
+  ): Promise<Chat | { error: ErrorType }> {
+    const session = this.chatingsService.getSession(socket);
+    try {
+      if (!session) {
+        throw new UnauthorizedException();
+      }
+
+      this.jwtService.verify(session.token);
+      const oldChatID = await this.chatsService.checkChat(session.userID, memberID);
+      if (oldChatID) {
+        return {
+          error: { code: JsonRpcErrorCodes.INVALID_PARAMS, message: 'CHAT EXISTS!' },
+        };
+      }
+
+      const userIDs = [memberID, session.userID];
+      const newChat = await this.chatsService.createNewChat(session.userID, memberID);
+
+      const recievers = this.chatingsService
+        .getSessions()
+        .reduce<WebSocket[]>(
+          (prev, client) =>
+            userIDs.includes(client.userID) && client.token !== session.token
+              ? [...prev, client.socket]
+              : prev,
+          [],
+        );
+      broadcast<NewChatNotificationParams>(NewChatNotification, recievers, newChat);
+      return newChat;
     } catch (error) {
       return invalidTokenError;
     }
