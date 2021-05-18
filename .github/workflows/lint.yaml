@@ -23,7 +23,7 @@ jobs:
       run: yarn --frozen-lockfile
 
   test:
-    needs: setup-node-modules
+    needs: node-modules
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
