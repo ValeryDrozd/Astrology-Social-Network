@@ -15,9 +15,9 @@ export const RegistrationForm = styled.form`
 
 export const RegistrationInput = styled.input`
   border-radius: 0.25rem;
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
   font-size: 1.25rem;
-  padding: 1rem;
+  padding: 0.5rem;
 `;
 
 export const ButtonBox = styled.div`

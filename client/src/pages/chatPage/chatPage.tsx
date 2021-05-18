@@ -62,26 +62,24 @@ export default observer(function ChatPage(): JSX.Element {
   const chatsList = chatStore.chats
     .slice()
     .sort((chat1, chat2) =>
-      !chat2.messageList.length || !chat1.messageList.length
-        ? -Number.MAX_VALUE
-        : chat2.messageList[chat2.messageList.length - 1]?.time.valueOf() -
-          chat1.messageList[chat1.messageList.length - 1]?.time.valueOf(),
+      chat1.messageList.length === 0
+        ? 1
+        : chat2.messageList.length === 0
+        ? -1
+        : chat2.messageList[chat2.messageList.length - 1]?.time.getTime() -
+          chat1.messageList[chat1.messageList.length - 1]?.time.getTime(),
     );
 
-  const messagesList = currentChat
-    ? currentChat.messageList
-        .slice()
-        .sort((a, b) => a.time.getTime() - b.time.getTime())
-    : [];
+  const messagesList = currentChat ? currentChat.messageList : [];
 
   const renderMessage = (message: Message): JSX.Element => (
     <MessageItem
       key={`message-${currentChatId}-${message.messageID}`}
       className={chatStore.myID === message.senderID ? 'my' : ''}
     >
-      <SendBlock>
-        <MessageView>{message.text}</MessageView>
+      <SendBlock className={chatStore.myID === message.senderID ? 'my' : ''}>
         <MessageStatus className={message.isSent ? 'isSent' : ''} />
+        <MessageView>{message.text}</MessageView>
       </SendBlock>
     </MessageItem>
   );
@@ -127,7 +125,7 @@ export default observer(function ChatPage(): JSX.Element {
       <MessagesBlock>
         <ScrollList
           startBottom
-          numberOfVisibleItems={8}
+          numberOfVisibleItems={9}
           wrap={wrapMessagesList}
           renderItem={(message): JSX.Element =>
             renderMessage(message as Message)

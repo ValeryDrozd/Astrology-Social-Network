@@ -12,7 +12,6 @@ import {
 import User, { UserWithCompatibility } from 'interfaces/user';
 import {
   changeMyPassword,
-  createNewChat,
   getHeaders,
   getMyProfile,
   getRecommendation,
@@ -181,65 +180,6 @@ test('should throw error when ok is false', async () => {
       headers: getHeaders(accessToken),
     };
     expect(fetchMock).toHaveBeenCalledWith(expectedURL, expectedFetchConfig);
-  }
-});
-
-test('Should create a new chat', async () => {
-  process.env.REACT_APP_SERVER_URL = 'some_url';
-  const testUserID = '1234';
-  const accessToken = 'some_token';
-  const testChat: Chat = {
-    messageList: [],
-    chatID: '1234',
-    senderInfo: {
-      firstName: 'firstName',
-      lastName: 'lastName',
-      senderID: 'senderID',
-    },
-  };
-  const fetchMock = mockFetch(testChat);
-  const chat = await createNewChat(accessToken, testUserID);
-
-  const expectedConfig = {
-    method: 'POST',
-    headers: getHeaders(accessToken),
-    body: JSON.stringify({ memberID: testUserID }),
-  };
-  expect(fetchMock).toHaveBeenCalledWith(
-    process.env.REACT_APP_SERVER_URL + FullCreateNewChatRoute,
-    expectedConfig,
-  );
-
-  expect(chat).toEqual(testChat);
-});
-
-test('Should throw error when ok is false', async () => {
-  process.env.REACT_APP_SERVER_URL = 'some_url';
-  const testUserID = '1234';
-  const accessToken = 'some_token';
-  const testChat: Chat = {
-    messageList: [],
-    chatID: '1234',
-    senderInfo: {
-      firstName: 'firstName',
-      lastName: 'lastName',
-      senderID: 'senderID',
-    },
-  };
-  const fetchMock = mockFetch(testChat, false);
-  try {
-    await createNewChat(accessToken, testUserID);
-    expect(true).toBe(false);
-  } catch {
-    const expectedConfig = {
-      method: 'POST',
-      headers: getHeaders(accessToken),
-      body: JSON.stringify({ memberID: testUserID }),
-    };
-    expect(fetchMock).toHaveBeenCalledWith(
-      process.env.REACT_APP_SERVER_URL + FullCreateNewChatRoute,
-      expectedConfig,
-    );
   }
 });
 

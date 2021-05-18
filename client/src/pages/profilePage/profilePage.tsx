@@ -18,7 +18,6 @@ import chatStore from 'stores/store';
 import { useParams } from 'react-router';
 import {
   changeMyPassword,
-  createNewChat,
   getUserProfile,
   patchMyProfile,
 } from 'services/users.service';
@@ -255,8 +254,7 @@ export default observer(function ProfilePage(): JSX.Element {
       (c) => c.senderInfo.senderID === user.userID,
     );
     if (!oldChat) {
-      const chat = await createNewChat(chatStore.accessToken, user.userID);
-      chatStore.addNewChat(chat);
+      chatStore.addNewChat(user.userID);
     }
     history.push('/chat');
   };

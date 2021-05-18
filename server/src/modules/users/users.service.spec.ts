@@ -15,7 +15,7 @@ import UserEntity from './user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
-describe('TestService', () => {
+describe('UsersService', () => {
   let usersService: UsersService;
   let userModule: TestingModule;
   let pgService: PgService;

@@ -124,10 +124,3 @@ export async function changeMyPassword(
 
   return (await res.json()) as NewToken;
 }
-
-export function createNewChat(
-  accessToken: string,
-  memberID: string,
-): Promise<Chat> {
-  return post(FullCreateNewChatRoute, { memberID }, accessToken);
-}
