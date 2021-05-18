@@ -45,7 +45,7 @@
     ]
   },
   "scripts": {
-    "test": "yarn test:server && yarn test:client",
+    "test": " yarn test:client && yarn test:server",
     "build": "yarn build:client && yarn build:server",
     "build:client": "yarn --cwd ./client build",
     "build:server": "yarn --cwd ./server build",
