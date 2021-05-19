@@ -42,17 +42,13 @@ describe('UsersService', () => {
     },
   ];
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     process.env.NODE_ENV = 'test';
+    process.env.JWT_SECRET = 'jwt_secret';
     userModule = await Test.createTestingModule({
       imports: [forwardRef(() => AuthModule)],
       controllers: [UsersController],
-      providers: [
-        {
-          provide: UsersService,
-          useValue: {},
-        },
-      ],
+      providers: [UsersService],
       exports: [UsersService],
     }).compile();
 
