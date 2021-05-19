@@ -50,8 +50,9 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
   ) {}
 
   handleConnection(client: WebSocket, request: IncomingMessage): void {
-    const accessToken = cookie.parse(request.headers.cookie ? request.headers.cookie : '')
-      .accessToken;
+    const accessToken = cookie.parse(
+      request.headers.cookie ? request.headers.cookie : '',
+    ).accessToken;
 
     const sendResponse = (payload: ConnectionStatusNotificationPayload): void => {
       client.send(
