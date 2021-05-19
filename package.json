@@ -44,19 +44,19 @@
     ]
   },
   "scripts": {
-    "test": " yarn test:client && yarn test:server",
-    "build": "yarn build:client && yarn build:server",
-    "build:client": "yarn --cwd ./client build",
-    "build:server": "yarn --cwd ./server build",
-    "test:server": "yarn --cwd ./server test",
-    "test:client": "yarn --cwd ./client test",
-    "lint:server": "yarn --cwd ./server lint:write",
-    "lint:client": "yarn --cwd ./client lint:write",
-    "lint:all": "yarn lint:server . && yarn lint:client .",
-    "lint": "yarn --cwd ./server lint . && yarn --cwd ./client lint .",
-    "start": "yarn --cwd ./server start:prod",
-    "start:client": "yarn --cwd ./client start",
-    "start:server": "yarn --cwd ./server start:dev"
+    "test": "yarn workspaces run test",
+    "build": "yarn workspaces run build",
+    "build:client": "yarn workspace client run build",
+    "build:server": "yarn workspace server run build",
+    "test:client": "yarn workspace client run test",
+    "test:server": "yarn workspace server run test",
+    "lint": "yarn workspaces run lint",
+    "lint:client": "yarn workspace client run lint:write",
+    "lint:server": "yarn workspace server run lint:write",
+    "lint:all": "yarn workspaces run lint:write",
+    "start": "yarn workspace server run start:prod",
+    "start:client": "workspace client run start",
+    "start:server": "yarn workspace server run start:dev"
   },
   "dependencies": {
     "typescript": "^4.2.3",
