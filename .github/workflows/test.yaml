@@ -1,13 +1,36 @@
-name: test
+name: Start Tests
 
-on: [push, pull_request]
+on:
+  pull_request: 
+    branches: 
+      - main
+      - release
 
 jobs:
-  test:
+  node-modules:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: install node_modules
-      run: yarn install
+    - uses: actions/cache@v2
+      id: node-modules-cache
+      with:
+        path: 'node_modules'
+        key: node_modules-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          node_modules-
+    - name: install
+      if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      run: yarn --frozen-lockfile
+
+  test:
+    needs: node-modules
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: get node_modules
+      uses: actions/cache@v2
+      with:
+        path: 'node_modules'
+        key: node_modules-${{ hashFiles('yarn.lock') }}
     - name: test
       run: yarn test

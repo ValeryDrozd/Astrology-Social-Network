@@ -182,9 +182,8 @@ export class ChatStore {
           (message) => message.messageID === msg.messageID,
         );
         if (currentChatIndex !== -1 && currentMessageIndex !== -1) {
-          const message = this.chats[currentChatIndex].messageList[
-            currentMessageIndex
-          ];
+          const message =
+            this.chats[currentChatIndex].messageList[currentMessageIndex];
           message.isSent = true;
           this.chats[currentChatIndex].messageList[currentMessageIndex] = {
             ...message,

@@ -25,15 +25,18 @@ export class ChatsService {
       this.messagesService.getMessagesOfChat(chat.chatID),
     );
     const messages = await Promise.all(promises);
-    return chats.map<Chat>(({ chatID, userID, firstName, lastName }, index) => ({
-      chatID: chatID,
-      messageList: messages[index].map((message) => ({ ...message, isSent: true })),
-      senderInfo: {
-        senderID: userID,
-        firstName,
-        lastName,
-      },
-    }));
+    return chats.map<Chat>(
+      ({ chatID, userID, firstName, lastName, numberOfMessages }, index) => ({
+        chatID,
+        numberOfMessages,
+        messageList: messages[index].map((message) => ({ ...message, isSent: true })),
+        senderInfo: {
+          senderID: userID,
+          firstName,
+          lastName,
+        },
+      }),
+    );
   }
 
   async findUsersOfChat(chatID: string): Promise<{ userID: string }[]> {
@@ -80,6 +83,7 @@ export class ChatsService {
     return {
       chatID,
       messageList: [],
+      numberOfMessages: 0,
       senderInfo: {
         firstName,
         lastName,

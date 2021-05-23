@@ -38,7 +38,9 @@ describe('UsersController', () => {
   let usersController: UsersController;
   let usersService: UsersService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    process.env.NODE_ENV = 'test';
+    process.env.JWT_SECRET = 'jwt_secret';
     const userModule: TestingModule = await Test.createTestingModule({
       imports: [forwardRef(() => AuthModule)],
       controllers: [UsersController],

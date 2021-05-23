@@ -9,5 +9,6 @@ export interface SenderInfo {
 export default interface Chat {
   messageList: Message[];
   chatID: string;
+  numberOfMessages: number;
   senderInfo: SenderInfo;
 }
