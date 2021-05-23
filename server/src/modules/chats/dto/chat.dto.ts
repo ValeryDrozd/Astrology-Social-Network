@@ -3,4 +3,5 @@ export default interface ChatDTO {
   firstName: string;
   lastName: string;
   userID: string;
+  numberOfMessages: number;
 }

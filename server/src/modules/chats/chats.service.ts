@@ -18,22 +18,26 @@ export class ChatsService {
   ) {}
 
   async findMyChatsWithMessages(userID: string): Promise<Chat[]> {
-    const chats = (await this.pgService.useQuery(requestQuery, [userID]))
-      .rows as ChatDTO[];
+    const chats = (await this.pgService.useQuery(requestQuery, [userID])).rows.map(
+      (c) => ({ ...c, numberOfMessages: parseInt(c.numberOfMessages) }),
+    ) as ChatDTO[];
 
     const promises = chats.map((chat) =>
       this.messagesService.getMessagesOfChat(chat.chatID),
     );
     const messages = await Promise.all(promises);
-    return chats.map<Chat>(({ chatID, userID, firstName, lastName }, index) => ({
-      chatID: chatID,
-      messageList: messages[index].map((message) => ({ ...message, isSent: true })),
-      senderInfo: {
-        senderID: userID,
-        firstName,
-        lastName,
-      },
-    }));
+    return chats.map<Chat>(
+      ({ chatID, userID, firstName, lastName, numberOfMessages }, index) => ({
+        chatID,
+        numberOfMessages,
+        messageList: messages[index].map((message) => ({ ...message, isSent: true })),
+        senderInfo: {
+          senderID: userID,
+          firstName,
+          lastName,
+        },
+      }),
+    );
   }
 
   async findUsersOfChat(chatID: string): Promise<{ userID: string }[]> {
@@ -42,6 +46,19 @@ export class ChatsService {
       tableName: this.chatUserTableName,
       where: { chatID },
     });
+  }
+
+  async checkChat(userID: string, memberID: string): Promise<string> {
+    const res = (
+      await this.pgService.useQuery(
+        `
+    SELECT ch."chatID" FROM "ChatsUsers" ch
+    INNER JOIN "ChatsUsers" ch1 ON ch."chatID" = ch1."chatID"
+    WHERE ch."userID" = $1 AND ch1."userID" = $2`,
+        [userID, memberID],
+      )
+    ).rows[0];
+    return res?.chatID;
   }
 
   async createNewChat(userID: string, memberID: string): Promise<Chat> {
@@ -67,6 +84,7 @@ export class ChatsService {
     return {
       chatID,
       messageList: [],
+      numberOfMessages: 0,
       senderInfo: {
         firstName,
         lastName,

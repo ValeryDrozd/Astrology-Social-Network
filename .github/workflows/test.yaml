@@ -1,4 +1,4 @@
-name: Lint code
+name: Start Tests
 
 on:
   pull_request: 
@@ -22,7 +22,7 @@ jobs:
       if: steps.node-modules-cache.outputs.cache-hit != 'true'
       run: yarn --frozen-lockfile
 
-  lint:
+  test:
     needs: node-modules
     runs-on: ubuntu-latest
     steps:
@@ -32,5 +32,5 @@ jobs:
       with:
         path: 'node_modules'
         key: node_modules-${{ hashFiles('yarn.lock') }}
-    - name: linting
-      run: yarn lint
+    - name: test
+      run: yarn test

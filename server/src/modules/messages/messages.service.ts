@@ -2,17 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { ServerMessage } from '@interfaces/message';
 import { NewMessage } from '@interfaces/new-message';
 import { PgService } from '../pg/pg.service';
+import getLastMessagesRequest from './get-last-messages';
 
 @Injectable()
 export class MessagesService {
   private tableName = 'Messages';
   constructor(private pgService: PgService) {}
 
-  async getMessagesOfChat(chatID: string, limit?: number): Promise<ServerMessage[]> {
-    return await this.pgService.find<ServerMessage>(
-      { tableName: this.tableName, where: { chatID } },
-      limit,
-    );
+  async getMessagesOfChat(
+    chatID: string,
+    limit?: number,
+    lastMessageID?: string,
+  ): Promise<ServerMessage[]> {
+    const request = getLastMessagesRequest(limit ?? 20, !lastMessageID);
+    return (
+      await this.pgService.useQuery(
+        request,
+        !lastMessageID ? [chatID] : [chatID, lastMessageID],
+      )
+    ).rows.reverse();
   }
 
   async addNewMessage(message: NewMessage): Promise<void> {

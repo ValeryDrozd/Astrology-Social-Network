@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import User, { UserUpdates, UserWithCompability } from '@interfaces/user';
+import User, { UserUpdates, UserWithCompatibility } from '@interfaces/user';
 import { RegisterData } from '../auth/dto/register.dto';
 import { PgService } from '../pg/pg.service';
 import UserEntity from './user.entity';
@@ -15,10 +15,11 @@ import AuthTokensPair from '../auth/dto/tokens-pair.dto';
 import { ScryptService } from '../scrypt/scrypt.service';
 import { RefreshSessionsService } from '../refresh-sessions/refresh-sessions.service';
 import { AuthService } from '../auth/auth.service';
+import { SenderInfo } from '@interfaces/chat';
 
 @Injectable()
 export class UsersService {
-  private tableName = 'Users';
+  tableName = 'Users';
   constructor(
     private pgService: PgService,
     private zodiacSignsService: ZodiacSignsService,
@@ -36,7 +37,7 @@ export class UsersService {
   async getRecommendations(
     userID: string,
     sex?: boolean,
-  ): Promise<UserWithCompability[]> {
+  ): Promise<UserWithCompatibility[]> {
     const user = await this.findById(userID);
     return await this.zodiacSignsService.getMyRecommendations(user, sex);
   }
@@ -49,7 +50,7 @@ export class UsersService {
     if (!user) {
       return user;
     }
-    const { firstName, lastName, userID, birthDate, sex, zodiacSign } = user;
+    const { firstName, lastName, userID, birthDate, sex, zodiacSign, about } = user;
     const authProviders = (await this.authProvidersService.find(userID)).map(
       (a) => a.authName,
     );
@@ -62,6 +63,24 @@ export class UsersService {
       sex,
       zodiacSign,
       authProviders,
+      about,
+    };
+  }
+
+  async getSenderInfo(userID: string): Promise<SenderInfo> {
+    const { firstName, lastName } = await this.pgService.findOne<{
+      firstName: string;
+      lastName: string;
+    }>({
+      query: ['firstName', 'lastName'],
+      tableName: this.tableName,
+      where: { userID },
+    });
+
+    return {
+      senderID: userID,
+      firstName,
+      lastName,
     };
   }
 
@@ -74,7 +93,7 @@ export class UsersService {
       return user;
     }
 
-    const { firstName, lastName, email, birthDate, sex, zodiacSign } = user;
+    const { firstName, lastName, email, birthDate, sex, zodiacSign, about } = user;
     const authProviders = (await this.authProvidersService.find(userID)).map(
       (a) => a.authName,
     );
@@ -87,6 +106,7 @@ export class UsersService {
       sex,
       zodiacSign,
       authProviders,
+      about,
     };
   }
 
@@ -112,7 +132,6 @@ export class UsersService {
     if (!user) throw new NotFoundException();
 
     const provider = await this.authProvidersService.findOne(user.userID, 'local');
-    if (!provider) throw new NotFoundException();
 
     const isValid = await this.scryptService.verify(
       oldPassword,

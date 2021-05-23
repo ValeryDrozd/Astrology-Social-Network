@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  db:
+    environment: 
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: ${PGDATABASE}
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - ${PGPORT}:${PGPORT}
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_GOOGLE_CLIENT_ID=${REACT_APP_GOOGLE_CLIENT_ID}
+        - REACT_APP_ADDR_NAME=${REACT_APP_ADDR_NAME}
+        - REACT_APP_JWT_SECRET=${REACT_APP_JWT_SECRET}
+        - REACT_APP_SERVER_URL=${REACT_APP_SERVER_URL}
+    
+    environment: 
+      - SERVER_PORT=${SERVER_PORT}
+      - GOOGLE_RESOURCE_ID=${GOOGLE_RESOURCE_ID}
+      - JWT_SECRET=${JWT_SECRET}
+      - PGHOST=${PGHOST}
+      - PGUSER=${PGUSER}
+      - PGDATABASE=${PGDATABASE}
+      - PGPASSWORD=${PGPASSWORD}
+      - PGPORT=${PGPORT}
+    depends_on:
+      - db
+    volumes: 
+      - node_modules:/usr/src/web-app/node_modules
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+volumes:
+  pgdata:
+  node_modules:

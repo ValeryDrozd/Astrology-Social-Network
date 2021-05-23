@@ -3,7 +3,7 @@ import { INestApplicationContext } from '@nestjs/common';
 import { AbstractWsAdapter, MessageMappingProperties } from '@nestjs/websockets';
 import { Observable, fromEvent, EMPTY } from 'rxjs';
 import { mergeMap, filter, map } from 'rxjs/operators';
-import { IncomingMessage } from 'node:http';
+import { IncomingMessage } from 'http';
 import {
   JsonRpcError,
   JsonRpcErrorCodes,

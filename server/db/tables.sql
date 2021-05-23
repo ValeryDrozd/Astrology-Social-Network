@@ -1,4 +1,4 @@
-CREATE TABLE "Users"(
+CREATE TABLE IF NOT EXISTS "Users"(
 	"userID" UUID PRIMARY KEY,
 	"firstName" VARCHAR(255),
 	"lastName" VARCHAR(255),
@@ -9,7 +9,7 @@ CREATE TABLE "Users"(
 	"sex" BOOLEAN -- f - false, m - true
 );
 
-CREATE TABLE "AuthProviders"(
+CREATE TABLE IF NOT EXISTS "AuthProviders"(
 	"userID" UUID REFERENCES "Users" ON DELETE CASCADE,
 	"authName" VARCHAR (100) NOT NULL,
 	"password" TEXT,
@@ -17,10 +17,9 @@ CREATE TABLE "AuthProviders"(
 );
 
 
-CREATE TABLE "RefreshSessions" (
-    "id" SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS "RefreshSessions" (
+	"refreshToken" UUID PRIMARY KEY,
     "userID" UUID REFERENCES "Users" ON DELETE CASCADE,
-    "refreshToken" UUID NOT NULL,
     "userAgent" VARCHAR(200) NOT NULL,
     "fingerprint" VARCHAR(200) NOT NULL,
     "expiresIn" BIGINT NOT NULL,
@@ -28,17 +27,17 @@ CREATE TABLE "RefreshSessions" (
 );
 
 
-CREATE TABLE "Chats" (
+CREATE TABLE IF NOT EXISTS "Chats" (
 	"chatID" UUID PRIMARY KEY
 );
 
-CREATE TABLE "ChatsUsers" (
+CREATE TABLE IF NOT EXISTS "ChatsUsers" (
 	"id" UUID PRIMARY KEY,
 	"chatID" UUID REFERENCES "Chats" ON DELETE CASCADE,
 	"userID" UUID REFERENCES "Users" ON DELETE CASCADE
 );
 
-CREATE TABLE "Messages" (
+CREATE TABLE IF NOT EXISTS "Messages" (
 	"messageID" UUID PRIMARY KEY,
 	"chatID" UUID REFERENCES "Chats" ON DELETE CASCADE,
 	"senderID" UUID REFERENCES "Users" ON DELETE CASCADE,

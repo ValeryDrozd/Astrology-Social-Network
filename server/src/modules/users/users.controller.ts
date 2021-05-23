@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Query,
@@ -14,7 +13,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Request as ExpressRequest, Response } from 'express';
-import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
 import {
   ChangeMyPasswordRoute,
@@ -30,7 +28,7 @@ import {
 } from '@interfaces/routes/user-routes';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { JwtValidationOutput } from '../auth/strateries/jwt.strategy';
-import { UserUpdates, UserWithCompability } from '@interfaces/user';
+import { UserUpdates, UserWithCompatibility } from '@interfaces/user';
 import sendTokensPair from 'src/helpers/send-tokens-pair';
 
 @Controller(UserRoute)
@@ -50,7 +48,7 @@ export class UsersController {
   async getRecommendations(
     @Request() { user }: JwtValidationOutput,
     @Query() { sex }: GetRecommendationsRouteQueryParams,
-  ): Promise<UserWithCompability[]> {
+  ): Promise<UserWithCompatibility[]> {
     return await this.usersService.getRecommendations(user.userID, sex);
   }
 

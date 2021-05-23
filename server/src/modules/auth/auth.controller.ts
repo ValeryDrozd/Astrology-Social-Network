@@ -75,9 +75,9 @@ export class AuthController {
     @Req() { headers }: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
-    const userData = (await fetch(
-      process.env.GOOGLE_RESOURCE_ID + body.tokenId,
-    ).then((res) => res.json())) as GoogleResponse;
+    const userData = (await fetch(process.env.GOOGLE_RESOURCE_ID + body.tokenId).then(
+      (res) => res.json(),
+    )) as GoogleResponse;
 
     if (!userData.email_verified) {
       throw new BadRequestException('Not confirmed google account!');

@@ -16,7 +16,7 @@ export const UsersList = styled.ul`
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
-  overflow-y: auto;
+  overflow-y: hidden;
 
   @media (max-width: 50rem) {
     max-height: 32rem;

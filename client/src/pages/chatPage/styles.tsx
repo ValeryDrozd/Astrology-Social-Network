@@ -12,7 +12,6 @@ export const otherMessages = styled.div`
 
 export const ChatBlockView = styled.div`
   display: flex;
-  flex-wrap: wrap;
   margin: 0 1rem;
   padding-top: 1rem;
   height: 95vh;
@@ -25,23 +24,34 @@ export const ChatBlockView = styled.div`
   }
 `;
 
-export const ChatList = styled.div`
+export const ChatList = styled.ul`
   display: flex;
   flex-direction: column;
   border: #fff 1px solid;
-  flex-grow: 1;
-  /* width: 35vw; */
-  min-width: 13rem;
-  max-width: 20rem;
+  overflow: hidden;
+  width: 15rem;
+  margin: 0;
+  padding: 0;
 `;
 
-export const ChatItem = styled.div`
+export const ChatItem = styled.li`
   border: #fff 1px solid;
+  /* flex-grow: 1; */
   padding: 0.75rem;
   margin: 0.25rem;
   border-radius: 0.25rem;
   transition: background 0.3s ease;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  min-height: 4.5 rem;
+  @media (max-width: 50rem) {
+    min-height: 3.75rem;
+    * button {
+      padding: 0.25rem !important;
+    }
+  }
+  }
 
   &:hover {
     background-color: #5f3292;
@@ -52,49 +62,61 @@ export const ChatItem = styled.div`
   }
 `;
 
+export const ChatItemBlock = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
 export const ChatName = styled.h4`
-  margin: 0;
+  margin: 0.25rem 0;
   font-size: x-large;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const ChatLastMessage = styled.span`
   font-size: x-small;
+  margin: auto 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const MessagesArea = styled.div`
-  overflow-y: hidden;
+  overflow-y: auto;
   z-index: 10;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   position: relative;
   border: #fff 1px solid;
-  overflow-x: hidden;
+  overflow-y: hidden;
+  overflow-x: auto;
 `;
 
 export const MessageList = styled.ul`
-  position: absolute;
-  width: 100%;
-  left: 0;
   padding: 0;
-  margin: auto;
-  overflow-y: hidden;
-  z-index: -1;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
-  height: 100%;
 `;
 
 export const MessageItem = styled.div`
   padding: 0.75rem;
-  overflow-y: hidden;
-  margin: 0.25rem;
+  margin: 0.4 5rem;
   display: flex;
-  max-width: 60vw;
-
+  flex-direction: column;
+  overflow: hidden;
+  margin-right: auto;
+  margin-left: 0;
   &.my {
+    margin-right: 0;
     margin-left: auto;
+  }
+
+  @media (max-width: 50rem) {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
   }
 `;
 
@@ -136,9 +158,8 @@ export const Input = styled.input`
 
 export const MessagesBlock = styled.div`
   display: flex;
-  flex-grow: 3;
   flex-direction: column;
-  flex-wrap: wrap;
+  flex-grow: 3;
 `;
 
 export const ChatForm = styled.form`
@@ -147,4 +168,22 @@ export const ChatForm = styled.form`
   margin: 0 auto;
   padding: 0;
   width: 100%;
+`;
+
+export const MessageStatus = styled.div`
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 1rem 0.35rem;
+  border-radius: 50%;
+  background-color: red;
+
+  &.isSent {
+    background-color: green;
+  }
+`;
+export const SendBlock = styled.div`
+  display: flex;
+  &.my {
+    flex-direction: row-reverse;
+  }
 `;

@@ -10,12 +10,16 @@ export interface AddNewMessageParams {
   message: Message;
 }
 
+export const AddNewChatFunction = 'addNewChat';
+export interface AddNewChatParams {
+  memberID: string;
+}
+
 export const NewMessageNotification = 'newMessage';
 export type NewMessageNotificationParams = NewMessage;
 
 export interface DeliveredEvent {
   ok: boolean;
-  error?: string;
 }
 
 export const ConnectionStatusNotification = 'connection-status';
@@ -24,3 +28,13 @@ export interface ConnectionStatusNotificationPayload {
   code?: number;
   message?: string;
 }
+
+export const NewChatNotification = 'newChat';
+export type NewChatNotificationParams = Chat;
+
+export const GetOldMessagesFunction = 'getOldMessages';
+export interface GetOldMessagesParams {
+  chatID: string;
+  lastMessageID: string;
+}
+export type GetOldMessagesResponse = Message[];

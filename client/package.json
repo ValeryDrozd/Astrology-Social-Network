@@ -33,9 +33,8 @@
     "test": "jest",
     "test:coverage": "jest --collectCoverage",
     "eject": "react-scripts eject",
-    "lint": "eslint",
-    "lint:write": "eslint --fix",
-    "lint:all": "yarn lint:write ."
+    "lint": "eslint .",
+    "lint:write": "eslint --fix ."
   },
   "eslintConfig": {
     "extends": [

@@ -7,13 +7,14 @@ export default interface User {
   lastName: string;
   email: string;
   birthDate?: Date;
+  about?: string;
   sex?: boolean;
   zodiacSign?: string;
   authProviders: AuthProviderName[];
 }
 
-export interface UserWithCompability extends User {
-  compability: number;
+export interface UserWithCompatibility extends User {
+  compatibility: number;
 }
 
 export class UserUpdates {
@@ -21,6 +22,7 @@ export class UserUpdates {
   lastName?: string;
   @Type(() => Date.UTC)
   birthDate?: Date;
+  about?: string;
   sex?: boolean;
   zodiacSign?: string;
 }

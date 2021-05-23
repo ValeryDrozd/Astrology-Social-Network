@@ -1,7 +1,5 @@
 import getAstrologicalToken from 'helpers/get-astrological-token';
-import Chat from 'interfaces/chat';
 import { NewToken } from 'interfaces/new-token';
-import { FullCreateNewChatRoute } from 'interfaces/routes/chat-routes';
 import {
   FullChangeMyPasswordRoute,
   FullGetRecommendationsRoute,
@@ -9,7 +7,7 @@ import {
   FullPatchMyProfileRoute,
   FullUserByIDRoute,
 } from 'interfaces/routes/user-routes';
-import User, { UserUpdates, UserWithCompability } from 'interfaces/user';
+import User, { UserUpdates, UserWithCompatibility } from 'interfaces/user';
 
 export const getHeaders = (
   accessToken: string,
@@ -37,11 +35,13 @@ const patch = async (
   path: string,
   body: Record<string, unknown>,
   accessToken: string,
+  cookies = false,
 ): Promise<Response> => {
   const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
     method: 'PATCH',
     body: JSON.stringify(body),
     headers: getHeaders(accessToken),
+    credentials: cookies ? 'include' : 'omit',
   });
   if (!res.ok) {
     throw new Error('Error');
@@ -50,30 +50,14 @@ const patch = async (
   return res;
 };
 
-const post = async (
-  path: string,
-  body: Record<string, unknown>,
-  accessToken: string,
-): Promise<Chat> => {
-  const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
-    method: 'POST',
-    headers: getHeaders(accessToken),
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) {
-    throw new Error('Error');
-  }
-  return res.json();
-};
-
 export async function getRecommendation(
   accessToken: string,
   sex?: boolean,
-): Promise<UserWithCompability[]> {
+): Promise<UserWithCompatibility[]> {
   const users = (await get(
     FullGetRecommendationsRoute + (sex !== undefined ? '?sex=' + sex : ''),
     accessToken,
-  )) as UserWithCompability[];
+  )) as UserWithCompatibility[];
   return users.map((user) => ({
     ...user,
     birthDate: user.birthDate ? new Date(user.birthDate) : new Date(),
@@ -100,7 +84,7 @@ export async function patchMyProfile(
     {
       updates: {
         ...updates,
-        birthDate: updates.birthDate?.toLocaleDateString(),
+        birthDate: updates.birthDate?.toDateString(),
       },
     },
     accessToken,
@@ -117,14 +101,8 @@ export async function changeMyPassword(
     FullChangeMyPasswordRoute,
     { oldPassword, newPassword, astrologicalToken },
     accessToken,
+    true,
   );
 
   return (await res.json()) as NewToken;
-}
-
-export function createNewChat(
-  accessToken: string,
-  memberID: string,
-): Promise<Chat> {
-  return post(FullCreateNewChatRoute, { memberID }, accessToken);
 }

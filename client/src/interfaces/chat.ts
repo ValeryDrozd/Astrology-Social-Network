@@ -1,6 +1,6 @@
 import Message from './message';
 
-interface SenderInfo {
+export interface SenderInfo {
   firstName: string;
   lastName: string;
   senderID: string;
@@ -9,5 +9,8 @@ interface SenderInfo {
 export default interface Chat {
   messageList: Message[];
   chatID: string;
+  numberOfMessages: number;
   senderInfo: SenderInfo;
 }
+
+export const lengthOldMessagesPackage = 20;
