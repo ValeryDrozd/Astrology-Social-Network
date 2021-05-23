@@ -120,7 +120,7 @@ export default observer(function ChatPage({
             history.push(`/users/${chat.senderInfo.senderID}`)
           }
         >
-          <i>See</i>
+          See
         </StyledButton>
       </ChatItemBlock>
     </ChatItem>
