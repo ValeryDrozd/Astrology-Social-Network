@@ -36,7 +36,7 @@ export const ChatList = styled.ul`
 
 export const ChatItem = styled.li`
   border: #fff 1px solid;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   padding: 0.75rem;
   margin: 0.25rem;
   border-radius: 0.25rem;

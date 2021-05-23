@@ -20,7 +20,7 @@ export class MessagesService {
         request,
         !lastMessageID ? [chatID] : [chatID, lastMessageID],
       )
-    ).rows;
+    ).rows.reverse();
   }
 
   async addNewMessage(message: NewMessage): Promise<void> {

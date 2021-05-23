@@ -6,5 +6,5 @@ export default function getLastMessagesRequest(limit: number, firstLoad = true):
               ? ''
               : `AND "time" < (SELECT "time" FROM "Messages" WHERE "messageID" = $2)`
           }
-          ORDER BY "time" LIMIT ${limit}`;
+          ORDER BY "time" DESC LIMIT ${limit}`;
 }

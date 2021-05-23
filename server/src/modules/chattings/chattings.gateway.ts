@@ -35,7 +35,7 @@ import { ChatsService } from '../chats/chats.service';
 import { generateJsonRpcNotification } from 'src/helpers/json-rpc.utils';
 import { ErrorType, JsonRpcErrorCodes } from '@interfaces/json-rpc';
 import { UnauthorizedException } from '@nestjs/common';
-import Chat from '@interfaces/chat';
+import Chat, { lengthOldMessagesPackage } from '@interfaces/chat';
 import { MessagesService } from '../messages/messages.service';
 
 const invalidTokenError = {
@@ -55,8 +55,9 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
   ) {}
 
   handleConnection(client: WebSocket, request: IncomingMessage): void {
-    const accessToken = cookie.parse(request.headers.cookie ? request.headers.cookie : '')
-      .accessToken;
+    const accessToken = cookie.parse(
+      request.headers.cookie ? request.headers.cookie : '',
+    ).accessToken;
 
     const sendResponse = (payload: ConnectionStatusNotificationPayload): void => {
       client.send(
@@ -121,7 +122,11 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
       }
       this.jwtService.verify(session.token);
       return (
-        await this.messagesService.getMessagesOfChat(chatID, 20, lastMessageID)
+        await this.messagesService.getMessagesOfChat(
+          chatID,
+          lengthOldMessagesPackage,
+          lastMessageID,
+        )
       ).map((m) => ({ ...m, isSent: true }));
     } catch (error) {
       console.log(error);

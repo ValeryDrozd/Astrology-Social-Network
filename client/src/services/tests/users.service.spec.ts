@@ -1,7 +1,5 @@
 import getAstrologicalToken from 'helpers/get-astrological-token';
-import Chat from 'interfaces/chat';
 import { NewToken } from 'interfaces/new-token';
-import { FullCreateNewChatRoute } from 'interfaces/routes/chat-routes';
 import {
   FullChangeMyPasswordRoute,
   FullGetRecommendationsRoute,

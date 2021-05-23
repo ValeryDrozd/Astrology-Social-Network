@@ -12,3 +12,5 @@ export default interface Chat {
   numberOfMessages: number;
   senderInfo: SenderInfo;
 }
+
+export const lengthOldMessagesPackage = 20;

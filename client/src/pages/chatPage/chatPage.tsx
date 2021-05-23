@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { observer } from 'mobx-react';
 import Message from 'interfaces/message';
@@ -140,10 +140,22 @@ export default observer(function ChatPage({
     onWheel: (e: React.WheelEvent<HTMLUListElement>) => void,
   ): JSX.Element => <ChatList onWheel={onWheel}>{list}</ChatList>;
 
-  const loadOldMessages = (): void => {
-    const lastMessageID = currentChat?.messageList[0].messageID;
-    chatStore.getMessagesOfChat(currentChatId, lastMessageID ?? '');
+  const loadOldMessages = async (): Promise<number> => {
+    if (currentChat?.messageList.length !== currentChat?.numberOfMessages) {
+      const startLength = currentChat?.messageList.length ?? 0;
+      const lastMessageID = currentChat?.messageList[0].messageID;
+      await chatStore.getMessagesOfChat(currentChatId, lastMessageID ?? '');
+      const newLength = currentChat?.messageList.length ?? 0;
+      return newLength - startLength;
+    }
+    return 0;
   };
+
+  const messagesBlockRef = useRef<HTMLDivElement>(null);
+
+  const numberOfVisibleMessages = Math.floor(
+    (messagesBlockRef.current?.offsetHeight ?? 65 * 9) / 65,
+  );
 
   return (
     <ChatBlockView>
@@ -154,10 +166,10 @@ export default observer(function ChatPage({
         wrap={wrapChatList}
         renderItem={(chat): JSX.Element => renderChatItem(chat as Chat)}
       />
-      <MessagesBlock>
+      <MessagesBlock ref={messagesBlockRef}>
         <ScrollList
           startBottom
-          numberOfVisibleItems={9}
+          numberOfVisibleItems={numberOfVisibleMessages}
           wrap={wrapMessagesList}
           renderItem={(message): JSX.Element =>
             renderMessage(message as Message)

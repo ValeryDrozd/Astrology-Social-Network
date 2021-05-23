@@ -18,8 +18,9 @@ export class ChatsService {
   ) {}
 
   async findMyChatsWithMessages(userID: string): Promise<Chat[]> {
-    const chats = (await this.pgService.useQuery(requestQuery, [userID]))
-      .rows as ChatDTO[];
+    const chats = (await this.pgService.useQuery(requestQuery, [userID])).rows.map(
+      (c) => ({ ...c, numberOfMessages: parseInt(c.numberOfMessages) }),
+    ) as ChatDTO[];
 
     const promises = chats.map((chat) =>
       this.messagesService.getMessagesOfChat(chat.chatID),

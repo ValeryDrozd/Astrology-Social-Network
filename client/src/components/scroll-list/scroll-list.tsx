@@ -9,7 +9,7 @@ interface ScrollListProps {
     onWheel: (i: React.WheelEvent<HTMLUListElement>) => void,
   ) => JSX.Element;
   startBottom?: boolean;
-  loadMore?: () => void;
+  loadMore?: () => Promise<number>;
 }
 
 export default function ScrollList({
@@ -34,7 +34,7 @@ export default function ScrollList({
   useEffect(() => {
     console.log(list.length);
     setTopItem(getStartTopItem());
-  }, [list.length]);
+  }, [list[list.length - 1]]);
 
   const startIndex = topItem;
   const endIndex =
@@ -44,7 +44,9 @@ export default function ScrollList({
   const visualList = list.slice(startIndex, endIndex);
 
   const showList = visualList.map(renderItem);
-  const onWheel = ({ deltaY }: React.WheelEvent<HTMLUListElement>): void => {
+  const onWheel = async ({
+    deltaY,
+  }: React.WheelEvent<HTMLUListElement>): Promise<void> => {
     if (list.length <= numberOfVisibleItems || scrolled) return;
     if (deltaY > 15) {
       setTopItem(
@@ -53,13 +55,14 @@ export default function ScrollList({
           : topItem + 1,
       );
     } else if (deltaY < -15) {
-      console.log(list.length);
-      const newTopItem = topItem <= 0 ? 0 : topItem - 1;
+      let newTopItem = topItem <= 0 ? 0 : topItem - 1;
+
+      if (newTopItem < 3) {
+        const delta = await loadMore?.();
+        newTopItem += delta ?? 0;
+      }
       console.log(newTopItem);
       setTopItem(newTopItem);
-      if (newTopItem < 5) {
-        loadMore?.();
-      }
     }
     setScrolled(true);
     setTimeout(() => setScrolled(false), 15);
