@@ -55,7 +55,7 @@
     "lint:server": "yarn workspace server run lint:write",
     "lint:all": "yarn workspaces run lint:write",
     "start": "yarn workspace server run start:prod",
-    "start:client": "workspace client run start",
+    "start:client": "yarn workspace client run start",
     "start:server": "yarn workspace server run start:dev"
   },
   "dependencies": {

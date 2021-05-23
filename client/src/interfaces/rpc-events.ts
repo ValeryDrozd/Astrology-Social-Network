@@ -31,3 +31,10 @@ export interface ConnectionStatusNotificationPayload {
 
 export const NewChatNotification = 'newChat';
 export type NewChatNotificationParams = Chat;
+
+export const GetOldMessagesFunction = 'getOldMessages';
+export interface GetOldMessagesParams {
+  chatID: string;
+  lastMessageID: string;
+}
+export type GetOldMessagesResponse = Message[];

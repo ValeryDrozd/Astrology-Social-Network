@@ -20,6 +20,9 @@ import {
   DeliveredEvent,
   GetMessagesFunction,
   GetMessagesFunctionResponse,
+  GetOldMessagesFunction,
+  GetOldMessagesParams,
+  GetOldMessagesResponse,
   NewChatNotification,
   NewChatNotificationParams,
   NewMessageNotification,
@@ -33,6 +36,7 @@ import { generateJsonRpcNotification } from 'src/helpers/json-rpc.utils';
 import { ErrorType, JsonRpcErrorCodes } from '@interfaces/json-rpc';
 import { UnauthorizedException } from '@nestjs/common';
 import Chat from '@interfaces/chat';
+import { MessagesService } from '../messages/messages.service';
 
 const invalidTokenError = {
   error: { code: JsonRpcErrorCodes.INVALID_REQUEST, message: 'INVALID TOKEN!' },
@@ -47,6 +51,7 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
     private chatingsService: ChattingsService,
     private jwtService: JwtService,
     private chatsService: ChatsService,
+    private messagesService: MessagesService,
   ) {}
 
   handleConnection(client: WebSocket, request: IncomingMessage): void {
@@ -100,6 +105,26 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
 
       return await this.chatingsService.getChats(session.userID);
     } catch (error) {
+      console.log(error);
+      return invalidTokenError;
+    }
+  }
+
+  @SubscribeMessage(GetOldMessagesFunction)
+  async getOldMessages(
+    @MessageBody() { chatID, lastMessageID }: GetOldMessagesParams,
+    @ConnectedSocket() socket: WebSocket,
+  ): Promise<GetOldMessagesResponse | { error: ErrorType }> {
+    const session = this.chatingsService.getSession(socket);
+    try {
+      if (!session) {
+        throw new UnauthorizedException();
+      }
+      this.jwtService.verify(session.token);
+      return (
+        await this.messagesService.getMessagesOfChat(chatID, 20, lastMessageID)
+      ).map((m) => ({ ...m, isSent: true }));
+    } catch {
       return invalidTokenError;
     }
   }

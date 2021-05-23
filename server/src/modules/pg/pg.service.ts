@@ -60,21 +60,30 @@ export class PgService {
     }
   }
 
-  async find<T>({ query, tableName, where }: SelectParams, limit?: number): Promise<T[]> {
-    const whereStatements = where
-      ? 'WHERE ' +
-        Object.keys(where)
-          .map((key, index) => `"${key}"=$${index + 1}`)
-          .join(' AND ')
-      : '';
+  async find<T>(
+    { query, tableName, where, orderBy }: SelectParams,
+    limit?: number,
+  ): Promise<T[]> {
+    let counter = 1;
+    const whereStatements =
+      (where
+        ? 'WHERE ' +
+          Object.keys(where)
+            .map((key) => `"${key}"=$${counter++}`)
+            .join(' AND ')
+        : '') + ' ';
+
+    const orderByStatement = orderBy ? `ORDER BY ${orderBy.map(() => counter++)} ` : ' ';
     const request =
       'SELECT ' +
       (query ? query.map((column) => `"${column}"`).join(',') : '*') +
       ` FROM "${tableName}" ` +
       whereStatements +
-      (limit ? ` LIMIT ${limit} ` : '');
+      orderByStatement +
+      (limit ? `LIMIT ${limit} ` : '');
+    const values = [...(where ? Object.values(where) : []), ...(orderBy ?? [])];
     try {
-      const res = await this.pool.query(request, where ? Object.values(where) : []);
+      const res = await this.pool.query(request, values);
       return res.rows as T[];
     } catch (error) {
       return error;
