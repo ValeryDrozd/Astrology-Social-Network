@@ -18,16 +18,22 @@ export default function ScrollList({
   wrap,
   numberOfVisibleItems,
   startBottom,
+  loadMore,
 }: ScrollListProps): JSX.Element {
-  let startTopItem = 0;
-  if (startBottom && list.length > numberOfVisibleItems) {
-    startTopItem = list.length - 1 - numberOfVisibleItems;
-  }
-  const [topItem, setTopItem] = useState<number>(startTopItem);
+  const getStartTopItem = (): number => {
+    let startTopItem = 0;
+    if (startBottom && list.length > numberOfVisibleItems) {
+      startTopItem = list.length - numberOfVisibleItems;
+    }
+    return startTopItem;
+  };
+
+  const [topItem, setTopItem] = useState<number>(getStartTopItem());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    setTopItem(startTopItem);
+    console.log(list.length);
+    setTopItem(getStartTopItem());
   }, [list.length]);
 
   const startIndex = topItem;
@@ -47,7 +53,13 @@ export default function ScrollList({
           : topItem + 1,
       );
     } else if (deltaY < -15) {
-      setTopItem(topItem <= 0 ? 0 : topItem - 1);
+      console.log(list.length);
+      const newTopItem = topItem <= 0 ? 0 : topItem - 1;
+      console.log(newTopItem);
+      setTopItem(newTopItem);
+      if (newTopItem < 5) {
+        loadMore?.();
+      }
     }
     setScrolled(true);
     setTimeout(() => setScrolled(false), 15);

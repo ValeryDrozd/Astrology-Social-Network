@@ -81,8 +81,14 @@ export default observer(function ProfilePage(): JSX.Element {
     event.preventDefault();
     if (!newUserInfo?.firstName || !newUserInfo?.lastName)
       return alert('Type your name');
-    const { firstName, lastName, zodiacSign, birthDate, sex, about } =
-      newUserInfo;
+    const {
+      firstName,
+      lastName,
+      zodiacSign,
+      birthDate,
+      sex,
+      about,
+    } = newUserInfo;
     await patchMyProfile(chatStore.accessToken, {
       firstName,
       lastName,

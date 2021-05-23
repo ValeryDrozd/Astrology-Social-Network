@@ -11,11 +11,14 @@ import {
   ConnectionStatusNotificationPayload,
   GetMessagesFunction,
   GetMessagesFunctionResponse,
+  GetOldMessagesFunction,
+  GetOldMessagesParams,
+  GetOldMessagesResponse,
   NewChatNotification,
   NewMessageNotification,
   NewMessageNotificationParams,
 } from 'interfaces/rpc-events';
-import { ServerMessage } from 'interfaces/message';
+import Message, { ServerMessage } from 'interfaces/message';
 import { refresh } from 'services/auth.service';
 import { getMyProfile } from 'services/users.service';
 import User from 'interfaces/user';
@@ -182,8 +185,9 @@ export class ChatStore {
           (message) => message.messageID === msg.messageID,
         );
         if (currentChatIndex !== -1 && currentMessageIndex !== -1) {
-          const message =
-            this.chats[currentChatIndex].messageList[currentMessageIndex];
+          const message = this.chats[currentChatIndex].messageList[
+            currentMessageIndex
+          ];
           message.isSent = true;
           this.chats[currentChatIndex].messageList[currentMessageIndex] = {
             ...message,
@@ -224,6 +228,21 @@ export class ChatStore {
     } as AddNewChatParams);
     this.chats = [chat, ...this.chats];
     return chat.chatID;
+  }
+
+  async getMessagesOfChat(
+    chatID: string,
+    lastMessageID: string,
+  ): Promise<void> {
+    try {
+      const res = await this.socket.call<GetOldMessagesResponse>(
+        GetOldMessagesFunction,
+        { chatID, lastMessageID } as GetOldMessagesParams,
+      );
+      this.chats
+        .find((chat) => chat.chatID === chatID)
+        ?.messageList.push(...res);
+    } catch (error) {}
   }
 }
 

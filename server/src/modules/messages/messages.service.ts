@@ -14,7 +14,7 @@ export class MessagesService {
     limit?: number,
     lastMessageID?: string,
   ): Promise<ServerMessage[]> {
-    const request = getLastMessagesRequest(limit ?? 20);
+    const request = getLastMessagesRequest(limit ?? 20, !lastMessageID);
     return (
       await this.pgService.useQuery(
         request,

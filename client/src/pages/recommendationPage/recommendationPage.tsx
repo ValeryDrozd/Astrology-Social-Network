@@ -2,7 +2,6 @@ import ScrollList from 'components/scroll-list/scroll-list';
 import { StyledButton } from 'components/styled/styled-button';
 import { UserWithCompatibility } from 'interfaces/user';
 import { observer } from 'mobx-react';
-import { boolean } from 'mobx-state-tree/dist/internal';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { getRecommendation } from 'services/users.service';

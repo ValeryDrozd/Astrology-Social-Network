@@ -55,9 +55,8 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
   ) {}
 
   handleConnection(client: WebSocket, request: IncomingMessage): void {
-    const accessToken = cookie.parse(
-      request.headers.cookie ? request.headers.cookie : '',
-    ).accessToken;
+    const accessToken = cookie.parse(request.headers.cookie ? request.headers.cookie : '')
+      .accessToken;
 
     const sendResponse = (payload: ConnectionStatusNotificationPayload): void => {
       client.send(
@@ -124,7 +123,8 @@ export class ChattingsGateway implements OnGatewayConnection, OnGatewayDisconnec
       return (
         await this.messagesService.getMessagesOfChat(chatID, 20, lastMessageID)
       ).map((m) => ({ ...m, isSent: true }));
-    } catch {
+    } catch (error) {
+      console.log(error);
       return invalidTokenError;
     }
   }

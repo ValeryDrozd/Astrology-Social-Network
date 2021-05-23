@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { observer } from 'mobx-react';
 import Message from 'interfaces/message';
@@ -140,6 +140,11 @@ export default observer(function ChatPage({
     onWheel: (e: React.WheelEvent<HTMLUListElement>) => void,
   ): JSX.Element => <ChatList onWheel={onWheel}>{list}</ChatList>;
 
+  const loadOldMessages = (): void => {
+    const lastMessageID = currentChat?.messageList[0].messageID;
+    chatStore.getMessagesOfChat(currentChatId, lastMessageID ?? '');
+  };
+
   return (
     <ChatBlockView>
       <ScrollList
@@ -158,6 +163,7 @@ export default observer(function ChatPage({
             renderMessage(message as Message)
           }
           list={messagesList}
+          loadMore={loadOldMessages}
         />
         {currentChatId ? (
           <InputArea>
