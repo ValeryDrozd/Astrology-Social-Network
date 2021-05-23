@@ -1,7 +1,7 @@
 name: Build & Deploy
 on:
   push:
-    branches: [development/docker]
+    branches: [main]
 
 env:
   SERVER_PORT: ${{ secrets.PORT }}
