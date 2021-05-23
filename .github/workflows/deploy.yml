@@ -33,7 +33,7 @@ jobs:
           script: |
             echo 'Start deploy'
             rm -rf Astrology-Social-Network
-            git clone git@github.com:ValeryDrozd/Astrology-Social-Network.git
+            git clone -b main git@github.com:ValeryDrozd/Astrology-Social-Network.git
             cd Astrology-Social-Network
             echo 'SERVER_PORT'
             echo $SERVER_PORT
