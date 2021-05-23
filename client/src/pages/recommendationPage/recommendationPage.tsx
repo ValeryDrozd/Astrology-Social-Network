@@ -2,6 +2,7 @@ import ScrollList from 'components/scroll-list/scroll-list';
 import { StyledButton } from 'components/styled/styled-button';
 import { UserWithCompatibility } from 'interfaces/user';
 import { observer } from 'mobx-react';
+import { boolean } from 'mobx-state-tree/dist/internal';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { getRecommendation } from 'services/users.service';
@@ -27,13 +28,16 @@ export default observer(function RecommendationPage(): JSX.Element {
     UserWithCompatibility[]
   >([]);
 
-  const setRecs = (): Promise<void> =>
-    getRecommendation(
-      chatStore.accessToken,
-      mode === 'Male' ? true : mode === 'Female' ? false : undefined,
-    ).then((users) => {
+  const setRecs = async (): Promise<void> => {
+    let check = undefined;
+    if (mode === 'Male' || mode === 'Female') {
+      check = mode === 'Male';
+    }
+
+    getRecommendation(chatStore.accessToken, check).then((users) => {
       setRecommendations(users);
     });
+  };
 
   useEffect((): void => {
     if (chatStore.initialized) {

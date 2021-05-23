@@ -4,7 +4,7 @@ import { logout } from 'services/auth.service';
 import chatStore, { reloadChatStore } from 'stores/store';
 import { ListItem, NavigationBarBlock } from './styles';
 export default function NavigationBar(): JSX.Element {
-  const [route, setRoute] = useState('');
+  const [route, setRoute] = useState(`/users/${chatStore.user.userID}`);
   const history = useHistory();
   useEffect(() => {
     setRoute(history.location.pathname);

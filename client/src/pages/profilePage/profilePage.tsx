@@ -18,7 +18,6 @@ import chatStore from 'stores/store';
 import { useParams } from 'react-router';
 import {
   changeMyPassword,
-  createNewChat,
   getUserProfile,
   patchMyProfile,
 } from 'services/users.service';
@@ -257,10 +256,10 @@ export default observer(function ProfilePage(): JSX.Element {
       (c) => c.senderInfo.senderID === user.userID,
     );
     if (!oldChat) {
-      const chat = await createNewChat(chatStore.accessToken, user.userID);
-      chatStore.addNewChat(chat);
+      const chatId = await chatStore.addNewChat(user.userID);
+      return history.push(`/chat?chatID=${chatId}`);
     }
-    history.push('/chat');
+    history.push(`/chat?chatID=${oldChat?.chatID}`);
   };
 
   const changePasswordButton = user.authProviders.includes('local') ? (

@@ -22,4 +22,8 @@ export const StyledButton = styled.button`
     font-weight: bold;
     padding: 1rem 3rem;
   }
+
+  &.small {
+    padding: 0.5rem;
+  }
 `;

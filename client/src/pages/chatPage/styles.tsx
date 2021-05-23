@@ -34,8 +34,9 @@ export const ChatList = styled.ul`
   padding: 0;
 `;
 
-export const ChatItem = styled.div`
+export const ChatItem = styled.li`
   border: #fff 1px solid;
+  flex-grow: 1;
   padding: 0.75rem;
   margin: 0.25rem;
   border-radius: 0.25rem;
@@ -43,6 +44,14 @@ export const ChatItem = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  min-height: 4.5 rem;
+  @media (max-width: 50rem) {
+    min-height: 3.75rem;
+    * button {
+      padding: 0.25rem !important;
+    }
+  }
+  }
 
   &:hover {
     background-color: #5f3292;
@@ -51,6 +60,11 @@ export const ChatItem = styled.div`
   &.selected {
     background-color: #5f3292;
   }
+`;
+
+export const ChatItemBlock = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 export const ChatName = styled.h4`
@@ -89,7 +103,7 @@ export const MessageList = styled.ul`
 
 export const MessageItem = styled.div`
   padding: 0.75rem;
-  margin: 0.25rem;
+  margin: 0.4 5rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -98,6 +112,11 @@ export const MessageItem = styled.div`
   &.my {
     margin-right: 0;
     margin-left: auto;
+  }
+
+  @media (max-width: 50rem) {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
   }
 `;
 
@@ -154,7 +173,7 @@ export const ChatForm = styled.form`
 export const MessageStatus = styled.div`
   width: 0.5rem;
   height: 0.5rem;
-  margin: 1rem auto 0 0.5rem;
+  margin: 1rem 0.35rem;
   border-radius: 50%;
   background-color: red;
 
@@ -164,4 +183,7 @@ export const MessageStatus = styled.div`
 `;
 export const SendBlock = styled.div`
   display: flex;
+  &.my {
+    flex-direction: row-reverse;
+  }
 `;

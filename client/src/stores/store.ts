@@ -4,11 +4,14 @@ import Chat from 'interfaces/chat';
 import { NewMessage } from 'interfaces/new-message';
 import { v4 as uuid } from 'uuid';
 import {
+  AddNewChatFunction,
+  AddNewChatParams,
   AddNewMessageFunction,
   ConnectionStatusNotification,
   ConnectionStatusNotificationPayload,
   GetMessagesFunction,
   GetMessagesFunctionResponse,
+  NewChatNotification,
   NewMessageNotification,
   NewMessageNotificationParams,
 } from 'interfaces/rpc-events';
@@ -86,6 +89,10 @@ export class ChatStore {
         this.chats = [...this.chats];
       },
     );
+
+    this.socket.listenTo(NewChatNotification, (chat: Chat) => {
+      this.chats = [chat, ...this.chats];
+    });
   }
 
   async setAccessToken(accessToken: string): Promise<void> {
@@ -114,10 +121,12 @@ export class ChatStore {
       );
       this.chats = res.map((chat) => ({
         ...chat,
-        messageList: chat.messageList.map((message) => ({
-          ...message,
-          time: new Date(message.time),
-        })),
+        messageList: chat.messageList
+          .map((message) => ({
+            ...message,
+            time: new Date(message.time),
+          }))
+          .sort((a, b) => a.time.getTime() - b.time.getTime()),
       }));
     } catch (error) {}
   }
@@ -210,8 +219,12 @@ export class ChatStore {
     }
   }
 
-  async addNewChat(chat: Chat): Promise<void> {
-    this.chats.unshift(chat);
+  async addNewChat(memberID: string): Promise<string> {
+    const chat: Chat = await this.socket.call(AddNewChatFunction, {
+      memberID,
+    } as AddNewChatParams);
+    this.chats = [chat, ...this.chats];
+    return chat.chatID;
   }
 }
 

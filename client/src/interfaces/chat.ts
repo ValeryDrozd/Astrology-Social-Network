@@ -1,6 +1,6 @@
 import Message from './message';
 
-interface SenderInfo {
+export interface SenderInfo {
   firstName: string;
   lastName: string;
   senderID: string;

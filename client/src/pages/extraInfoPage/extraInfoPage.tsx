@@ -58,7 +58,7 @@ export default observer(function ExtraInfoPage(): JSX.Element {
     chatStore.user.zodiacSign = zodiacSign;
     chatStore.user.about = about;
 
-    history.push(`/users/${chatStore?.user?.userID}`);
+    history.push(`/users?userID=${chatStore?.user?.userID}`);
   };
 
   const options = zodiacSigns.map((name) => (

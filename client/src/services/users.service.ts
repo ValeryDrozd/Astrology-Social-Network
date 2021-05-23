@@ -1,7 +1,5 @@
 import getAstrologicalToken from 'helpers/get-astrological-token';
-import Chat from 'interfaces/chat';
 import { NewToken } from 'interfaces/new-token';
-import { FullCreateNewChatRoute } from 'interfaces/routes/chat-routes';
 import {
   FullChangeMyPasswordRoute,
   FullGetRecommendationsRoute,
@@ -52,22 +50,6 @@ const patch = async (
   return res;
 };
 
-const post = async (
-  path: string,
-  body: Record<string, unknown>,
-  accessToken: string,
-): Promise<Chat> => {
-  const res = await fetch(process.env.REACT_APP_SERVER_URL + path, {
-    method: 'POST',
-    headers: getHeaders(accessToken),
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) {
-    throw new Error('Error');
-  }
-  return res.json();
-};
-
 export async function getRecommendation(
   accessToken: string,
   sex?: boolean,
@@ -102,7 +84,7 @@ export async function patchMyProfile(
     {
       updates: {
         ...updates,
-        birthDate: updates.birthDate?.toLocaleDateString(),
+        birthDate: updates.birthDate?.toDateString(),
       },
     },
     accessToken,
@@ -123,11 +105,4 @@ export async function changeMyPassword(
   );
 
   return (await res.json()) as NewToken;
-}
-
-export function createNewChat(
-  accessToken: string,
-  memberID: string,
-): Promise<Chat> {
-  return post(FullCreateNewChatRoute, { memberID }, accessToken);
 }

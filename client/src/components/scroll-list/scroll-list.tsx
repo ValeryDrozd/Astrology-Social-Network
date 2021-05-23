@@ -9,6 +9,7 @@ interface ScrollListProps {
     onWheel: (i: React.WheelEvent<HTMLUListElement>) => void,
   ) => JSX.Element;
   startBottom?: boolean;
+  loadMore?: () => void;
 }
 
 export default function ScrollList({
@@ -18,23 +19,15 @@ export default function ScrollList({
   numberOfVisibleItems,
   startBottom,
 }: ScrollListProps): JSX.Element {
-  const [topItem, setTopItem] = useState<number>(
-    startBottom
-      ? list.length <= numberOfVisibleItems
-        ? 0
-        : list.length - 1 - numberOfVisibleItems
-      : 0,
-  );
+  let startTopItem = 0;
+  if (startBottom && list.length > numberOfVisibleItems) {
+    startTopItem = list.length - 1 - numberOfVisibleItems;
+  }
+  const [topItem, setTopItem] = useState<number>(startTopItem);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    setTopItem(
-      startBottom
-        ? list.length <= numberOfVisibleItems
-          ? 0
-          : list.length - numberOfVisibleItems
-        : 0,
-    );
+    setTopItem(startTopItem);
   }, [list.length]);
 
   const startIndex = topItem;

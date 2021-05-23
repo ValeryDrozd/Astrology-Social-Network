@@ -15,10 +15,11 @@ import AuthTokensPair from '../auth/dto/tokens-pair.dto';
 import { ScryptService } from '../scrypt/scrypt.service';
 import { RefreshSessionsService } from '../refresh-sessions/refresh-sessions.service';
 import { AuthService } from '../auth/auth.service';
+import { SenderInfo } from '@interfaces/chat';
 
 @Injectable()
 export class UsersService {
-  private tableName = 'Users';
+  tableName = 'Users';
   constructor(
     private pgService: PgService,
     private zodiacSignsService: ZodiacSignsService,
@@ -63,6 +64,23 @@ export class UsersService {
       zodiacSign,
       authProviders,
       about,
+    };
+  }
+
+  async getSenderInfo(userID: string): Promise<SenderInfo> {
+    const { firstName, lastName } = await this.pgService.findOne<{
+      firstName: string;
+      lastName: string;
+    }>({
+      query: ['firstName', 'lastName'],
+      tableName: this.tableName,
+      where: { userID },
+    });
+
+    return {
+      senderID: userID,
+      firstName,
+      lastName,
     };
   }
 
@@ -114,7 +132,6 @@ export class UsersService {
     if (!user) throw new NotFoundException();
 
     const provider = await this.authProvidersService.findOne(user.userID, 'local');
-    if (!provider) throw new NotFoundException();
 
     const isValid = await this.scryptService.verify(
       oldPassword,

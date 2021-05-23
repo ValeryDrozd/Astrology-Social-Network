@@ -7,13 +7,19 @@ import {
   UpdateParams,
 } from './interfaces/query-params.interface';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 
 dotenv.config();
 
 @Injectable()
 export class PgService {
   private pool: Pool = new Pool();
-
+  constructor() {
+    fs.readFile('db/tables.sql', (err, data) => {
+      if (err) return console.log(err);
+      this.useQuery(data.toString());
+    });
+  }
   async create<T>({
     tableName,
     values,
