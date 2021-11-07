@@ -1,5 +1,11 @@
 import http from "k6/http";
-import { sleep, check } from "k6";
+import profileChange from "./scenarios/profile-change.js";
+import getRecommendations from "./scenarios/get-recommendations.js";
+import sendMessages from "./scenarios/send-messages.js";
+
+exports.profileChange = profileChange;
+exports.getRecommendations = getRecommendations;
+exports.sendMessages = sendMessages;
 
 export const options = {
   scenarios: {
@@ -8,8 +14,8 @@ export const options = {
       startRate: 20,
       timeUnit: "1s",
       stages: [
-        { target: 200, duration: "10s" },
-        { target: 200, duration: "1m" },
+        { target: 50, duration: "10s" },
+        { target: 50, duration: "10s" },
         { target: 0, duration: "10s" },
       ],
       preAllocatedVUs: 20,
@@ -19,61 +25,43 @@ export const options = {
     getRecommendations: {
       executor: "ramping-vus",
       stages: [
-        { target: 500, duration: "20s" },
-        { target: 500, duration: "1m" },
-        { target: 0, duration: "20s" },
+        { target: 200, duration: "10s" },
+        { target: 200, duration: "10s" },
+        { target: 0, duration: "10s" },
       ],
       exec: "getRecommendations",
     },
+    sendMessages: {
+      executor: "ramping-arrival-rate",
+      startRate: 20,
+      timeUnit: "1s",
+      stages: [
+        { target: 20, duration: "10s" },
+        { target: 20, duration: "10s" },
+        { target: 0, duration: "10s" },
+      ],
+      preAllocatedVUs: 100,
+      maxVUs: 400,
+      exec: "sendMessages",
+    },
   },
   thresholds: {
-    http_req_duration: ["p(99)<1500"],
+    http_req_duration: ["p(90)<5000"],
   },
 };
-const { testUser1, url } = JSON.parse(open("./params.json"));
 
-const { email, password, astrologicalToken } = testUser1;
+const { testUser1, testUser2, url } = JSON.parse(open("./params.json"));
 
 export function setup() {
-  const payload = JSON.stringify({ email, password, astrologicalToken });
   const params = {
     headers: {
       "Content-Type": "application/json",
     },
   };
-  const response = http.post(`${url}/auth/login`, payload, params);
-  const { accessToken } = JSON.parse(response.body);
-  return accessToken;
-}
-const getRequestParams = (accessToken) => ({
-  headers: {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json",
-  },
-}); 
-export function profileChange(accessToken) {
-  const profileRequest = () => http.get(`${url}/user/me`, getRequestParams(accessToken));
-  const changeProfileRequest = (body) =>
-    http.patch(`${url}/user/me`, JSON.stringify(body),  getRequestParams(accessToken));
-  const profileResponse = profileRequest();
-  const profile = JSON.parse(profileResponse.body);
-
-  const newAbout = (Math.random() * 1000).toString();
-  changeProfileRequest({
-    updates: { about: newAbout },
-  });
-
-  // const newProfile = JSON.parse(profileRequest().body);
-
-  // console.log(Old about: ${profile.about});
-  // console.log(New about (from server): ${newProfile.about});
-  // console.log(New about (generated before): ${newAbout});
-
-  sleep(1);
-}
-
-export function getRecommendations(accessToken) {
-  const recommendationsRequest = () => http.get(`${url}/user/recommendations`, getRequestParams(accessToken));
-  const recommendations = recommendationsRequest()
-  check(recommendations, { 'status 200': (r) => r && r.status == 200})
+  const payloads = [testUser1, testUser2].map((user) => JSON.stringify(user));
+  const responses = payloads.map((payload) =>
+    http.post(`${url}/auth/login`, payload, params)
+  );
+  const accessTokens = responses.map((res) => JSON.parse(res.body).accessToken);
+  return { accessToken1: accessTokens[0], accessToken2: accessTokens[1] };
 }
