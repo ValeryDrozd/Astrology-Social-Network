@@ -1,0 +1,13 @@
+{
+  "url": "http://localhost",
+  "testUser1": {
+    "email": "lalala@gmail.com",
+    "password": "Nhjlsdcnjk1.",
+    "astrologicalToken": "b666018a0c9796a8505c8b5d3423a97a"
+  },
+  "testUser2": {
+    "email": "lalala1@gmail.com",
+    "password": "Nhjlsdcnjk1.",
+    "astrologicalToken": "b666018a0c9796a8505c8b5s;tjbns;t"
+  }
+}
