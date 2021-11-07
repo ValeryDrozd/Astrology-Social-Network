@@ -1,23 +1,15 @@
 import ws from "k6/ws";
 import { uuidv4 } from "https://jslib.k6.io/k6-utils/1.0.0/index.js";
-import http from "k6/http";
 import { sleep, check } from "k6";
+import { profileRequest } from "../helpers.js";
+
 export default function sendMessages({ accessToken1, accessToken2 }) {
     const getWsParams = (accessToken) => ({
       headers: {
         cookie: `accessToken=${accessToken}`,
       },
     });
-  
-    const getRequestParams = (accessToken) => ({
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const profileRequest = (accessToken) =>
-      http.get(`${url}/user/me`, getRequestParams(accessToken));
-    // const profileResponse1 = profileRequest(accessToken1);
+
     const profile1 = JSON.parse(profileRequest(accessToken1).body);
     const profile2 = JSON.parse(profileRequest(accessToken2).body);
     let chat;

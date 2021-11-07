@@ -2,10 +2,14 @@ import http from "k6/http";
 import profileChange from "./scenarios/profile-change.js";
 import getRecommendations from "./scenarios/get-recommendations.js";
 import sendMessages from "./scenarios/send-messages.js";
+import { testUser1, testUser2, url } from './env.js'
+import { login } from "./helpers.js";
+import refreshTokens from './scenarios/refresh-tokens.js'
 
 exports.profileChange = profileChange;
 exports.getRecommendations = getRecommendations;
 exports.sendMessages = sendMessages;
+exports.refreshTokens = refreshTokens
 
 export const options = {
   scenarios: {
@@ -44,24 +48,34 @@ export const options = {
       maxVUs: 400,
       exec: "sendMessages",
     },
+    refreshTokens: {
+      executor: "ramping-vus",
+      stages: [
+        { target: 200, duration: "10s" },
+        { target: 200, duration: "10s" },
+        { target: 0, duration: "10s" },
+      ],
+      exec: "refreshTokens",
+    }
   },
   thresholds: {
-    http_req_duration: ["p(90)<5000"],
+    http_req_duration: ["p(90)<3000"],
   },
 };
 
-const { testUser1, testUser2, url } = JSON.parse(open("./params.json"));
-
 export function setup() {
-  const params = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
   const payloads = [testUser1, testUser2].map((user) => JSON.stringify(user));
   const responses = payloads.map((payload) =>
-    http.post(`${url}/auth/login`, payload, params)
+    login(payload)
   );
   const accessTokens = responses.map((res) => JSON.parse(res.body).accessToken);
-  return { accessToken1: accessTokens[0], accessToken2: accessTokens[1] };
+  const refreshTokens = responses.map(
+    (res) => res.cookies.refreshToken[0].value
+  );
+  return {
+    accessToken1: accessTokens[0],
+    accessToken2: accessTokens[1],
+    refreshToken1: refreshTokens[0],
+    refreshToken2: refreshTokens[1],
+  };
 }
