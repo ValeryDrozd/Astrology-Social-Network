@@ -56,7 +56,7 @@ export class PgService {
     try {
       return await this.pool.query(request, requestValues);
     } catch (error) {
-      return error;
+      return error as QueryResult;
     }
   }
 
@@ -86,7 +86,7 @@ export class PgService {
       const res = await this.pool.query(request, values);
       return res.rows as T[];
     } catch (error) {
-      return error;
+      return error as T[];
     }
   }
 
@@ -142,8 +142,7 @@ export class PgService {
         ...Object.values(where),
       ]);
     } catch (error) {
-      console.log(error);
-      return error;
+      return error as QueryResult;
     }
   }
 
