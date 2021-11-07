@@ -1,20 +1,29 @@
 import http from "k6/http";
-import { sleep } from "k6";
+import { sleep, check } from "k6";
 
 export const options = {
   scenarios: {
     profileChange: {
       executor: "ramping-arrival-rate",
-      startRate: 50,
-      timeUnit: "1s", 
+      startRate: 20,
+      timeUnit: "1s",
       stages: [
-        { target: 200, duration: "30s" },
-        { target: 200, duration: "1m" }, 
-        { target: 0, duration: "30s" },
+        { target: 200, duration: "10s" },
+        { target: 200, duration: "1m" },
+        { target: 0, duration: "10s" },
       ],
-      preAllocatedVUs: 50, 
-      maxVUs: 300, 
+      preAllocatedVUs: 20,
+      maxVUs: 600,
       exec: "profileChange",
+    },
+    getRecommendations: {
+      executor: "ramping-vus",
+      stages: [
+        { target: 500, duration: "20s" },
+        { target: 500, duration: "1m" },
+        { target: 0, duration: "20s" },
+      ],
+      exec: "getRecommendations",
     },
   },
   thresholds: {
@@ -36,17 +45,16 @@ export function setup() {
   const { accessToken } = JSON.parse(response.body);
   return accessToken;
 }
-
-export function profileChange (accessToken) {
-  const requestParams = {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  };
-  const profileRequest = () => http.get(`${url}/user/me`, requestParams);
+const getRequestParams = (accessToken) => ({
+  headers: {
+    Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json",
+  },
+}); 
+export function profileChange(accessToken) {
+  const profileRequest = () => http.get(`${url}/user/me`, getRequestParams(accessToken));
   const changeProfileRequest = (body) =>
-    http.patch(`${url}/user/me`, JSON.stringify(body), requestParams);
+    http.patch(`${url}/user/me`, JSON.stringify(body),  getRequestParams(accessToken));
   const profileResponse = profileRequest();
   const profile = JSON.parse(profileResponse.body);
 
@@ -62,4 +70,10 @@ export function profileChange (accessToken) {
   // console.log(New about (generated before): ${newAbout});
 
   sleep(1);
+}
+
+export function getRecommendations(accessToken) {
+  const recommendationsRequest = () => http.get(`${url}/user/recommendations`, getRequestParams(accessToken));
+  const recommendations = recommendationsRequest()
+  check(recommendations, { 'status 200': (r) => r && r.status == 200})
 }
