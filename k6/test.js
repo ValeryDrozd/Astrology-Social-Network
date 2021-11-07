@@ -32,7 +32,7 @@ export function setup() {
       "Content-Type": "application/json",
     },
   };
-  const response = http.post(`${url}/auth/login, payload, params`);
+  const response = http.post(`${url}/auth/login`, payload, params);
   const { accessToken } = JSON.parse(response.body);
   return accessToken;
 }
@@ -44,9 +44,9 @@ export function profileChange (accessToken) {
       "Content-Type": "application/json",
     },
   };
-  const profileRequest = () => http.get(`${url}/user/me, requestParams`);
+  const profileRequest = () => http.get(`${url}/user/me`, requestParams);
   const changeProfileRequest = (body) =>
-    http.patch(`${url}/user/me, JSON.stringify(body), requestParams`);
+    http.patch(`${url}/user/me`, JSON.stringify(body), requestParams);
   const profileResponse = profileRequest();
   const profile = JSON.parse(profileResponse.body);
 
