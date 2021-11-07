@@ -7,13 +7,22 @@ import {
   UpdateParams,
 } from './interfaces/query-params.interface';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 
 dotenv.config();
 
 @Injectable()
 export class PgService {
   private pool: Pool = new Pool();
-
+  constructor() {
+    if (process.env.NODE_ENV !== 'test') {
+      this.pool = new Pool();
+      fs.readFile('db/tables.sql', (err, data) => {
+        if (err) return console.log(err);
+        this.useQuery(data.toString());
+      });
+    }
+  }
   async create<T>({
     tableName,
     values,
@@ -47,29 +56,37 @@ export class PgService {
     try {
       return await this.pool.query(request, requestValues);
     } catch (error) {
-      console.log(error);
-      return error;
+      return error as QueryResult;
     }
   }
 
-  async find<T>({ query, tableName, where }: SelectParams, limit?: number): Promise<T[]> {
-    const whereStatements = where
-      ? 'WHERE ' +
-        Object.keys(where)
-          .map((key, index) => `"${key}"=$${index + 1}`)
-          .join(' AND ')
-      : '';
+  async find<T>(
+    { query, tableName, where, orderBy }: SelectParams,
+    limit?: number,
+  ): Promise<T[]> {
+    let counter = 1;
+    const whereStatements =
+      (where
+        ? 'WHERE ' +
+          Object.keys(where)
+            .map((key) => `"${key}"=$${counter++}`)
+            .join(' AND ')
+        : '') + ' ';
+
+    const orderByStatement = orderBy ? `ORDER BY ${orderBy.map(() => counter++)} ` : ' ';
     const request =
       'SELECT ' +
       (query ? query.map((column) => `"${column}"`).join(',') : '*') +
       ` FROM "${tableName}" ` +
       whereStatements +
-      (limit ? ` LIMIT ${limit} ` : '');
+      orderByStatement +
+      (limit ? `LIMIT ${limit} ` : '');
+    const values = [...(where ? Object.values(where) : []), ...(orderBy ?? [])];
     try {
-      const res = await this.pool.query(request, where ? Object.values(where) : []);
+      const res = await this.pool.query(request, values);
       return res.rows as T[];
     } catch (error) {
-      return error;
+      return error as T[];
     }
   }
 
@@ -125,8 +142,7 @@ export class PgService {
         ...Object.values(where),
       ]);
     } catch (error) {
-      console.log(error);
-      return error;
+      return error as QueryResult;
     }
   }
 

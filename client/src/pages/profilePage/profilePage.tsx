@@ -11,12 +11,13 @@ import {
   SelectSex,
   SelectZodiac,
   Label,
+  Form,
+  SexBlock,
 } from './styles';
 import chatStore from 'stores/store';
 import { useParams } from 'react-router';
 import {
   changeMyPassword,
-  createNewChat,
   getUserProfile,
   patchMyProfile,
 } from 'services/users.service';
@@ -26,7 +27,7 @@ import { useHistory } from 'react-router-dom';
 import Modal from 'components/modal/modal';
 import { StyledButton } from 'components/styled/styled-button';
 import Calendar from 'react-calendar';
-import zodiacSigns from 'interfaces/zodiac-signs';
+import zodiacSigns, { vkosmoseZodiacSigns } from 'interfaces/zodiac-signs';
 
 export default observer(function ProfilePage(): JSX.Element {
   const [user, setUser] = useState<User>();
@@ -37,7 +38,7 @@ export default observer(function ProfilePage(): JSX.Element {
   const [newPassword, setNewPassword] = useState('');
   const [repeatNewPassword, setRepeatNewPassword] = useState('');
   const history = useHistory();
-  const params = useParams() as { id: string };
+  const params = useParams<{ id: string }>();
   const { id } = params;
 
   const getProfile = async (): Promise<void> => {
@@ -75,30 +76,43 @@ export default observer(function ProfilePage(): JSX.Element {
   if (!user) return <div></div>;
 
   const changeProfile = async (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
     if (!newUserInfo?.firstName || !newUserInfo?.lastName)
       return alert('Type your name');
-    await patchMyProfile(chatStore.accessToken, { ...newUserInfo });
-    chatStore.setUser(newUserInfo as User);
+    const { firstName, lastName, zodiacSign, birthDate, sex, about } =
+      newUserInfo;
+    await patchMyProfile(chatStore.accessToken, {
+      firstName,
+      lastName,
+      zodiacSign,
+      birthDate,
+      sex,
+      about,
+    });
+    chatStore.setUser(newUserInfo);
     setUser(newUserInfo);
     setShowModal(false);
   };
 
-  const changePassword = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ): Promise<void> => {
+  const changePassword = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     if (newPassword !== repeatNewPassword) {
       return alert('Please repeat correctly password');
     }
-    const { accessToken } = await changeMyPassword(
-      chatStore.accessToken,
-      oldPassword,
-      newPassword,
-    );
-    chatStore.setAccessToken(accessToken);
+
+    try {
+      const { accessToken } = await changeMyPassword(
+        chatStore.accessToken,
+        oldPassword,
+        newPassword,
+      );
+      chatStore.setAccessToken(accessToken);
+      setShowChangePasswordModal(false);
+    } catch {
+      alert('Something went wrong!');
+    }
   };
 
   const options = zodiacSigns.map((name) => (
@@ -109,107 +123,125 @@ export default observer(function ProfilePage(): JSX.Element {
 
   const modal = showModal ? (
     <Modal onClose={(): void => setShowModal(false)}>
-      <Label>Enter your First name</Label>
-      <EditInput
-        value={newUserInfo?.firstName}
-        onChange={({ target }): void =>
-          setNewUserInfo((newUserInfo) => ({
-            ...(newUserInfo as User),
-            firstName: target.value,
-          }))
-        }
-        type="text"
-      />
-      <Label>Enter your Last name</Label>
-      <EditInput
-        value={newUserInfo?.lastName}
-        onChange={({ target }): void =>
-          setNewUserInfo((newUserInfo) => ({
-            ...(newUserInfo as User),
-            lastName: target.value,
-          }))
-        }
-        type="text"
-      />
-      <Label>Enter your Birth date</Label>
-      <Calendar
-        value={newUserInfo?.birthDate}
-        onChange={(date): void =>
-          setNewUserInfo((newUserInfo) => ({
-            ...(newUserInfo as User),
-            birthDate: date as Date,
-          }))
-        }
-      />
-      <Label>Enter your Sex</Label>
-      <SelectSex>
-        <input
-          onChange={(): void =>
-            setNewUserInfo((newUserInfo) => ({
-              ...(newUserInfo as User),
-              sex: true,
+      <Form onSubmit={changeProfile}>
+        <Label>Enter your First name</Label>
+        <EditInput
+          value={newUserInfo?.firstName}
+          onChange={({ target }): void =>
+            setNewUserInfo((u) => ({
+              ...(u as User),
+              firstName: target.value,
             }))
           }
-          type="radio"
-          checked={newUserInfo?.sex}
-          value="Male"
-          name="sex"
+          type="text"
         />
-        Male
-      </SelectSex>
-      <SelectSex>
-        <input
-          onChange={(): void =>
-            setNewUserInfo((newUserInfo) => ({
-              ...(newUserInfo as User),
-              sex: false,
+        <Label>Enter your Last name</Label>
+        <EditInput
+          value={newUserInfo?.lastName}
+          onChange={({ target }): void =>
+            setNewUserInfo((u) => ({
+              ...(u as User),
+              lastName: target.value,
             }))
           }
-          type="radio"
-          checked={!newUserInfo?.sex}
-          value="Female"
-          name="sex"
+          type="text"
         />
-        Female
-      </SelectSex>
-      <Label>Enter your Zodiac sign</Label>
-      <SelectZodiac
-        value={newUserInfo?.zodiacSign}
-        onChange={({ target }): void =>
-          setNewUserInfo((newUserInfo) => ({
-            ...(newUserInfo as User),
-            zodiacSign: target.value,
-          }))
-        }
-      >
-        {options}
-      </SelectZodiac>
-      <StyledButton onClick={changeProfile}>Save changes</StyledButton>
+        <Label>Enter your Birth date</Label>
+        <Calendar
+          value={newUserInfo?.birthDate}
+          onChange={(date): void =>
+            setNewUserInfo((u) => ({
+              ...(u as User),
+              birthDate: date as Date,
+            }))
+          }
+        />
+        <SexBlock>
+          <Label>Enter your Sex</Label>
+          <SelectSex>
+            <input
+              onChange={(): void =>
+                setNewUserInfo((u) => ({
+                  ...(u as User),
+                  sex: true,
+                }))
+              }
+              type="radio"
+              checked={newUserInfo?.sex}
+              value="Male"
+              name="sex"
+            />
+            Male
+          </SelectSex>
+          <SelectSex>
+            <input
+              onChange={(): void =>
+                setNewUserInfo((u) => ({
+                  ...(u as User),
+                  sex: false,
+                }))
+              }
+              type="radio"
+              checked={!newUserInfo?.sex}
+              value="Female"
+              name="sex"
+            />
+            Female
+          </SelectSex>
+        </SexBlock>
+        <Label>Enter your Zodiac sign</Label>
+        <SelectZodiac
+          value={newUserInfo?.zodiacSign}
+          onChange={({ target }): void =>
+            setNewUserInfo((u) => ({
+              ...(u as User),
+              zodiacSign: target.value,
+            }))
+          }
+        >
+          {options}
+        </SelectZodiac>
+        <EditInput
+          maxLength={40}
+          placeholder="Input about yourself"
+          value={newUserInfo?.about}
+          onChange={({ target }): void =>
+            setNewUserInfo((u) => ({
+              ...(u as User),
+              about: target.value,
+            }))
+          }
+        ></EditInput>
+        <StyledButton>Save changes</StyledButton>
+      </Form>
     </Modal>
   ) : null;
 
   const changePasswordModal = showChangePasswordModal ? (
     <Modal onClose={(): void => setShowChangePasswordModal(false)}>
-      <Label>Confirm your password</Label>
-      <EditInput
-        value={oldPassword}
-        onChange={({ target }): void => setOldPassword(target.value)}
-        type="password"
-      />
+      <Form onSubmit={changePassword}>
+        <Label>Confirm your password</Label>
+        <EditInput
+          value={oldPassword}
+          onChange={({ target }): void => setOldPassword(target.value)}
+          type="password"
+        />
 
-      <Label>Enter new password</Label>
-      <EditInput
-        value={newPassword}
-        onChange={({ target }): void => setNewPassword(target.value)}
-        type="password"
-      />
+        <Label>Enter new password</Label>
+        <EditInput
+          value={newPassword}
+          onChange={({ target }): void => setNewPassword(target.value)}
+          type="password"
+        />
 
-      <Label>Repeat new password</Label>
-      <EditInput
-        value={repeatNewPassword}
-        onChange={({ target }): void => setRepeatNewPassword(target.value)}
-        type="password"
-      />
+        <Label>Repeat new password</Label>
+        <EditInput
+          value={repeatNewPassword}
+          onChange={({ target }): void => setRepeatNewPassword(target.value)}
+          type="password"
+        />
+        <StyledButton>Change password</StyledButton>
+      </Form>
     </Modal>
   ) : null;
 
@@ -218,11 +250,17 @@ export default observer(function ProfilePage(): JSX.Element {
       (c) => c.senderInfo.senderID === user.userID,
     );
     if (!oldChat) {
-      const chat = await createNewChat(chatStore.accessToken, user.userID);
-      chatStore.addNewChat(chat);
+      const chatId = await chatStore.addNewChat(user.userID);
+      return history.push(`/chat?chatID=${chatId}`);
     }
-    history.push('/chat');
+    history.push(`/chat?chatID=${oldChat?.chatID}`);
   };
+
+  const changePasswordButton = user.authProviders.includes('local') ? (
+    <StyledButton onClick={(): void => setShowChangePasswordModal(true)}>
+      Change password
+    </StyledButton>
+  ) : null;
 
   return (
     <ProfileBlockView>
@@ -238,7 +276,8 @@ export default observer(function ProfilePage(): JSX.Element {
           <DetailInfo>{user?.zodiacSign}</DetailInfo>
           <DetailInfo>{user?.birthDate?.toDateString()}</DetailInfo>
           <DetailInfo>{user?.email}</DetailInfo>
-          <DetailInfo>{user?.sex}</DetailInfo>
+          <DetailInfo>{user?.sex ? 'Male' : 'Female'}</DetailInfo>
+          <DetailInfo>{user?.about}</DetailInfo>
         </ProfileDetails>
       </InfoBlock>
       <ButtonBlock>
@@ -251,10 +290,23 @@ export default observer(function ProfilePage(): JSX.Element {
             >
               Change profile
             </StyledButton>
+            {changePasswordButton}
             <StyledButton
-              onClick={(): void => setShowChangePasswordModal(true)}
+              onClick={(): void => {
+                window.open(
+                  `https://v-kosmose.com/${
+                    user.zodiacSign === 'Aquarius'
+                      ? 'doma-v-znakah-zodiaka'
+                      : 'znaki-zodiaka'
+                  }/${
+                    vkosmoseZodiacSigns[
+                      zodiacSigns.findIndex((z) => z === user.zodiacSign)
+                    ]
+                  }`,
+                );
+              }}
             >
-              Change password
+              Read about your zodiac sign
             </StyledButton>
           </>
         ) : (

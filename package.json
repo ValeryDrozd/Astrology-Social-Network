@@ -24,12 +24,13 @@
     "eslint-plugin-sonarjs": "^0.6.0",
     "husky": "=4",
     "lint-staged": "^10.5.4",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.6"
   },
   "husky": {
     "hooks": {
       "pre-commit": "yarn lint-staged",
-      "pre-push": "yarn test:server"
+      "pre-push": "yarn test"
     }
   },
   "lint-staged": {
@@ -43,13 +44,19 @@
     ]
   },
   "scripts": {
-    "test:server": "cd server && yarn test",
-    "lint:server": "cd server && yarn lint:write",
-    "lint:client": "cd client && yarn lint:write",
-    "lint:all": "yarn lint:server . && yarn lint:client .",
-    "lint": "cd server && yarn lint . && cd ../client && yarn lint .",
-    "start:client": "cd client && yarn start",
-    "start:server": "cd server && yarn start:dev"
+    "test": "yarn workspaces run test",
+    "build": "yarn workspaces run build",
+    "build:client": "yarn workspace client run build",
+    "build:server": "yarn workspace server run build",
+    "test:client": "yarn workspace client run test",
+    "test:server": "yarn workspace server run test",
+    "lint": "yarn workspaces run lint",
+    "lint:client": "yarn workspace client run lint:write",
+    "lint:server": "yarn workspace server run lint:write",
+    "lint:all": "yarn workspaces run lint:write",
+    "start": "yarn workspace server run start:prod",
+    "start:client": "yarn workspace client run start",
+    "start:server": "yarn workspace server run start:dev"
   },
   "dependencies": {
     "typescript": "^4.2.3",

@@ -1,5 +1,6 @@
+import ScrollList from 'components/scroll-list/scroll-list';
 import { StyledButton } from 'components/styled/styled-button';
-import { UserWithCompability } from 'interfaces/user';
+import { UserWithCompatibility } from 'interfaces/user';
 import { observer } from 'mobx-react';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
@@ -16,7 +17,6 @@ import {
   UsersList,
   UsersListItem,
   UserSpan,
-  SelectDiv,
 } from './styles';
 
 export default observer(function RecommendationPage(): JSX.Element {
@@ -24,16 +24,19 @@ export default observer(function RecommendationPage(): JSX.Element {
   const [mode, setMode] = useState('Any');
 
   const [recommendations, setRecommendations] = useState<
-    UserWithCompability[]
-  >();
+    UserWithCompatibility[]
+  >([]);
 
-  const setRecs = (): Promise<void> =>
-    getRecommendation(
-      chatStore.accessToken,
-      mode === 'Male' ? true : mode === 'Female' ? false : undefined,
-    ).then((users) => {
+  const setRecs = async (): Promise<void> => {
+    let check = undefined;
+    if (mode === 'Male' || mode === 'Female') {
+      check = mode === 'Male';
+    }
+
+    getRecommendation(chatStore.accessToken, check).then((users) => {
       setRecommendations(users);
     });
+  };
 
   useEffect((): void => {
     if (chatStore.initialized) {
@@ -44,7 +47,7 @@ export default observer(function RecommendationPage(): JSX.Element {
     }
   }, [chatStore.initialized, mode]);
 
-  const userViews = recommendations?.map((user) => (
+  const renderRecommendation = (user: UserWithCompatibility): JSX.Element => (
     <UsersListItem
       key={`rec-${user.userID}`}
       onClick={(): void => history.push(`/users/${user.userID}`)}
@@ -54,10 +57,15 @@ export default observer(function RecommendationPage(): JSX.Element {
         <UserSpan>Zodiac Sign: {user.zodiacSign}</UserSpan>
         <UserSpan>Sex: {user.sex ? 'Male' : 'Female'}</UserSpan>
         <UserSpan>Birth date: {user.birthDate?.toLocaleDateString()}</UserSpan>
-        <UserSpan>Compatibility: {user.compability}</UserSpan>
+        <UserSpan>Compatibility: {user.compatibility}</UserSpan>
       </UserInfoBlock>
     </UsersListItem>
-  ));
+  );
+
+  const wrapRecommendations = (
+    list: JSX.Element[],
+    onWheel: (i: React.WheelEvent<HTMLUListElement>) => void,
+  ): JSX.Element => <UsersList onWheel={onWheel}>{list}</UsersList>;
 
   return (
     <RecommendationDiv>
@@ -95,7 +103,14 @@ export default observer(function RecommendationPage(): JSX.Element {
         </SelectSexName>
         <StyledButton onClick={setRecs}>Refresh</StyledButton>
       </RecommendationBlock>
-      <UsersList>{userViews}</UsersList>
+      <ScrollList
+        list={recommendations}
+        renderItem={(user): JSX.Element =>
+          renderRecommendation(user as UserWithCompatibility)
+        }
+        numberOfVisibleItems={3}
+        wrap={wrapRecommendations}
+      />
     </RecommendationDiv>
   );
 });

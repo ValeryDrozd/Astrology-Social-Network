@@ -5,6 +5,7 @@ interface RequestParams {
 export interface SelectParams extends RequestParams {
   query?: string[];
   where?: Record<string, unknown>;
+  orderBy?: string[];
 }
 export interface InsertParams<T> extends RequestParams {
   values: T[];

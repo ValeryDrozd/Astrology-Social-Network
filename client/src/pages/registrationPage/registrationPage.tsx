@@ -66,9 +66,21 @@ export default observer(function RegistrationPage(): JSX.Element {
           onChange={(ev): void => setPassword(ev.target.value)}
           type="password"
         />
+        {showError ? (
+          <ErrorValidation className="small">
+            Password should contain at least 1 uppercase letter, 1 lowercase
+            letter and one symbol
+          </ErrorValidation>
+        ) : null}
         {showError ? <ErrorValidation>ERROR!</ErrorValidation> : null}
         <StyledButton className="register">Register now</StyledButton>
       </RegistrationForm>
+      <StyledButton
+        className="register"
+        onClick={(): void => history.push('/')}
+      >
+        Back to Login page
+      </StyledButton>
     </RegistrationDiv>
   );
 });

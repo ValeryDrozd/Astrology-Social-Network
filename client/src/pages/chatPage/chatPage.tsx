@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { observer } from 'mobx-react';
-import { useState } from 'react';
 import Message from 'interfaces/message';
 import chatStore from 'stores/store';
 import ScrollList from 'components/scroll-list/scroll-list';
@@ -20,9 +19,17 @@ import {
   ChatLastMessage,
   ChatName,
   MessagesArea,
+  MessageStatus,
+  SendBlock,
+  ChatItemBlock,
 } from './styles';
+import Chat from 'interfaces/chat';
+import { RouteComponentProps } from 'react-router-dom';
+import { StyledButton } from 'components/styled/styled-button';
 
-export default observer(function ChatPage(): JSX.Element {
+export default observer(function ChatPage({
+  location,
+}: RouteComponentProps): JSX.Element {
   const history = useHistory();
   useEffect(() => {
     if (
@@ -38,11 +45,11 @@ export default observer(function ChatPage(): JSX.Element {
     }
   }, [history, chatStore?.user, chatStore.initialized]);
 
-  const [currentChatId, setCurrentChatId] = useState<string>('');
+  const currentChatId = location.search.split('=')[1];
   const [newMessageText, setNewMessageText] = useState<string>('');
 
   const handlerChatClick = (chatId: string): void => {
-    setCurrentChatId(chatId);
+    history.push(`/chat?chatID=${chatId}`);
   };
 
   const currentChat = chatStore.chats.find(
@@ -57,37 +64,66 @@ export default observer(function ChatPage(): JSX.Element {
     }
   };
 
-  const chatViews = chatStore.chats
-    .slice()
-    .sort((chat1, chat2) =>
-      !chat2.messageList.length || !chat1.messageList.length
-        ? -Number.MAX_VALUE
-        : chat2.messageList[chat2.messageList.length - 1]?.time.valueOf() -
-          chat1.messageList[chat1.messageList.length - 1]?.time.valueOf(),
-    )
-    .map((chat, index) => (
-      <ChatItem
-        className={currentChatId === chat.chatID ? `selected` : ''}
-        key={`chat-${index + 1}`}
-        onClick={(): void => handlerChatClick(chat.chatID)}
-      >
-        <ChatName>
-          {chat.senderInfo.lastName + ' ' + chat.senderInfo.firstName}
-        </ChatName>
-        <ChatLastMessage>
-          {chat.messageList[chat.messageList.length - 1]?.text.slice(0, 30) +
-            '...'}
-        </ChatLastMessage>
-      </ChatItem>
-    ));
+  const chatsList = chatStore.chats.slice().sort((chat1, chat2) => {
+    let compare = 0;
+    if (chat1.messageList.length === 0) {
+      compare = 1;
+    } else if (chat2.messageList.length === 0) {
+      compare = -1;
+    } else {
+      compare =
+        chat2.messageList[chat2.messageList.length - 1].time.getTime() -
+        chat1.messageList[chat1.messageList.length - 1].time.getTime();
+    }
+    return compare;
+  });
 
-  const renderMessage = (message: Message, index: number): JSX.Element => (
+  const messagesList = currentChat ? currentChat.messageList : [];
+
+  const renderMessage = (message: Message): JSX.Element => (
     <MessageItem
-      key={`message-${currentChatId}-${index + 1}`}
+      key={`message-${currentChatId}-${message.messageID}`}
       className={chatStore.myID === message.senderID ? 'my' : ''}
     >
-      <MessageView>{message.text}</MessageView>
+      <SendBlock className={chatStore.myID === message.senderID ? 'my' : ''}>
+        <MessageStatus className={message.isSent ? 'isSent' : ''} />
+        <MessageView>{message.text}</MessageView>
+      </SendBlock>
     </MessageItem>
+  );
+
+  const renderChatItem = (chat: Chat): JSX.Element => (
+    <ChatItem
+      className={currentChatId === chat.chatID ? `selected` : ''}
+      key={`chat-${chat.chatID}`}
+      onClick={({
+        target,
+      }: React.MouseEvent<HTMLLIElement, MouseEvent> & {
+        target: { tagName: string };
+      }): void => {
+        console.log(target.tagName);
+        return target.tagName !== 'BUTTON'
+          ? handlerChatClick(chat.chatID)
+          : undefined;
+      }}
+    >
+      <ChatName>
+        {chat.senderInfo.lastName + ' ' + chat.senderInfo.firstName}
+      </ChatName>
+      <ChatLastMessage>
+        {chat.messageList[chat.messageList.length - 1]?.text}
+      </ChatLastMessage>
+      <ChatItemBlock>
+        <StyledButton
+          className="small"
+          onClick={(): void =>
+            history.push(`/users/${chat.senderInfo.senderID}`)
+          }
+        >
+          See
+        </StyledButton>
+      </ChatItemBlock>
+    </ChatItem>
   );
 
   const wrapMessagesList = (
@@ -99,19 +135,48 @@ export default observer(function ChatPage(): JSX.Element {
     </MessagesArea>
   );
 
+  const wrapChatList = (
+    list: JSX.Element[],
+    onWheel: (e: React.WheelEvent<HTMLUListElement>) => void,
+  ): JSX.Element => <ChatList onWheel={onWheel}>{list}</ChatList>;
+
+  const loadOldMessages = async (): Promise<number> => {
+    if (currentChat?.messageList.length !== currentChat?.numberOfMessages) {
+      const startLength = currentChat?.messageList.length ?? 0;
+      const lastMessageID = currentChat?.messageList[0].messageID;
+      await chatStore.getMessagesOfChat(currentChatId, lastMessageID ?? '');
+      const newLength = currentChat?.messageList.length ?? 0;
+      return newLength - startLength;
+    }
+    return 0;
+  };
+
+  const messagesBlockRef = useRef<HTMLDivElement>(null);
+
+  const numberOfVisibleMessages = Math.floor(
+    (messagesBlockRef.current?.offsetHeight ?? 65 * 9) / 65,
+  );
+
   return (
     <ChatBlockView>
-      <ChatList>{chatViews}</ChatList>
-      <MessagesBlock>
+      <ScrollList
+        startBottom={false}
+        list={chatsList}
+        numberOfVisibleItems={6}
+        wrap={wrapChatList}
+        renderItem={(chat): JSX.Element => renderChatItem(chat as Chat)}
+      />
+      <MessagesBlock ref={messagesBlockRef}>
         <ScrollList
           startBottom
-          numberOfVisibleItems={9}
+          numberOfVisibleItems={numberOfVisibleMessages}
           wrap={wrapMessagesList}
-          renderItem={(message, index): JSX.Element =>
-            renderMessage(message as Message, index)
+          renderItem={(message): JSX.Element =>
+            renderMessage(message as Message)
           }
-          list={currentChat ? currentChat.messageList : []}
-        ></ScrollList>
+          list={messagesList}
+          loadMore={loadOldMessages}
+        />
         {currentChatId ? (
           <InputArea>
             <ChatForm onSubmit={(ev): void => handleSubmit(ev)}>
