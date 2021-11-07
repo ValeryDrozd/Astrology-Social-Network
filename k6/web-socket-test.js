@@ -1,9 +1,13 @@
 import http from "k6/http";
-
+import { sleep, check } from "k6";
+import ws from "k6/ws";
+import { uuidv4 } from "https://jslib.k6.io/k6-utils/1.0.0/index.js";
 
 export const options = {
-  vus: 20, 
-  duration: '30s',
+  stages: [
+    { duration: "10s", target: 100 },
+    { duration: "20s", target: 100 },
+  ],
   thresholds: {
     http_req_duration: ["p(99)<1500"], // 99% of requests must complete below 1.5s
   },
@@ -46,5 +50,74 @@ export default function ({ accessToken1, accessToken2 }) {
   // const profileResponse1 = profileRequest(accessToken1);
   const profile1 = JSON.parse(profileRequest(accessToken1).body);
   const profile2 = JSON.parse(profileRequest(accessToken2).body);
-  
+  let chat;
+
+  const pack1 = {
+    profile: profile1,
+    otherProfile: profile2,
+    counter: 1,
+    accessToken: accessToken1,
+  };
+  const pack2 = {
+    profile: profile2,
+    otherProfile: profile1,
+    counter: 1,
+    accessToken: accessToken2,
+  };
+
+  // console.log(JSON.stringify(pack1))
+
+  const generateMessage = (pack) => {
+    const id = pack.counter++;
+    const message = {
+      id,
+      jsonrpc: "2.0",
+      method: "addNewMessage",
+      params: {
+        chatID: chat.chatID,
+        messageID: uuidv4(),
+        senderID: pack.profile.userID,
+        text: (Math.random() * 1000).toString(),
+        time: Date.now().toString(),
+      },
+    };
+    return message;
+  };
+  const getConnection = (pack) =>
+    ws.connect(
+      "ws://localhost/chattings",
+      getWsParams(pack.accessToken),
+      function (socket) {
+        socket.on("open", () => {
+          if (!chat) {
+            socket.send(
+              JSON.stringify({
+                jsonrpc: "2.0",
+                method: "getMessages",
+                params: null,
+                id: pack.counter++,
+              })
+            );
+          }
+        });
+        socket.on("message", (data) => {
+          const res = JSON.parse(data);
+          if (res.notification && res.notification == "connection-status")
+            return;
+          else if (res.result && res.id == 1) {
+            chat = res.result.find(
+              (item) => item.senderInfo.senderID == pack.otherProfile.userID
+            );
+            const message = generateMessage(pack);
+            socket.send(JSON.stringify(message));
+            socket.close()
+          }
+        });
+        // socket.on("close", () => console.log("disconnected"));
+      }
+    );
+
+  const res = getConnection(Math.random() > 0.5 ? pack1 : pack2);
+  check(res, { 'status is 101': (r) => r && r.status === 101 });
+  sleep(1)
 }
